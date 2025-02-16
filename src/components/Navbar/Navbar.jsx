@@ -1,9 +1,10 @@
 import { Menu, X } from 'lucide-react'; // Icon package
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const navbarLinks = [
   { name: 'Home', path: '/' },
+  { name: 'Menu', path: '/menu' },
   { name: 'Orders', path: '/orders' },
   { name: 'Cart', path: '/cart' },
   { name: 'Checkout', path: '/checkout' },

@@ -1,10 +1,9 @@
-import React from 'react';
 import { FaFacebook, FaInstagram, FaTwitter } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
-    <footer className="bg-[#2D6A4F] text-white py-6">
+    <div className="bg-[#2D6A4F] text-white py-6">
       <div className="container mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
         {/* Brand & Description */}
         <div>
@@ -75,7 +74,7 @@ const Footer = () => {
       <div className="border-t border-[#B4B4B4] mt-6 pt-4 text-center text-sm text-[#E9CBA7]">
         &copy; {new Date().getFullYear()} Essen Welt. All Rights Reserved.
       </div>
-    </footer>
+    </div>
   );
 };
 

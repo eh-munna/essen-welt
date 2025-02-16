@@ -1,17 +1,20 @@
+import Footer from '@/components/Footer/Footer';
+import Navbar from '@/components/Navbar/Navbar';
 import { Outlet } from 'react-router-dom';
-import Footer from '../components/Footer';
-import Navbar from '../components/Navbar';
 
 function Layout() {
   return (
     <>
-      <Navbar />
-      {/* Only show Menu on the home page */}
+      <header>
+        <Navbar />
+      </header>
       <main>
         {/* Content will be rendered here based on the route */}
         <Outlet />
       </main>
-      <Footer />
+      <footer>
+        <Footer />
+      </footer>
     </>
   );
 }
