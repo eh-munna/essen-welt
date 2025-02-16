@@ -1,6 +1,11 @@
+import { CartContext } from '@/context/cart/CartProvider';
+import { useContext } from 'react';
 import { Button } from './ui/button';
 
 const FoodCard = ({ item }) => {
+  const { addToCart } = useContext(CartContext);
+  const handleAddClick = (item) => addToCart(item);
+
   return (
     <div className="bg-[#F1F1F1] p-4 rounded-2xl shadow-lg hover:shadow-xl transition max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto">
       <img
@@ -12,7 +17,10 @@ const FoodCard = ({ item }) => {
       <p className="text-sm text-[#3D5A6E]">{item.description}</p>
       <div className="flex justify-between items-center mt-4">
         <span className="text-[#E63946] font-bold">${item.price}</span>
-        <Button className="cursor-pointer bg-[#2D6A4F] text-white px-4 py-2 rounded-md hover:bg-[#1B4D38] transition">
+        <Button
+          onClick={() => handleAddClick(item)}
+          className="cursor-pointer bg-[#2D6A4F] text-white px-4 py-2 rounded-md hover:bg-[#1B4D38] transition"
+        >
           Add to Cart
         </Button>
       </div>

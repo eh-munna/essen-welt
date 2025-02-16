@@ -26,7 +26,7 @@ const popularItems = [
 
 export default function PopularMenu() {
   return (
-    <section className="container mx-auto px-6 py-10">
+    <section className="px-6 py-10">
       <h2 className="text-2xl font-bold text-[#2D6A4F] mb-6">
         Our Popular Item
       </h2>{' '}

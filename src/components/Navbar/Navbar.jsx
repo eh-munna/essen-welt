@@ -1,22 +1,31 @@
 import { Menu, X } from 'lucide-react'; // Icon package
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const navbarLinks = [
-  { name: 'Home', path: '/' },
-  { name: 'Menu', path: '/menu' },
-  { name: 'Orders', path: '/orders' },
-  { name: 'Cart', path: '/cart' },
-  { name: 'Checkout', path: '/checkout' },
-  { name: 'Profile', path: '/profile' },
+  { name: 'Home', path: '/', scrollId: '' },
+  { name: 'Menu', path: '/menu', scrollId: '' },
+  { name: 'Orders', path: '/orders', scrollId: '' },
+  { name: 'Cart', path: '/cart', scrollId: '' },
+  { name: 'Checkout', path: '/checkout', scrollId: '' },
+  { name: 'Profile', path: '/profile', scrollId: '' },
 ];
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
+  const scrollToSection = (id) => {
+    useEffect(() => {
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  };
+
   return (
     <nav className="bg-[#2D6A4F] p-4">
-      <div className="container mx-auto flex justify-between items-center">
+      <div className="flex justify-between items-center">
         <Link to={'/'} className="text-white text-2xl font-bold">
           EssenWelt
         </Link>

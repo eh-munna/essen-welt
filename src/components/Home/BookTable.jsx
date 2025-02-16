@@ -19,7 +19,7 @@ export default function BookTable() {
 
   return (
     <>
-      <section className="max-w-3xl mx-auto p-8">
+      <section id="book-table" className="mx-auto p-8">
         <h1 className="text-3xl font-semibold text-[#2D6A4F] mb-6">
           Book Your Table
         </h1>
