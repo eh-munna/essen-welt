@@ -4,7 +4,7 @@ export default function Hero() {
     // TODO: // Replace with actual image path
 
     <section
-      className="relative bg-cover bg-center h-[50vh] flex items-center justify-center text-white"
+      className="relative bg-cover bg-center h-[50vh] flex items-center justify-center text-white mb-2"
       style={{
         backgroundImage:
           "url('https://img.freepik.com/fotos-premium/italienische-lebensmittelkomposition-mit-grossem-raum-in-der-mitte_23-2147686550.jpg?w=1380')",

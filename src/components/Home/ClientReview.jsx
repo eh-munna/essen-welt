@@ -25,7 +25,7 @@ export default function ClientReview() {
 
   return (
     <section
-      className="mx-auto p-8 bg-[#2D6A4F] rounded-xl shadow-lg"
+      className="mx-auto p-8 bg-[#2D6A4F] rounded-xl shadow-lg mb-2"
       id="client-reviews"
     >
       <h2 className="text-3xl font-semibold text-[#E9CBA7] mb-8">

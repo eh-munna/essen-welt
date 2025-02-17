@@ -1,5 +1,3 @@
-import React from 'react';
-
 const mockOrders = [
   {
     id: '001',
@@ -29,7 +27,7 @@ const mockOrders = [
 
 const Orders = () => {
   return (
-    <div className="container mx-auto px-6 py-10">
+    <section className="px-6 py-10">
       <h2 className="text-3xl font-semibold text-[#2D6A4F] mb-6">Orders</h2>
 
       {/* Order List */}
@@ -113,7 +111,7 @@ const Orders = () => {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

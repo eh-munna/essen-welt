@@ -7,7 +7,6 @@ const navbarLinks = [
   { name: 'Menu', path: '/menu', scrollId: '' },
   { name: 'Orders', path: '/orders', scrollId: '' },
   { name: 'Cart', path: '/cart', scrollId: '' },
-  { name: 'Checkout', path: '/checkout', scrollId: '' },
   { name: 'Profile', path: '/profile', scrollId: '' },
 ];
 

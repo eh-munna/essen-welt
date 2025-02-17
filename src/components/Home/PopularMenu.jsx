@@ -26,8 +26,8 @@ const popularItems = [
 
 export default function PopularMenu() {
   return (
-    <section className="px-6 py-10">
-      <h2 className="text-2xl font-bold text-[#2D6A4F] mb-6">
+    <section className="mx-auto p-8 bg-[#2D6A4F] rounded-xl shadow-lg mb-2">
+      <h2 className="text-3xl font-semibold text-[#E9CBA7] mb-8">
         Our Popular Item
       </h2>{' '}
       {/* Updated title */}
