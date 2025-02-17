@@ -1,5 +1,7 @@
+import { AuthContext } from '@/context/authentication/AuthProvider';
 import { Menu, X } from 'lucide-react'; // Icon package
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 
 const navbarLinks = [
@@ -7,11 +9,11 @@ const navbarLinks = [
   { name: 'Menu', path: '/menu', scrollId: '' },
   { name: 'Orders', path: '/orders', scrollId: '' },
   { name: 'Cart', path: '/cart', scrollId: '' },
-  { name: 'Profile', path: '/profile', scrollId: '' },
 ];
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, userSignOut } = useContext(AuthContext);
 
   const scrollToSection = (id) => {
     useEffect(() => {
@@ -20,6 +22,31 @@ function Navbar() {
         element.scrollIntoView({ behavior: 'smooth' });
       }
     });
+  };
+
+  const handleUserSignOut = async () => {
+    try {
+      await toast.promise(
+        userSignOut(),
+        {
+          loading: 'Loading...',
+          success: () => (
+            <div className="bg-white px-6 animate-enter">
+              User signed out successfully!
+            </div>
+          ),
+          error: (err) => <div className="bg-white px-6">{err.message}</div>,
+        },
+        {
+          style: { paddingLeft: '1.5rem', paddingRight: '1.5rem' },
+          loading: { position: 'top-right', duration: 3000 },
+          success: { position: 'top-right', duration: 3000 },
+          error: { position: 'top-right', duration: 3000 },
+        }
+      );
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -44,6 +71,23 @@ function Navbar() {
               <Link to={path}>{name}</Link>
             </li>
           ))}
+
+          {!user ? (
+            <>
+              <li className="hover:text-[#F4A261] transition">
+                <Link to="/sign-up">Sign Up</Link>
+              </li>
+              <li className="hover:text-[#F4A261] transition">
+                <Link to="/login">Login</Link>
+              </li>
+            </>
+          ) : (
+            <li className="hover:text-[#F4A261] transition">
+              <Link to="/" onClick={handleUserSignOut}>
+                Logout
+              </Link>
+            </li>
+          )}
         </ul>
       </div>
 

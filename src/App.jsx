@@ -1,12 +1,13 @@
+import ErrorPage from '@/Errors/ErrorPage';
+import Layout from '@/Layouts/Layout';
 import Cart from '@/pages/Cart';
 import Home from '@/pages/Home';
+import Login from '@/pages/Login';
 import Menu from '@/pages/Menu';
-import Profile from '@/pages/Profile';
+import Orders from '@/pages/Orders';
+import SignUp from '@/pages/SignUp';
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
-import ErrorPage from './Errors/ErrorPage';
-import Layout from './Layouts/Layout';
-import Orders from './pages/Orders';
 // Your custom error page component
 
 function App() {
@@ -20,7 +21,8 @@ function App() {
           <Route path="/menu" element={<Menu />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/orders" element={<Orders />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/sign-up" element={<SignUp />} />
         </Route>
 
         {/* Fallback route for undefined paths */}
