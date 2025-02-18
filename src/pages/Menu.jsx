@@ -1,6 +1,7 @@
 import { MenuItem } from '@/components/Menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useState } from 'react';
+import useAxiosPublic from '@/hooks/useAxiosPublic';
+import { useEffect, useState } from 'react';
 
 export const menuItems = [
   // Starters
@@ -42,11 +43,23 @@ export const menuItems = [
 
 export default function Menu() {
   const [activeMenu, setActiveMenu] = useState('starters');
+  const axiosPublic = useAxiosPublic();
+
+  const [menu, setMenu] = useState([]);
+
+  // http://localhost:3000/api/v1/menus?category=mains
+  //  http://localhost:3000/api/v1/menus?category=mains
+
+  useEffect(() => {
+    const fetchMenu = async () => {
+      const { data } = await axiosPublic.get(`/menus?category=${activeMenu}`);
+      setMenu(data);
+    };
+    fetchMenu();
+  }, [activeMenu]);
 
   // Extract unique categories from menuItems
   const categories = [...new Set(menuItems.map((item) => item.category))];
-
-  const filteredItems = menuItems.filter((i) => i.category === activeMenu);
 
   return (
     <>
@@ -64,11 +77,22 @@ export default function Menu() {
         </TabsList>
         <TabsContent value={activeMenu}>
           <div className="grid md:grid-cols-3 gap-3 space-y-3">
-            {filteredItems.map((item) => (
-              <MenuItem key={item.id} item={item} />
+            {menu.map((item) => (
+              <MenuItem key={item._id} item={item} />
             ))}
           </div>
         </TabsContent>
+      </Tabs>
+
+      <Tabs defaultValue="account" className="w-[400px]">
+        <TabsList>
+          <TabsTrigger value="account">Account</TabsTrigger>
+          <TabsTrigger value="password">Password</TabsTrigger>
+        </TabsList>
+        <TabsContent value="account">
+          Make changes to your account here.
+        </TabsContent>
+        <TabsContent value="password">Change your password here.</TabsContent>
       </Tabs>
     </>
   );
