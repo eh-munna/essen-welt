@@ -34,7 +34,9 @@ export default function PopularMenu() {
   useEffect(() => {
     const fetchMenu = async () => {
       try {
-        const data = await axios.get(`http://localhost:3000/api/v1/menus`);
+        const data = await axios.get(
+          `https://essen-welt-server.vercel.app/api/v1/menus`
+        );
         setPopularItems(data.data);
       } catch (error) {
         console.error('Error fetching popular items:', error.message);
