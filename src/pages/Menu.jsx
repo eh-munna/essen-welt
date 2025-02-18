@@ -2,7 +2,7 @@ import { MenuItem } from '@/components/Menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useState } from 'react';
 
-const menuItems = [
+export const menuItems = [
   // Starters
   { id: 1, name: 'Bruschetta', price: 5.99, category: 'starters' },
   { id: 2, name: 'Caesar Salad', price: 6.99, category: 'starters' },
@@ -53,9 +53,9 @@ export default function Menu() {
       <Tabs
         value={activeMenu}
         onValueChange={setActiveMenu}
-        className="w-[400px]"
+        className="w-2/3 mx-auto"
       >
-        <TabsList>
+        <TabsList className="mt-5 flex justify-around">
           {categories.map((category) => (
             <TabsTrigger key={category} value={category}>
               {category}
@@ -63,9 +63,11 @@ export default function Menu() {
           ))}
         </TabsList>
         <TabsContent value={activeMenu}>
-          {filteredItems.map((item) => (
-            <MenuItem key={item.id} item={item} />
-          ))}
+          <div className="grid md:grid-cols-3 gap-3 space-y-3">
+            {filteredItems.map((item) => (
+              <MenuItem key={item.id} item={item} />
+            ))}
+          </div>
         </TabsContent>
       </Tabs>
     </>

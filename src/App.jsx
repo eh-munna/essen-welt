@@ -1,5 +1,6 @@
 import ErrorPage from '@/Errors/ErrorPage';
 import Layout from '@/Layouts/Layout';
+import { ItemDetails } from '@/components/Menu';
 import Cart from '@/pages/Cart';
 import Home from '@/pages/Home';
 import Login from '@/pages/Login';
@@ -19,6 +20,7 @@ function App() {
           {/* Define all your main routes here */}
           <Route path="/" element={<Home />} />
           <Route path="/menu" element={<Menu />} />
+          <Route path="/menu/:id" element={<ItemDetails />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/login" element={<Login />} />
