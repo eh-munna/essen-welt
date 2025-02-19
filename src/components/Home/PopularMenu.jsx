@@ -2,32 +2,8 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import FoodCard from '../FoodCard';
 
-const menuItems = [
-  {
-    id: 1,
-    name: 'Grilled Salmon',
-    description: 'Delicious grilled salmon with fresh herbs.',
-    price: 15.99,
-    image: 'https://source.unsplash.com/200x150/?salmon,food',
-  },
-  {
-    id: 2,
-    name: 'Veggie Pizza',
-    description: 'Thin-crust pizza with fresh vegetables and mozzarella.',
-    price: 12.49,
-    image: 'https://source.unsplash.com/200x150/?pizza,food',
-  },
-  {
-    id: 3,
-    name: 'Avocado Salad',
-    description: 'Fresh avocado, tomatoes, and greens with dressing.',
-    price: 9.99,
-    image: 'https://source.unsplash.com/200x150/?salad,food',
-  },
-];
-
 export default function PopularMenu() {
-  const [popularItems, setPopularItems] = useState(menuItems);
+  const [popularItems, setPopularItems] = useState([]);
 
   // Fetch popular items from API or local state
 

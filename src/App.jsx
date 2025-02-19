@@ -9,6 +9,7 @@ import Orders from '@/pages/Orders';
 import SignUp from '@/pages/SignUp';
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
+import { menuItemLoader } from './utils/menuItemLoader';
 // Your custom error page component
 
 function App() {
@@ -20,7 +21,11 @@ function App() {
           {/* Define all your main routes here */}
           <Route path="/" element={<Home />} />
           <Route path="/menu" element={<Menu />} />
-          <Route path="/menu/:id" element={<ItemDetails />} />
+          <Route
+            path="/menu/:id"
+            element={<ItemDetails />}
+            loader={menuItemLoader}
+          />
           <Route path="/cart" element={<Cart />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/login" element={<Login />} />
