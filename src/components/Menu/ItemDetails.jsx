@@ -1,24 +1,16 @@
-import useAxiosPublic from '@/hooks/useAxiosPublic';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { CartContext } from '@/context/cart/CartProvider';
+import { useContext } from 'react';
+import { useLoaderData } from 'react-router-dom';
 import { Button } from '../ui/button';
 
 export default function ItemDetails() {
-  const [item, setItem] = useState(null);
+  const { data: item } = useLoaderData();
 
-  const { id } = useParams();
-  console.log(id);
+  const { addToCart } = useContext(CartContext);
 
-  const axiosPublic = useAxiosPublic();
-
-  useEffect(() => {
-    (async () => {
-      const { data } = await axiosPublic.get(`/menus/${id}`);
-      setItem(data?.data);
-    })();
-  }, []);
-
-  console.log(item);
+  const handleAddClick = (item) => {
+    addToCart(item);
+  };
 
   return (
     <>

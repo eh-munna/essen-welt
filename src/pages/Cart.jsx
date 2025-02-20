@@ -5,9 +5,13 @@ import { PlaceOrder } from './PlaceOrder';
 export default function Cart() {
   const { cartItems, removeFromCart } = useContext(CartContext);
 
+  console.log(cartItems);
   const totalAmount = useMemo(
     () =>
-      cartItems.reduce((total, item) => total + item.quantity * item.price, 0),
+      cartItems.reduce(
+        (total, item) => total + item?.quantity * item?.price,
+        0
+      ),
     [cartItems]
   );
 
@@ -15,7 +19,7 @@ export default function Cart() {
     removeFromCart(id);
   };
 
-  if (cartItems.length === 0) {
+  if (cartItems?.length === 0) {
     return (
       <section className="px-6 py-10">
         <h2 className="text-3xl font-semibold text-[#2D6A4F] mb-6">
@@ -49,19 +53,19 @@ export default function Cart() {
                 </div>
               </div>
               <div>
-                {cartItems.map((item) => (
+                {cartItems?.map((item) => (
                   <div
-                    key={item.id}
+                    key={item?._id}
                     className="flex border-b hover:bg-gray-100 p-4 transition duration-200"
                   >
-                    <div className="w-1/4 font-semibold">{item.name}</div>
-                    <div className="w-1/4">{item.quantity}</div>
+                    <div className="w-1/4 font-semibold">{item?.name}</div>
+                    <div className="w-1/4">{item?.quantity}</div>
                     <div className="w-1/4 font-semibold text-[#E63946]">
-                      ${item.price.toFixed(2)}
+                      ${item?.price?.toFixed(2)}
                     </div>
                     <div className="w-1/4">
                       <button
-                        onClick={() => handleDeleteItem(item.id)}
+                        onClick={() => handleDeleteItem(item?._id)}
                         className="text-[#E63946] font-semibold hover:text-red-500 transition"
                       >
                         Delete
@@ -80,7 +84,7 @@ export default function Cart() {
                 Total
               </span>
               <span className="text-lg font-semibold text-[#E63946]">
-                ${totalAmount.toFixed(2)}
+                ${totalAmount?.toFixed(2)}
               </span>
             </div>
             <PlaceOrder />
@@ -88,27 +92,27 @@ export default function Cart() {
 
           {/* For Mobile View (card style with less data) */}
           <div className="sm:hidden">
-            {cartItems.map((item) => (
+            {cartItems?.map((item) => (
               <div
-                key={item.id}
+                key={item?.id}
                 className="flex border-b rounded-lg shadow-lg hover:shadow-xl transition hover:bg-gray-100 p-4 mb-6"
               >
                 <div className="flex justify-between items-start w-full">
                   <h3 className="text-lg font-semibold text-[#2D6A4F]">
-                    {item.name}
+                    {item?.name}
                   </h3>
                   <span className="text-[#E63946] font-bold text-lg">
-                    ${item.price.toFixed(2)}
+                    ${item?.price?.toFixed(2)}
                   </span>
                 </div>
                 <div className="mt-2">
                   <span className="text-sm text-[#3D5A6E]">
-                    Quantity: {item.quantity}
+                    Quantity: {item?.quantity}
                   </span>
                 </div>
                 <div className="mt-2">
                   <button
-                    onClick={() => handleDeleteItem(item.id)}
+                    onClick={() => handleDeleteItem(item?.id)}
                     className="text-[#E63946] font-semibold hover:text-red-500 transition"
                   >
                     Delete

@@ -1,34 +1,31 @@
-import { createContext, useState } from 'react';
-import toast from 'react-hot-toast';
+import useAxiosPublic from '@/hooks/useAxiosPublic';
+import { addToStorage, getCart, removeFromStorage } from '@/utils/cartUtils';
+import { createContext, useEffect, useState } from 'react';
 export const CartContext = createContext(null);
 export default function CartProvider({ children }) {
   const [cartItems, setCartItems] = useState([]);
+  const axiosPublic = useAxiosPublic();
+
+  useEffect(() => {
+    const cart = getCart();
+    setCartItems(cart);
+  }, []);
 
   const addToCart = (item) => {
-    const existingItem = cartItems.find((i) => i.id === item.id);
-    if (existingItem) {
-      setCartItems((prevItem) =>
-        prevItem.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
-        )
-      );
-      toast.success(`${item.name} quantity increased`, {
-        position: 'top-right',
-      });
-    } else {
-      setCartItems((prevItem) => [...prevItem, { ...item, quantity: 1 }]);
-      toast.success(`${item.name} is added to cart`, {
-        position: 'top-right',
-      });
-    }
+    addToStorage(item);
+    const cartIds = cartItems?.map((item) => {
+      return item._id;
+    });
+
+    (async () => {
+      const { data } = await axiosPublic.post(`/menus/cart`, { ids: cartIds });
+      // console.log(data?.data);
+      setCartItems(data?.data);
+    })();
   };
 
   const removeFromCart = (itemId) => {
-    const item = cartItems.find((i) => i.id === itemId);
-    setCartItems((prevItem) => prevItem.filter((item) => item.id !== itemId));
-    toast.success(`${item.name} is removed from cart`, {
-      position: 'top-right',
-    });
+    removeFromStorage(itemId);
   };
 
   const cartValue = { addToCart, removeFromCart, cartItems };

@@ -93,7 +93,7 @@ export default function BookTable() {
             />
             <FormField
               control={form.control}
-              name="username"
+              name="numberOfPeople"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Number of Persons</FormLabel>
@@ -131,23 +131,42 @@ export default function BookTable() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="time"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>When</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="time"
-                      {...field}
-                      value={field.value || ''}
-                      className="border-gray-300 shadow-sm focus:ring-[#2D6A4F] focus:border-[#2D6A4F]"
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+            <div className="flex gap-3">
+              <FormField
+                control={form.control}
+                name="startTime"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>From</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="time"
+                        {...field}
+                        value={field.value || ''}
+                        className="border-gray-300 shadow-sm focus:ring-[#2D6A4F] focus:border-[#2D6A4F]"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="endTime"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>To</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="time"
+                        {...field}
+                        value={field.value || ''}
+                        className="border-gray-300 shadow-sm focus:ring-[#2D6A4F] focus:border-[#2D6A4F]"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
           </div>
 
           {/* Message */}
