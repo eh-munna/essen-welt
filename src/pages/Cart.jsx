@@ -79,7 +79,7 @@ export default function Cart() {
 
           {/* Total and Checkout Button */}
           <div className="bg-white p-6 rounded-lg rounded-t-none shadow-lg">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-around items-center">
               <span className="text-lg font-semibold text-[#3D5A6E]">
                 Total
               </span>

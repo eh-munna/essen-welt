@@ -12,25 +12,26 @@ export const setCart = (cart) => {
 export const addToStorage = (item) => {
   const cart = getCart();
 
-  const existingItem = cart.find((i) => i?._id === item?._id);
+  let updatedCart;
+  const isExist = cart.some((i) => i?._id === item?._id);
 
-  if (existingItem) {
-    existingItem.quantity = existingItem.quantity + 1;
+  if (isExist) {
+    updatedCart = cart.map((i) =>
+      i?._id === item?._id ? { ...i, quantity: i?.quantity + 1 } : i
+    );
     toast.success(`${item.name} quantity increased`, {
       position: 'top-right',
     });
   } else {
-    cart.push({
-      _id: item?._id,
-      name: item?.name,
-      price: item?.price,
-      quantity: 1,
-    });
+    updatedCart = [
+      ...cart,
+      { _id: item?._id, name: item?.name, price: item?.price, quantity: 1 },
+    ];
     toast.success(`${item.name} is added to cart`, {
       position: 'top-right',
     });
   }
-  setCart(cart);
+  setCart(updatedCart);
 };
 
 export const removeFromStorage = (itemId) => {

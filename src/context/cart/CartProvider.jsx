@@ -11,21 +11,29 @@ export default function CartProvider({ children }) {
     setCartItems(cart);
   }, []);
 
-  const addToCart = (item) => {
+  const addToCart = async (item) => {
     addToStorage(item);
-    const cartIds = cartItems?.map((item) => {
-      return item._id;
+    const storageCart = getCart();
+    const cartIds = storageCart?.map((item) => {
+      return item?._id;
     });
 
-    (async () => {
-      const { data } = await axiosPublic.post(`/menus/cart`, { ids: cartIds });
-      // console.log(data?.data);
-      setCartItems(data?.data);
-    })();
+    const { data } = await axiosPublic.post(`/menus/cart`, { cartIds });
+
+    const updatedCart = data?.data?.map((item) => {
+      return {
+        ...item,
+        quantity: storageCart.find((cartItem) => cartItem?._id === item._id)
+          ?.quantity,
+      };
+    });
+    setCartItems(updatedCart);
   };
 
   const removeFromCart = (itemId) => {
     removeFromStorage(itemId);
+    const updatedCart = getCart();
+    setCartItems(updatedCart);
   };
 
   const cartValue = { addToCart, removeFromCart, cartItems };
