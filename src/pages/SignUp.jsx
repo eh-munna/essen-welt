@@ -8,16 +8,18 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { AuthContext } from '@/context/authentication/AuthProvider';
-import { updateProfile } from 'firebase/auth';
-import { useContext } from 'react';
+import toastOptions from '@/constants/toastOptions';
+import useAuth from '@/hooks/useAuth';
+import useAxiosPublic from '@/hooks/useAxiosPublic';
+import { deleteUser, updateProfile } from 'firebase/auth';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router';
 
 export default function SignUp() {
-  const { user, setUser, createUser, createGoogleLogin } =
-    useContext(AuthContext);
+  const axiosPublic = useAxiosPublic();
+
+  const { user, setUser, createUser, createGoogleLogin } = useAuth();
   const form = useForm({
     defaultValues: {
       firstName: '',
@@ -49,77 +51,108 @@ export default function SignUp() {
       email,
       password,
       phoneNumber,
-      street,
-      city,
-      country,
-      postalCode,
-      role: 'user',
+      deliveryAddress: {
+        street,
+        city,
+        country,
+        postalCode,
+      },
+      role: 'customer',
     };
 
+    let createdUser = null;
     try {
-      const userCredential = await toast.promise(
-        createUser(email, password),
-        {
-          loading: 'Loading',
-          success: () => (
-            <div className="bg-white px-6 animate-enter">
-              User is created successfully!
-            </div>
-          ),
-          error: (err) => (
-            <div className="bg-white px-6">
-              {err.code === `auth/email-already-in-use` &&
-                'Email already in use!'}
-            </div>
-          ),
+      await toast.promise(
+        async () => {
+          // Create User in Firebase
+          createdUser = await createUser(email, password);
+          if (!createdUser?.user) {
+            throw new Error('Firebase user creation failed');
+          }
+
+          await updateProfile(createdUser?.user, {
+            displayName: userInfo.name,
+          });
+          // Save user in the database
+          await axiosPublic.post('/users', userInfo);
+          setUser(createdUser?.user);
+          navigate('/');
         },
         {
-          style: { paddingLeft: '1.5rem', paddingRight: '1.5rem' },
-          loading: { position: 'top-right', duration: 3000 },
-          success: { position: 'top-right', duration: 3000 },
-          error: { position: 'top-right', duration: 3000 },
+          loading: toastOptions.loading,
+          success: toastOptions.success,
+          error: toastOptions.error,
+        },
+        {
+          ...toastOptions.styles,
         }
       );
-
-      const createdUser = userCredential?.user;
-      if (createdUser) {
-        await updateProfile(createdUser, { displayName: userInfo.name });
-        setUser(createdUser);
-      }
-
-      form.reset();
-      navigate('/');
     } catch (error) {
-      console.error(error.code);
+      console.log(error);
+      if (createdUser?.user) {
+        try {
+          await deleteUser(createdUser.user);
+        } catch (deleteError) {
+          console.error('Failed to delete Firebase user:', deleteError);
+        }
+      }
     }
   };
 
-  const handleGoogleLogin = () => {
-    //     (async () => {
-    //       try {
-    //         const result = await createGoogleLogin();
-    //         const loggedUser = await result.user;
-    //         const userInfo = {
-    //           name: loggedUser?.displayName,
-    //           email: loggedUser?.email,
-    //           role: 'user',
-    //         };
-    //         const { data } = await axiosPublic.post('/users', userInfo);
-    //         console.log(data);
-    //         if (data?.success) {
-    //           setUser(loggedUser);
-    //           <Navigate to="/" replace />;
-    //         }
-    //       } catch (error) {
-    //         const errorCode = error.code;
-    //         const errorMessage = error.message;
-    //         console.log('Error:', errorCode, errorMessage);
-    //       }
-    //     })();
-    //   };
-    //   if (user) {
-    //     // Redirect to homepage or dashboard
-    //     return <Navigate to="/" replace />;
+  const handleGoogleLogin = async () => {
+    let createdUser = null;
+    try {
+      await toast.promise(
+        async () => {
+          createdUser = await createGoogleLogin();
+
+          if (!createdUser?.user) {
+            throw new Error('Firebase user creation failed');
+          }
+          const userInfo = {
+            name: createdUser?.user?.displayName,
+            email: createdUser?.user?.email,
+            phoneNumber: createdUser?.user?.phoneNumber || 'defaultValue',
+            deliveryAddress: {
+              street: 'defaultValue',
+              city: 'defaultValue',
+              country: 'defaultValue',
+              postalCode: 'defaultValue',
+            },
+            role: 'customer',
+          };
+
+          const { data } = await axiosPublic.post(`/users`, userInfo);
+
+          if (!data?.isNew) {
+            toast.success(`${data?.message}`, {
+              position: 'top-right',
+              duration: 3000,
+            });
+          } else {
+            toast.success(`${data?.message}`, {
+              position: 'top-right',
+              duration: 3000,
+            });
+          }
+
+          setUser(createdUser?.user);
+          navigate('/');
+        },
+        {
+          loading: toastOptions.loading,
+          error: toastOptions.error,
+        },
+        {
+          ...toastOptions.styles,
+        }
+      );
+    } catch (error) {
+      console.log(error);
+      if (createdUser?.user) {
+        await deleteUser(createdUser.user);
+      }
+    }
   };
 
   return (

@@ -1,14 +1,16 @@
+import useAuth from '@/hooks/useAuth';
 import useAxiosPublic from '@/hooks/useAxiosPublic';
 import { addToStorage, getCart, removeFromStorage } from '@/utils/cartUtils';
 import { createContext, useEffect, useState } from 'react';
 export const CartContext = createContext(null);
 export default function CartProvider({ children }) {
-  const [cartItems, setCartItems] = useState([]);
+  const [cart, setCart] = useState([]);
+  const { user } = useAuth();
   const axiosPublic = useAxiosPublic();
 
   useEffect(() => {
-    const cart = getCart();
-    setCartItems(cart);
+    const storageCart = getCart();
+    setCart(storageCart);
   }, []);
 
   const addToCart = async (item) => {
@@ -18,25 +20,29 @@ export default function CartProvider({ children }) {
       return item?._id;
     });
 
-    const { data } = await axiosPublic.post(`/menus/cart`, { cartIds });
+    const { data } = await axiosPublic.post(`/menus/cart`, { ids: cartIds });
+
+    const lookupQuantity = storageCart.reduce((acc, item) => {
+      acc[item?._id] = item?.quantity;
+      return acc;
+    }, {});
 
     const updatedCart = data?.data?.map((item) => {
       return {
         ...item,
-        quantity: storageCart.find((cartItem) => cartItem?._id === item._id)
-          ?.quantity,
+        quantity: lookupQuantity[item?._id],
       };
     });
-    setCartItems(updatedCart);
+    setCart(updatedCart);
   };
 
   const removeFromCart = (itemId) => {
     removeFromStorage(itemId);
     const updatedCart = getCart();
-    setCartItems(updatedCart);
+    setCart(updatedCart);
   };
 
-  const cartValue = { addToCart, removeFromCart, cartItems };
+  const cartValue = { addToCart, removeFromCart, cart };
 
   return (
     <CartContext.Provider value={cartValue}>{children}</CartContext.Provider>

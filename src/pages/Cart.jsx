@@ -3,23 +3,17 @@ import { useContext, useMemo } from 'react';
 import { PlaceOrder } from './PlaceOrder';
 
 export default function Cart() {
-  const { cartItems, removeFromCart } = useContext(CartContext);
-
-  console.log(cartItems);
+  const { cart, removeFromCart } = useContext(CartContext);
   const totalAmount = useMemo(
-    () =>
-      cartItems.reduce(
-        (total, item) => total + item?.quantity * item?.price,
-        0
-      ),
-    [cartItems]
+    () => cart.reduce((total, item) => total + item?.quantity * item?.price, 0),
+    [cart]
   );
 
   const handleDeleteItem = (id) => {
     removeFromCart(id);
   };
 
-  if (cartItems?.length === 0) {
+  if (cart?.length === 0) {
     return (
       <section className="px-6 py-10">
         <h2 className="text-3xl font-semibold text-[#2D6A4F] mb-6">
@@ -53,7 +47,7 @@ export default function Cart() {
                 </div>
               </div>
               <div>
-                {cartItems?.map((item) => (
+                {cart?.map((item) => (
                   <div
                     key={item?._id}
                     className="flex border-b hover:bg-gray-100 p-4 transition duration-200"
@@ -92,9 +86,9 @@ export default function Cart() {
 
           {/* For Mobile View (card style with less data) */}
           <div className="sm:hidden">
-            {cartItems?.map((item) => (
+            {cart?.map((item) => (
               <div
-                key={item?.id}
+                key={item?._id}
                 className="flex border-b rounded-lg shadow-lg hover:shadow-xl transition hover:bg-gray-100 p-4 mb-6"
               >
                 <div className="flex justify-between items-start w-full">
@@ -112,7 +106,7 @@ export default function Cart() {
                 </div>
                 <div className="mt-2">
                   <button
-                    onClick={() => handleDeleteItem(item?.id)}
+                    onClick={() => handleDeleteItem(item?._id)}
                     className="text-[#E63946] font-semibold hover:text-red-500 transition"
                   >
                     Delete
