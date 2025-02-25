@@ -1,9 +1,7 @@
 const toastOptions = {
   loading: 'Loading',
-  success: () => (
-    <div className="bg-white px-6 animate-enter">
-      User is created successfully!
-    </div>
+  success: (user) => (
+    <div className="bg-white px-6 animate-enter">{`Hi! ${user} `}</div>
   ),
   error: (err) => (
     <div className="bg-white px-6">

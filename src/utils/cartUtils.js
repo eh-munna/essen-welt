@@ -13,11 +13,11 @@ export const addToStorage = (item) => {
   const cart = getCart();
 
   let updatedCart;
-  const isExist = cart.some((i) => i?._id === item?._id);
+  const isExist = cart.some((i) => i?.itemId === item?._id);
 
   if (isExist) {
     updatedCart = cart.map((i) =>
-      i?._id === item?._id ? { ...i, quantity: i?.quantity + 1 } : i
+      i?.itemId === item?._id ? { ...i, quantity: i?.quantity + 1 } : i
     );
     toast.success(`${item.name} quantity increased`, {
       position: 'top-right',
@@ -25,7 +25,7 @@ export const addToStorage = (item) => {
   } else {
     updatedCart = [
       ...cart,
-      { _id: item?._id, name: item?.name, price: item?.price, quantity: 1 },
+      { itemId: item?._id, name: item?.name, price: item?.price, quantity: 1 },
     ];
     toast.success(`${item.name} is added to cart`, {
       position: 'top-right',
@@ -36,7 +36,7 @@ export const addToStorage = (item) => {
 
 export const removeFromStorage = (itemId) => {
   const cart = getCart();
-  const updatedCart = cart.filter((item) => item?._id !== itemId);
+  const updatedCart = cart.filter((item) => item?.itemId !== itemId);
 
   if (updatedCart.length > 0) {
     setCart(updatedCart);

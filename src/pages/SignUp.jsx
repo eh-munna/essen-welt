@@ -88,7 +88,6 @@ export default function SignUp() {
         }
       );
     } catch (error) {
-      console.log(error);
       if (createdUser?.user) {
         try {
           await deleteUser(createdUser.user);

@@ -4,8 +4,10 @@ import { PlaceOrder } from './PlaceOrder';
 
 export default function Cart() {
   const { cart, removeFromCart } = useContext(CartContext);
+
   const totalAmount = useMemo(
-    () => cart.reduce((total, item) => total + item?.quantity * item?.price, 0),
+    () =>
+      cart?.reduce((total, item) => total + item?.quantity * item?.price, 0),
     [cart]
   );
 
@@ -14,6 +16,7 @@ export default function Cart() {
   };
 
   if (cart?.length === 0) {
+    // if ((user ? newCart?.data : cart)?.length === 0) {
     return (
       <section className="px-6 py-10">
         <h2 className="text-3xl font-semibold text-[#2D6A4F] mb-6">
@@ -47,9 +50,10 @@ export default function Cart() {
                 </div>
               </div>
               <div>
+                {/* {(user ? newCart?.data : cart)?.map((item) => ( */}
                 {cart?.map((item) => (
                   <div
-                    key={item?._id}
+                    key={item?.itemId}
                     className="flex border-b hover:bg-gray-100 p-4 transition duration-200"
                   >
                     <div className="w-1/4 font-semibold">{item?.name}</div>
@@ -59,7 +63,7 @@ export default function Cart() {
                     </div>
                     <div className="w-1/4">
                       <button
-                        onClick={() => handleDeleteItem(item?._id)}
+                        onClick={() => handleDeleteItem(item?.itemId)}
                         className="text-[#E63946] font-semibold hover:text-red-500 transition"
                       >
                         Delete
@@ -88,7 +92,7 @@ export default function Cart() {
           <div className="sm:hidden">
             {cart?.map((item) => (
               <div
-                key={item?._id}
+                key={item?.itemId}
                 className="flex border-b rounded-lg shadow-lg hover:shadow-xl transition hover:bg-gray-100 p-4 mb-6"
               >
                 <div className="flex justify-between items-start w-full">
@@ -106,7 +110,7 @@ export default function Cart() {
                 </div>
                 <div className="mt-2">
                   <button
-                    onClick={() => handleDeleteItem(item?._id)}
+                    onClick={() => handleDeleteItem(item?.itemId)}
                     className="text-[#E63946] font-semibold hover:text-red-500 transition"
                   >
                     Delete

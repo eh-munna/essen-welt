@@ -1,45 +1,77 @@
 import useAuth from '@/hooks/useAuth';
 import useAxiosPublic from '@/hooks/useAxiosPublic';
+import useCart from '@/hooks/useCart';
 import { addToStorage, getCart, removeFromStorage } from '@/utils/cartUtils';
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useEffect } from 'react';
+import toast from 'react-hot-toast';
 export const CartContext = createContext(null);
 export default function CartProvider({ children }) {
-  const [cart, setCart] = useState([]);
+  const { cart, refetch } = useCart();
   const { user } = useAuth();
   const axiosPublic = useAxiosPublic();
 
   useEffect(() => {
-    const storageCart = getCart();
-    setCart(storageCart);
-  }, []);
+    if (user) {
+      (async () => {
+        const storageCart = getCart();
+
+        if (storageCart.length > 0) {
+          const mergedCart = storageCart.map((item) => {
+            return {
+              ...item,
+              customer: user?.email,
+            };
+          });
+
+          try {
+            const response = await axiosPublic.post(`/carts`, mergedCart);
+            if (response?.status === 201) {
+              localStorage.removeItem('cart');
+              toast.success(response?.data?.message, {
+                position: 'top-right',
+                duration: 3000,
+              });
+              refetch();
+            }
+          } catch (error) {
+            console.error('Error during cart creation:', error.message);
+          }
+        }
+      })();
+    }
+  }, [user, refetch]);
 
   const addToCart = async (item) => {
-    addToStorage(item);
-    const storageCart = getCart();
-    const cartIds = storageCart?.map((item) => {
-      return item?._id;
-    });
-
-    const { data } = await axiosPublic.post(`/menus/cart`, { ids: cartIds });
-
-    const lookupQuantity = storageCart.reduce((acc, item) => {
-      acc[item?._id] = item?.quantity;
-      return acc;
-    }, {});
-
-    const updatedCart = data?.data?.map((item) => {
-      return {
-        ...item,
-        quantity: lookupQuantity[item?._id],
+    if (!user) {
+      addToStorage(item);
+      refetch();
+    } else {
+      const cartItem = {
+        itemId: item?._id,
+        name: item?.name,
+        price: item?.price,
+        customer: user?.email,
       };
-    });
-    setCart(updatedCart);
+      try {
+        const response = await axiosPublic.post(`/carts`, cartItem);
+        if (response?.status === 201) {
+          toast.success(response?.data?.message, {
+            position: 'top-right',
+            duration: 3000,
+          });
+        }
+        refetch();
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   const removeFromCart = (itemId) => {
-    removeFromStorage(itemId);
-    const updatedCart = getCart();
-    setCart(updatedCart);
+    if (!user) {
+      removeFromStorage(itemId);
+      refetch();
+    }
   };
 
   const cartValue = { addToCart, removeFromCart, cart };

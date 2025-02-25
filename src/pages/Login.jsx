@@ -11,11 +11,15 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import toastOptions from '@/constants/toastOptions';
 import useAuth from '@/hooks/useAuth';
+import useAxiosPublic from '@/hooks/useAxiosPublic';
+import { deleteUser } from 'firebase/auth';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 
 export default function Login() {
+  const axiosPublic = useAxiosPublic();
   const form = useForm();
   const { userSignIn, setUser, user, createGoogleLogin, userSignOut } =
     useAuth();
@@ -25,22 +29,16 @@ export default function Login() {
     const { email, password } = data;
 
     try {
-      const result = await toast.promise(
+      let result = null;
+      result = await toast.promise(
         userSignIn(email, password),
         {
-          loading: 'Loading...',
-          success: () => (
-            <div className="bg-white px-6 animate-enter">
-              User signed in successfully!
-            </div>
-          ),
-          error: (err) => <div className="bg-white px-6">{err.message}</div>,
+          loading: toastOptions.loading,
+          success: toastOptions.success(result?.user?.displayName),
+          error: toastOptions.error,
         },
         {
-          style: { paddingLeft: '1.5rem', paddingRight: '1.5rem' },
-          loading: { position: 'top-right', duration: 3000 },
-          success: { position: 'top-right', duration: 3000 },
-          error: { position: 'top-right', duration: 3000 },
+          ...toastOptions.styles,
         }
       );
 
@@ -54,34 +52,58 @@ export default function Login() {
   };
 
   const handleGoogleLogin = async () => {
+    let createdUser = null;
     try {
-      const result = await toast.promise(
-        createGoogleLogin(),
-        {
-          loading: 'Loading...',
-          success: () => (
-            <div className="bg-white px-6 animate-enter">
-              User signed in successfully!
-            </div>
-          ),
-          error: (err) => <div className="bg-white px-6">{err.message}</div>,
-        },
+      await toast.promise(
+        async () => {
+          createdUser = await createGoogleLogin();
 
+          if (!createdUser?.user) {
+            throw new Error('Firebase user creation failed');
+          }
+          const userInfo = {
+            name: createdUser?.user?.displayName,
+            email: createdUser?.user?.email,
+            phoneNumber: createdUser?.user?.phoneNumber || 'defaultValue',
+            deliveryAddress: {
+              street: 'defaultValue',
+              city: 'defaultValue',
+              country: 'defaultValue',
+              postalCode: 'defaultValue',
+            },
+            role: 'customer',
+          };
+
+          const { data } = await axiosPublic.post(`/users`, userInfo);
+
+          if (!data?.isNew) {
+            toast.success(`${data?.message}`, {
+              position: 'top-right',
+              duration: 3000,
+            });
+          } else {
+            toast.success(`${data?.message}`, {
+              position: 'top-right',
+              duration: 3000,
+            });
+          }
+
+          setUser(createdUser?.user);
+          navigate('/');
+        },
         {
-          style: { paddingLeft: '1.5rem', paddingRight: '1.5rem' },
-          loading: { position: 'top-right', duration: 3000 },
-          success: { position: 'top-right', duration: 3000 },
-          error: { position: 'top-right', duration: 3000 },
+          loading: toastOptions.loading,
+          error: toastOptions.error,
+        },
+        {
+          ...toastOptions.styles,
         }
       );
-
-      const loggedUser = result?.user;
-      if (loggedUser) {
-        setUser(loggedUser);
-        navigate('/');
-      }
     } catch (error) {
-      console.error(error);
+      console.log(error);
+      if (createdUser?.user) {
+        await deleteUser(createdUser.user);
+      }
     }
   };
 
