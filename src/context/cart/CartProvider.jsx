@@ -39,7 +39,7 @@ export default function CartProvider({ children }) {
         }
       })();
     }
-  }, [user, refetch]);
+  }, [user]);
 
   const addToCart = async (item) => {
     if (!user) {

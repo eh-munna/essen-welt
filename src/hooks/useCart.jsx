@@ -7,14 +7,14 @@ const useCart = () => {
   const { user, loading } = useAuth();
   const axiosPublic = useAxiosPublic();
   const { data = [], refetch } = useQuery({
-    queryKey: ['cart', user],
+    queryKey: ['cart', user?.email],
     // enabled: !loading && !!user,
     enabled: !loading,
     queryFn: async () => {
       if (!user) return getCart();
 
       try {
-        const { data } = await axiosPublic.get(`/carts`);
+        const { data } = await axiosPublic.get(`/carts?email=${user?.email}`);
         return data?.data;
       } catch (error) {
         if (error?.response?.status === 404) return [];
