@@ -9,16 +9,17 @@ const useCart = () => {
   const { data = [], refetch } = useQuery({
     queryKey: ['cart', user?.email],
     // enabled: !loading && !!user,
-    enabled: !loading,
+    enabled: !loading && !!user?.email,
     queryFn: async () => {
-      if (!user) return getCart();
-
-      try {
-        const { data } = await axiosPublic.get(`/carts?email=${user?.email}`);
-        return data?.data;
-      } catch (error) {
-        if (error?.response?.status === 404) return [];
-        throw error;
+      if (!user?.email) return getCart();
+      else {
+        try {
+          const { data } = await axiosPublic.get(`/carts?email=${user?.email}`);
+          return data?.data;
+        } catch (error) {
+          if (error?.response?.status === 404) return [];
+          throw error;
+        }
       }
     },
   });

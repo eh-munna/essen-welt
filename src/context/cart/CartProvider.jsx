@@ -24,7 +24,9 @@ export default function CartProvider({ children }) {
           });
 
           try {
-            const response = await axiosPublic.post(`/carts`, mergedCart);
+            const response = await axiosPublic.post(`/carts`, mergedCart, {
+              withCredentials: true,
+            });
             if (response?.status === 201) {
               localStorage.removeItem('cart');
               toast.success(response?.data?.message, {
