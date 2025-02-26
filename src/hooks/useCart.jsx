@@ -1,20 +1,20 @@
 import useAuth from '@/hooks/useAuth';
-import useAxiosPublic from '@/hooks/useAxiosPublic';
 import { getCart } from '@/utils/cartUtils';
 import { useQuery } from '@tanstack/react-query';
+import useAxiosSecure from './useAxiosSecure';
 
 const useCart = () => {
   const { user, loading } = useAuth();
-  const axiosPublic = useAxiosPublic();
+  const axiosSecure = useAxiosSecure();
   const { data = [], refetch } = useQuery({
     queryKey: ['cart', user?.email],
     // enabled: !loading && !!user,
     enabled: !loading && !!user?.email,
     queryFn: async () => {
-      if (!user?.email) return getCart();
+      if (!user) return getCart();
       else {
         try {
-          const { data } = await axiosPublic.get(`/carts?email=${user?.email}`);
+          const { data } = await axiosSecure.get(`/carts?email=${user?.email}`);
           return data?.data;
         } catch (error) {
           if (error?.response?.status === 404) return [];

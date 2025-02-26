@@ -1,14 +1,14 @@
 import useAuth from '@/hooks/useAuth';
-import useAxiosPublic from '@/hooks/useAxiosPublic';
 import useCart from '@/hooks/useCart';
 import { addToStorage, getCart, removeFromStorage } from '@/utils/cartUtils';
 import { createContext, useEffect } from 'react';
 import toast from 'react-hot-toast';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
 export const CartContext = createContext(null);
 export default function CartProvider({ children }) {
   const { cart, refetch } = useCart();
   const { user } = useAuth();
-  const axiosPublic = useAxiosPublic();
+  const axiosSecure = useAxiosSecure();
 
   useEffect(() => {
     if (user) {
@@ -24,9 +24,7 @@ export default function CartProvider({ children }) {
           });
 
           try {
-            const response = await axiosPublic.post(`/carts`, mergedCart, {
-              withCredentials: true,
-            });
+            const response = await axiosSecure.post(`/carts`, mergedCart);
             if (response?.status === 201) {
               localStorage.removeItem('cart');
               toast.success(response?.data?.message, {
@@ -55,7 +53,7 @@ export default function CartProvider({ children }) {
         customer: user?.email,
       };
       try {
-        const response = await axiosPublic.post(`/carts`, cartItem);
+        const response = await axiosSecure.post(`/carts`, cartItem);
         if (response?.status === 201) {
           toast.success(response?.data?.message, {
             position: 'top-right',

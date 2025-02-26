@@ -1,9 +1,12 @@
 import Layout from './Layouts/Layout';
+import CartProvider from './context/cart/CartProvider';
 
 export default function App() {
   return (
     <>
-      <Layout />
+      <CartProvider>
+        <Layout />
+      </CartProvider>
     </>
   );
 }
