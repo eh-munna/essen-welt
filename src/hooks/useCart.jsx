@@ -7,9 +7,8 @@ const useCart = () => {
   const { user, loading } = useAuth();
   const axiosSecure = useAxiosSecure();
   const { data = [], refetch } = useQuery({
-    queryKey: ['cart', user?.email],
-    // enabled: !loading && !!user,
-    enabled: !loading && !!user?.email,
+    queryKey: ['cart', user?.email || 'guest'],
+    enabled: !loading,
     queryFn: async () => {
       if (!user) return getCart();
       else {
@@ -23,6 +22,7 @@ const useCart = () => {
       }
     },
   });
+  console.log(data);
 
   return { cart: data, refetch };
 };

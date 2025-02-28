@@ -15,8 +15,7 @@ export default function Cart() {
     removeFromCart(id);
   };
 
-  if (cart?.length === 0) {
-    // if ((user ? newCart?.data : cart)?.length === 0) {
+  if (!cart || cart?.length === 0) {
     return (
       <section className="px-6 py-10">
         <h2 className="text-3xl font-semibold text-[#2D6A4F] mb-6">

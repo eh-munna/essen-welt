@@ -1,14 +1,16 @@
 import useAuth from '@/hooks/useAuth';
+import useAxiosSecure from '@/hooks/useAxiosSecure';
 import useCart from '@/hooks/useCart';
 import { addToStorage, getCart, removeFromStorage } from '@/utils/cartUtils';
 import { createContext, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import useAxiosSecure from '../../hooks/useAxiosSecure';
 export const CartContext = createContext(null);
 export default function CartProvider({ children }) {
   const { cart, refetch } = useCart();
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+
+  console.log(cart);
 
   useEffect(() => {
     if (user) {
@@ -67,10 +69,24 @@ export default function CartProvider({ children }) {
     }
   };
 
-  const removeFromCart = (itemId) => {
+  const removeFromCart = async (itemId) => {
     if (!user) {
       removeFromStorage(itemId);
       refetch();
+    } else {
+      try {
+        const { data } = await axiosSecure.delete(`/carts/${itemId}`);
+
+        if (data?.success) {
+          toast.success(data?.message, {
+            position: 'top-right',
+            duration: 3000,
+          });
+        }
+        refetch();
+      } catch (error) {
+        console.error('Error during cart removal:', error.message);
+      }
     }
   };
 
