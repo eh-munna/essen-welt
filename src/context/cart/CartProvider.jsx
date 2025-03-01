@@ -10,8 +10,6 @@ export default function CartProvider({ children }) {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
 
-  console.log(cart);
-
   useEffect(() => {
     if (user) {
       (async () => {

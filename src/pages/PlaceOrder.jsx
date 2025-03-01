@@ -17,17 +17,23 @@ import {
   FormLabel,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 
 export function PlaceOrder() {
+  const [openModal, setOpenModal] = useState(false);
   const form = useForm();
+  const navigate = useNavigate();
 
   const handleOnSubmit = (data) => {
-    console.log(data);
+    navigate('/payment');
+    setOpenModal(false);
   };
 
+  openModal && {};
   return (
-    <Dialog>
+    <Dialog open={openModal} onOpenChange={setOpenModal}>
       <DialogTrigger asChild>
         <Button
           className="mt-6 w-full bg-[#2D6A4F] text-white py-3 rounded-md hover:bg-[#1B4D38] transition duration-200"

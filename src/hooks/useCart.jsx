@@ -22,7 +22,6 @@ const useCart = () => {
       }
     },
   });
-  console.log(data);
 
   return { cart: data, refetch };
 };
