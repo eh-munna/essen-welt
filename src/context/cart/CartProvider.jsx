@@ -17,7 +17,7 @@ export default function CartProvider({ children }) {
       (async () => {
         const storageCart = getCart();
 
-        if (storageCart.length > 0) {
+        if (storageCart.length > 0 && customer?._id) {
           const mergedCart = storageCart.map((item) => {
             return {
               ...item,
@@ -36,12 +36,16 @@ export default function CartProvider({ children }) {
               refetch();
             }
           } catch (error) {
+            toast.error('Error during cart creation. Please try again.', {
+              position: 'top-right',
+              duration: 3000,
+            });
             console.error('Error during cart creation:', error.message);
           }
         }
       })();
     }
-  }, [user]);
+  }, [user, customer]);
 
   const addToCart = async (item) => {
     if (!user) {

@@ -10,7 +10,8 @@ export default function Cart() {
   const { customer } = useCustomer();
 
   const totalAmount = useMemo(
-    () => cart?.reduce((total, item) => total + item?.totalPrice, 0),
+    () =>
+      cart?.reduce((total, item) => total + item?.price * item?.quantity, 0),
     [cart]
   );
 

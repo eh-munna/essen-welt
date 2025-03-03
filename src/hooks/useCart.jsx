@@ -8,12 +8,14 @@ const useCart = () => {
   const { user, loading } = useAuth();
   const { customer } = useCustomer();
   const axiosSecure = useAxiosSecure();
+
+  const customerAvailable = !!customer?.email && !!customer?._id;
+
   const { data = [], refetch } = useQuery({
     queryKey: ['cart', user?.email || 'guest'],
-    enabled: !loading,
+    enabled: !loading && customerAvailable,
     queryFn: async () => {
-      if (!user) return getCart();
-      else {
+      if (customerAvailable) {
         try {
           const { data } = await axiosSecure.get(
             `/carts?email=${customer?.email}&id=${customer?._id}`
@@ -23,10 +25,16 @@ const useCart = () => {
           if (error?.response?.status === 404) return [];
           throw error;
         }
+      } else {
+        return getCart();
       }
     },
     refetchOnWindowFocus: true,
   });
+
+  if (!customerAvailable) {
+    return { cart: getCart(), refetch };
+  }
 
   return { cart: data, refetch };
 };
