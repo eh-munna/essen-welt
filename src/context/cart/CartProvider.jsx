@@ -1,6 +1,7 @@
 import useAuth from '@/hooks/useAuth';
 import useAxiosSecure from '@/hooks/useAxiosSecure';
 import useCart from '@/hooks/useCart';
+import useCustomer from '@/hooks/useCustomer';
 import { addToStorage, getCart, removeFromStorage } from '@/utils/cartUtils';
 import { createContext, useEffect } from 'react';
 import toast from 'react-hot-toast';
@@ -8,6 +9,7 @@ export const CartContext = createContext(null);
 export default function CartProvider({ children }) {
   const { cart, refetch } = useCart();
   const { user } = useAuth();
+  const { customer } = useCustomer();
   const axiosSecure = useAxiosSecure();
 
   useEffect(() => {
@@ -19,7 +21,7 @@ export default function CartProvider({ children }) {
           const mergedCart = storageCart.map((item) => {
             return {
               ...item,
-              customer: user?.email,
+              customer: customer?._id,
             };
           });
 
@@ -50,7 +52,7 @@ export default function CartProvider({ children }) {
         itemId: item?._id,
         name: item?.name,
         price: item?.price,
-        customer: user?.email,
+        customer: customer?._id,
       };
       try {
         const response = await axiosSecure.post(`/carts`, cartItem);

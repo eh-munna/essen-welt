@@ -9,7 +9,7 @@ export default function MenuItem({ item }) {
         <p className="text-sm text-gray-600 mb-4">{category}</p>
         <div className="flex justify-between items-center">
           <span className="text-lg font-semibold text-gray-800">
-            ${price.toFixed(2)}
+            €{price.toFixed(2)}
           </span>
           <Link
             to={`/menu/${_id}`}

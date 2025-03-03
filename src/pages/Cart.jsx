@@ -1,13 +1,16 @@
 import { CartContext } from '@/context/cart/CartProvider';
+import useAxiosSecure from '@/hooks/useAxiosSecure';
+import useCustomer from '@/hooks/useCustomer';
 import { useContext, useMemo } from 'react';
 import { PlaceOrder } from './PlaceOrder';
 
 export default function Cart() {
+  const axiosSecure = useAxiosSecure();
   const { cart, removeFromCart } = useContext(CartContext);
+  const { customer } = useCustomer();
 
   const totalAmount = useMemo(
-    () =>
-      cart?.reduce((total, item) => total + item?.quantity * item?.price, 0),
+    () => cart?.reduce((total, item) => total + item?.totalPrice, 0),
     [cart]
   );
 
@@ -58,7 +61,7 @@ export default function Cart() {
                     <div className="w-1/4 font-semibold">{item?.name}</div>
                     <div className="w-1/4">{item?.quantity}</div>
                     <div className="w-1/4 font-semibold text-[#E63946]">
-                      ${item?.price?.toFixed(2)}
+                      €{item?.price?.toFixed(2)}
                     </div>
                     <div className="w-1/4">
                       <button
@@ -81,7 +84,7 @@ export default function Cart() {
                 Total
               </span>
               <span className="text-lg font-semibold text-[#E63946]">
-                ${totalAmount?.toFixed(2)}
+                €{totalAmount?.toFixed(2)}
               </span>
             </div>
             <PlaceOrder />

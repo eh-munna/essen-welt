@@ -26,7 +26,7 @@ export default function ItemDetails() {
         <p className="text-md text-[#3D5A6E] mt-2">{item?.description}</p>
         <div className="flex justify-between items-center mt-6">
           <span className="text-[#E63946] font-bold text-lg">
-            ${item?.price}
+            €{item?.price}
           </span>
           <Button
             onClick={() => handleAddClick(item)}

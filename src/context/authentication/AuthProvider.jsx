@@ -46,7 +46,6 @@ export default function AuthProvider({ children }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser || null);
-      setLoading(false);
 
       if (currentUser) {
         const userInfo = { email: currentUser?.email };
@@ -56,12 +55,14 @@ export default function AuthProvider({ children }) {
             userInfo,
             { withCredentials: true }
           );
+          setLoading(false);
         } catch (error) {
           console.error('Error during auth-login:', error.message);
         }
       } else {
-        const { data } = await axiosPublic.post(`/users/auth-logout`, {});
         try {
+          const { data } = await axiosPublic.post(`/users/auth-logout`, {});
+          setLoading(false);
         } catch (error) {
           console.error('Error during auth-logout:', error.message);
         }

@@ -2,9 +2,11 @@ import useAuth from '@/hooks/useAuth';
 import { getCart } from '@/utils/cartUtils';
 import { useQuery } from '@tanstack/react-query';
 import useAxiosSecure from './useAxiosSecure';
+import useCustomer from './useCustomer';
 
 const useCart = () => {
   const { user, loading } = useAuth();
+  const { customer } = useCustomer();
   const axiosSecure = useAxiosSecure();
   const { data = [], refetch } = useQuery({
     queryKey: ['cart', user?.email || 'guest'],
@@ -13,7 +15,9 @@ const useCart = () => {
       if (!user) return getCart();
       else {
         try {
-          const { data } = await axiosSecure.get(`/carts?email=${user?.email}`);
+          const { data } = await axiosSecure.get(
+            `/carts?email=${customer?.email}&id=${customer?._id}`
+          );
           return data?.data;
         } catch (error) {
           if (error?.response?.status === 404) return [];
@@ -21,6 +25,7 @@ const useCart = () => {
         }
       }
     },
+    refetchOnWindowFocus: true,
   });
 
   return { cart: data, refetch };

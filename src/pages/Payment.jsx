@@ -9,25 +9,39 @@ const stripePromise = loadStripe(import.meta.env.VITE_paymentPublic);
 
 export default function Payment() {
   const [clientSecret, setClientSecret] = useState('');
+  const [payableAmount, setPayableAmount] = useState(0);
   const axiosSecure = useAxiosSecure();
 
   const { cart } = useCart();
 
   useEffect(() => {
-    (async () => {
-      const { data } = await axiosSecure.post(
-        `/payments/create-payment-intent`,
-        cart
-      );
-      setClientSecret(data?.data);
-    })();
+    const paymentIntentId = localStorage.getItem('paymentIntentId');
+
+    const handlePaymentIntent = async () => {
+      if (!paymentIntentId) {
+        const { data } = await axiosSecure.post(
+          `/payments/create-payment-intent`,
+          cart
+        );
+        setClientSecret(data?.data?.clientSecret);
+        setPayableAmount(data?.data?.amount);
+        localStorage.setItem('paymentIntentId', data?.data?.paymentIntentId);
+      } else {
+        const { data } = await axiosSecure.get(
+          `/payments/retrieve-payment-intent/${paymentIntentId}`
+        );
+        setClientSecret(data?.data?.clientSecret);
+        setPayableAmount(data?.data?.amount);
+      }
+    };
+    handlePaymentIntent();
   }, [cart]);
 
   return (
     <>
       {clientSecret && (
         <Elements options={{ clientSecret }} stripe={stripePromise}>
-          <CheckoutForm clientSecret={clientSecret} />
+          <CheckoutForm clientSecret={clientSecret} amount={payableAmount} />
         </Elements>
       )}
     </>

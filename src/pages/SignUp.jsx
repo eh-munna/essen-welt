@@ -74,7 +74,10 @@ export default function SignUp() {
             displayName: userInfo.name,
           });
           // Save user in the database
-          await axiosPublic.post('/users', userInfo);
+          await axiosPublic.post('/users', {
+            ...userInfo,
+            uid: createdUser?.user?.uid,
+          });
           setUser(createdUser?.user);
           navigate('/');
         },
@@ -88,6 +91,7 @@ export default function SignUp() {
         }
       );
     } catch (error) {
+      console.log(error);
       if (createdUser?.user) {
         try {
           await deleteUser(createdUser.user);
@@ -119,6 +123,7 @@ export default function SignUp() {
               postalCode: 'defaultValue',
             },
             role: 'customer',
+            uid: createdUser?.user?.uid,
           };
 
           const { data } = await axiosPublic.post(`/users`, userInfo);

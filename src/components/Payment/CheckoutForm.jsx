@@ -7,7 +7,7 @@ import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 
-export default function CheckoutForm({ clientSecret }) {
+export default function CheckoutForm({ clientSecret, amount }) {
   const stripe = useStripe();
   const elements = useElements();
   const [message, setMessage] = useState(null);
@@ -26,7 +26,7 @@ export default function CheckoutForm({ clientSecret }) {
         elements,
         confirmParams: {
           // Make sure to change this to your payment completion page
-          return_url: `http://localhost:5173/payment-success`,
+          return_url: `http://localhost:5173/payment-success?payment_intent={PAYMENT_INTENT_ID}`,
         },
       });
 
@@ -49,7 +49,7 @@ export default function CheckoutForm({ clientSecret }) {
       <form className="space-y-8" onSubmit={handleSubmit}>
         <PaymentElement />
         <Button disabled={isLoading || !stripe || !elements} type="submit">
-          Pay
+          {`Pay ${amount ? `€${(amount / 100).toFixed(2)}` : ''} `}
         </Button>
       </form>
     </>

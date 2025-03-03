@@ -34,7 +34,8 @@ export default function Login() {
         userSignIn(email, password),
         {
           loading: toastOptions.loading,
-          success: toastOptions.success(result?.user?.displayName),
+          success: () =>
+            toastOptions.success(result?.user?.displayName || 'User logged in'),
           error: toastOptions.error,
         },
         {
@@ -43,11 +44,13 @@ export default function Login() {
       );
 
       if (result?.user) {
-        setUser(result.user);
+        setUser(result?.user);
+        await new Promise((resolve) => setTimeout(resolve, 100));
         navigate('/');
       }
     } catch (error) {
       toast.error(error.message, { position: 'top-right' });
+      console.log(error);
     }
   };
 
@@ -58,7 +61,7 @@ export default function Login() {
         async () => {
           createdUser = await createGoogleLogin();
 
-          if (!createdUser?.user) {
+          if (!createdUser || !createdUser.user) {
             throw new Error('Firebase user creation failed');
           }
           const userInfo = {
@@ -72,6 +75,7 @@ export default function Login() {
               postalCode: 'defaultValue',
             },
             role: 'customer',
+            uid: createdUser?.user?.uid,
           };
 
           const { data } = await axiosPublic.post(`/users`, userInfo);
@@ -87,9 +91,11 @@ export default function Login() {
               duration: 3000,
             });
           }
-
-          setUser(createdUser?.user);
-          navigate('/');
+          if (createdUser?.user) {
+            setUser(createdUser?.user);
+            await new Promise((resolve) => setTimeout(resolve, 100));
+            navigate('/');
+          }
         },
         {
           loading: toastOptions.loading,

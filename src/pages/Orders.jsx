@@ -1,3 +1,5 @@
+import useOrders from '@/hooks/useOrders';
+
 const mockOrders = [
   {
     id: '001',
@@ -26,6 +28,8 @@ const mockOrders = [
 ];
 
 const Orders = () => {
+  const { orders } = useOrders();
+  console.log(orders?.length);
   return (
     <section className="px-6 py-10">
       <h2 className="text-3xl font-semibold text-[#2D6A4F] mb-6">Orders</h2>
