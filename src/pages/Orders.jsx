@@ -1,4 +1,5 @@
 import useOrders from '@/hooks/useOrders';
+import { Fragment } from 'react';
 
 const mockOrders = [
   {
@@ -27,8 +28,9 @@ const mockOrders = [
   },
 ];
 
-const Orders = () => {
+export default function Orders() {
   const { orders } = useOrders();
+
   console.log(orders);
   return (
     <section className="px-6 py-10">
@@ -42,26 +44,31 @@ const Orders = () => {
             <div className="w-full bg-white shadow-lg rounded-lg overflow-hidden">
               <div className="bg-[#2D6A4F] text-white">
                 <div className="flex p-4">
-                  <div className="w-1/6 font-medium">Order ID</div>
+                  <div className="w-1/6 font-medium">Order Nr</div>
                   <div className="w-1/6 font-medium">Customer</div>
-                  <div className="w-1/6 font-medium">Item</div>
+                  <div className="w-1/6 font-medium">Item(s)</div>
                   <div className="w-1/6 font-medium">Quantity</div>
                   <div className="w-1/6 font-medium">Total Price</div>
                   <div className="w-1/6 font-medium">Status</div>
                 </div>
               </div>
               <div>
-                {mockOrders.map((order) => (
+                {orders?.map((order, idx) => (
                   <div
-                    key={order.id}
+                    key={order?._id}
                     className="flex border-b hover:bg-gray-100 p-4 transition duration-200"
                   >
-                    <div className="w-1/6 font-semibold">{order.id}</div>
-                    <div className="w-1/6">{order.customer}</div>
-                    <div className="w-1/6">{order.item}</div>
-                    <div className="w-1/6">{order.quantity}</div>
+                    <div className="w-1/6 font-semibold">{idx + 1}</div>
+                    <div className="w-1/6">{order?.customer?.name}</div>
+
+                    {order?.items?.map((item, itemIdx) => (
+                      <Fragment key={`${order?._id}${itemIdx}`}>
+                        <div className="w-1/6">{item?.name}</div>
+                        <div className="w-1/6">{item?.quantity}</div>
+                      </Fragment>
+                    ))}
                     <div className="w-1/6 font-semibold text-[#E63946]">
-                      ${order.price.toFixed(2)}
+                      €{order?.totalPrice}
                     </div>
                     <div className="w-1/6">
                       <span
@@ -117,6 +124,4 @@ const Orders = () => {
       </div>
     </section>
   );
-};
-
-export default Orders;
+}

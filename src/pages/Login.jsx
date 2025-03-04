@@ -17,13 +17,16 @@ import useAxiosPublic from '@/hooks/useAxiosPublic';
 import { deleteUser } from 'firebase/auth';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import { useLocation } from 'react-router-dom';
 
 export default function Login() {
   const axiosPublic = useAxiosPublic();
+  const location = useLocation();
   const form = useForm();
   const { userSignIn, setUser, user, createGoogleLogin, userSignOut } =
     useAuth();
   const navigate = useNavigate();
+  const from = location?.state?.from?.pathname || '/';
 
   const handleUserSignIn = async (data) => {
     const { email, password } = data;
@@ -46,7 +49,7 @@ export default function Login() {
       if (result?.user) {
         setUser(result?.user);
         await new Promise((resolve) => setTimeout(resolve, 100));
-        navigate('/');
+        navigate(from, { replace: true });
       }
     } catch (error) {
       toast.error(error.message, { position: 'top-right' });
@@ -94,7 +97,7 @@ export default function Login() {
           if (createdUser?.user) {
             setUser(createdUser?.user);
             await new Promise((resolve) => setTimeout(resolve, 100));
-            navigate('/');
+            navigate(from, { replace: true });
           }
         },
         {
