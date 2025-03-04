@@ -30,7 +30,7 @@ export default function ItemDetails() {
           </span>
           <Button
             onClick={() => handleAddClick(item)}
-            className="cursor-pointer bg-[#2D6A4F] text-white px-6 py-3 rounded-md hover:bg-[#1B4D38] transition"
+            className="cursor-pointer bg-[#028643] text-[white] px-6 py-3 rounded-md hover:bg-[#1B4D38] transition"
           >
             Add to Cart
           </Button>
