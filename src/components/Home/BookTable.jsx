@@ -6,15 +6,18 @@ import {
   FormLabel,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import useAxiosPublic from '@/hooks/useAxiosPublic';
 import { useForm } from 'react-hook-form';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
 
 export default function BookTable() {
+  const axiosPublic = useAxiosPublic();
   const form = useForm();
 
-  const handleOnSubmit = (data) => {
-    console.log(data);
+  const handleOnSubmit = async (data) => {
+    const response = await axiosPublic.post(`/bookings`, data);
+    console.log(response);
   };
 
   return (
