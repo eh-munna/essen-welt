@@ -15,6 +15,7 @@ const axiosSecure = axios.create({
 export default function useAxiosSecure() {
   const { setUser, userSignOut } = useAuth();
   const navigate = useNavigate();
+
   useEffect(() => {
     axiosSecure.interceptors.response.use(
       (response) => {
@@ -22,16 +23,20 @@ export default function useAxiosSecure() {
       },
       (error) => {
         if (
-          (error?.response && error?.response?.status === 403) ||
+          error?.response?.status === 403 ||
           error?.response?.status === 401
         ) {
+          // Handle logout process
           userSignOut();
           setUser(null);
+
+          // Redirect to login page
           navigate('/login');
         }
-        return Promise.reject(error);
+        return Promise.reject(error); // Ensure the error is passed down
       }
     );
-  }, [userSignOut, setUser]);
+  }, [userSignOut, setUser, navigate]);
+
   return axiosSecure;
 }
