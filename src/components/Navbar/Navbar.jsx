@@ -1,28 +1,22 @@
 import { AuthContext } from '@/context/authentication/AuthProvider';
-import { Menu, X } from 'lucide-react'; // Icon package
-import { useContext, useEffect, useState } from 'react';
+import { CircleUser, Menu, X } from 'lucide-react'; // Icon package
+import { useContext, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
+
+// TODO: Remove the user interface
 
 const navbarLinks = [
   { name: 'Home', path: '/', scrollId: '' },
   { name: 'Menu', path: '/menu', scrollId: '' },
   { name: 'Orders', path: '/orders', scrollId: '' },
   { name: 'Cart', path: '/cart', scrollId: '' },
+  { name: 'Dashboard', path: '/dashboard', scrollId: '' },
 ];
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { user, userSignOut } = useContext(AuthContext);
-
-  const scrollToSection = (id) => {
-    useEffect(() => {
-      const element = document.getElementById(id);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    });
-  };
 
   const handleUserSignOut = async () => {
     try {
@@ -82,11 +76,22 @@ function Navbar() {
               </li>
             </>
           ) : (
-            <li className="hover:text-[#F4A261] transition">
-              <Link to="/" onClick={handleUserSignOut}>
-                Logout
-              </Link>
-            </li>
+            <>
+              <li className="hover:text-[#F4A261] transition">
+                <Link
+                  className="flex flex-col justify-between items-center"
+                  to="/"
+                >
+                  <CircleUser />
+                  {user.displayName}
+                </Link>
+              </li>
+              <li className="hover:text-[#F4A261] transition">
+                <Link to="/" onClick={handleUserSignOut}>
+                  Logout
+                </Link>
+              </li>
+            </>
           )}
         </ul>
       </div>

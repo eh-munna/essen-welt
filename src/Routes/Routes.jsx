@@ -1,7 +1,9 @@
 import App from '@/App';
 import ErrorPage from '@/Errors/ErrorPage';
+import DashboardLayout from '@/Layouts/DashboardLayout';
 import { ItemDetails } from '@/components/Menu';
 import Cart from '@/pages/Cart';
+import Dashboard from '@/pages/Dashboard';
 import Home from '@/pages/Home';
 import Login from '@/pages/Login';
 import Menu from '@/pages/Menu';
@@ -48,6 +50,36 @@ const Routes = createBrowserRouter(
         />
         <Route path="/login" element={<Login />} />
         <Route path="/sign-up" element={<SignUp />} />
+        <Route path="*" element={<ErrorPage />} />
+      </Route>
+      <Route path="/dashboard" element={<DashboardLayout />}>
+        <Route index element={<Dashboard />} />
+        {/* <Route path="/menu" element={<Menu />} />
+        <Route
+          path="/menu/:id"
+          element={<ItemDetails />}
+          loader={loadMenuItem}
+        />
+        <Route
+          path="/cart"
+          element={
+            <PrivateRoute>
+              <Cart />
+            </PrivateRoute>
+          }
+        />
+        <Route path="/payment" element={<Payment />} />
+        <Route path="/payment-success" element={<PaymentSuccess />} />
+        <Route
+          path="/orders"
+          element={
+            <PrivateRoute>
+              <Orders />
+            </PrivateRoute>
+          }
+        />
+        <Route path="/login" element={<Login />} />
+        <Route path="/sign-up" element={<SignUp />} /> */}
         <Route path="*" element={<ErrorPage />} />
       </Route>
     </>
