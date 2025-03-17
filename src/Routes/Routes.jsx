@@ -1,12 +1,18 @@
 import App from '@/App';
 import ErrorPage from '@/Errors/ErrorPage';
-import DashboardLayout from '@/Layouts/DashboardLayout';
+import DashboardHome from '@/components/Dashboard/DashboardHome';
 import { ItemDetails } from '@/components/Menu';
+import AddMenu from '@/pages/AddMenu';
+import AddTable from '@/pages/AddTable';
+import Bookings from '@/pages/Bookings';
 import Cart from '@/pages/Cart';
+import Customers from '@/pages/Customers';
 import Dashboard from '@/pages/Dashboard';
 import Home from '@/pages/Home';
 import Login from '@/pages/Login';
 import Menu from '@/pages/Menu';
+import ModifyMenu from '@/pages/ModifyMenu';
+import MyOrders from '@/pages/MyOrders';
 import Orders from '@/pages/Orders';
 import Payment from '@/pages/Payment';
 import PaymentSuccess from '@/pages/PaymentSuccess';
@@ -17,6 +23,7 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
 } from 'react-router-dom';
+import AdminRoute from './AdminRoute';
 import PrivateRoute from './PrivateRoute';
 
 const Routes = createBrowserRouter(
@@ -41,10 +48,10 @@ const Routes = createBrowserRouter(
         <Route path="/payment" element={<Payment />} />
         <Route path="/payment-success" element={<PaymentSuccess />} />
         <Route
-          path="/orders"
+          path="/my-orders"
           element={
             <PrivateRoute>
-              <Orders />
+              <MyOrders />
             </PrivateRoute>
           }
         />
@@ -52,34 +59,64 @@ const Routes = createBrowserRouter(
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="*" element={<ErrorPage />} />
       </Route>
-      <Route path="/dashboard" element={<DashboardLayout />}>
-        <Route index element={<Dashboard />} />
-        {/* <Route path="/menu" element={<Menu />} />
+      <Route path="/dashboard" element={<Dashboard />}>
         <Route
-          path="/menu/:id"
-          element={<ItemDetails />}
-          loader={loadMenuItem}
-        />
-        <Route
-          path="/cart"
+          index
           element={
             <PrivateRoute>
-              <Cart />
+              <DashboardHome />
             </PrivateRoute>
           }
         />
-        <Route path="/payment" element={<Payment />} />
-        <Route path="/payment-success" element={<PaymentSuccess />} />
+
         <Route
-          path="/orders"
+          path="/dashboard/all-bookings"
           element={
-            <PrivateRoute>
+            <AdminRoute>
+              <Bookings />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/dashboard/customers"
+          element={
+            <AdminRoute>
+              <Customers />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/dashboard/add-menu"
+          element={
+            <AdminRoute>
+              <AddMenu />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/dashboard/modify-menu"
+          element={
+            <AdminRoute>
+              <ModifyMenu />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/dashboard/add-table"
+          element={
+            <AdminRoute>
+              <AddTable />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/dashboard/all-orders"
+          element={
+            <AdminRoute>
               <Orders />
-            </PrivateRoute>
+            </AdminRoute>
           }
         />
-        <Route path="/login" element={<Login />} />
-        <Route path="/sign-up" element={<SignUp />} /> */}
         <Route path="*" element={<ErrorPage />} />
       </Route>
     </>

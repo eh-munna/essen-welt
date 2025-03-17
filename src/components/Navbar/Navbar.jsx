@@ -9,9 +9,8 @@ import { Link } from 'react-router-dom';
 const navbarLinks = [
   { name: 'Home', path: '/', scrollId: '' },
   { name: 'Menu', path: '/menu', scrollId: '' },
-  { name: 'Orders', path: '/orders', scrollId: '' },
+  { name: 'My Orders', path: '/my-orders', scrollId: '' },
   { name: 'Cart', path: '/cart', scrollId: '' },
-  { name: 'Dashboard', path: '/dashboard', scrollId: '' },
 ];
 
 function Navbar() {
@@ -77,6 +76,9 @@ function Navbar() {
             </>
           ) : (
             <>
+              <li className="hover:text-[#F4A261] transition">
+                <Link to="/dashboard">Dashboard</Link>
+              </li>
               <li className="hover:text-[#F4A261] transition">
                 <Link
                   className="flex flex-col justify-between items-center"

@@ -1,22 +1,26 @@
 import { MenuItem } from '@/components/Menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import useAxiosPublic from '@/hooks/useAxiosPublic';
-import { useEffect, useState } from 'react';
+import useMenu from '@/hooks/useMenu';
+import { useState } from 'react';
 
 export default function Menu() {
   const [activeMenu, setActiveMenu] = useState('starters');
-  const axiosPublic = useAxiosPublic();
+  // const axiosPublic = useAxiosPublic();
 
-  const [menu, setMenu] = useState([]);
-  useEffect(() => {
-    const fetchMenu = async () => {
-      const { data } = await axiosPublic.get(`/menus?category=${activeMenu}`);
-      setMenu(data?.data);
-    };
-    fetchMenu();
-  }, [activeMenu]);
-  const menus = menu?.menus;
-  const categories = menu?.categories;
+  const { allMenus } = useMenu(activeMenu);
+
+  // const [menu, setMenu] = useState([]);
+  // useEffect(() => {
+  //   const fetchMenu = async () => {
+  //     const { data } = await axiosPublic.get(`/menus?category=${activeMenu}`);
+  //     setMenu(data?.data);
+  //   };
+  //   fetchMenu();
+  // }, [activeMenu, axiosPublic]);
+  // const menus = menu?.menus;
+  // const categories = menu?.categories;
+  const menus = allMenus?.menus;
+  const categories = allMenus?.categories;
 
   const preferredCategory = ['starters', 'mains'];
   const sortedCategories = categories?.slice().sort((a, b) => {

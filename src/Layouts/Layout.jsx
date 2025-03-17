@@ -6,15 +6,15 @@ import { Outlet } from 'react-router-dom';
 function Layout() {
   return (
     <>
-      <header>
+      <header className="container mx-auto">
         <DevelopmentBanner />
         <Navbar />
       </header>
-      <main>
+      <main className="container mx-auto">
         {/* Content will be rendered here based on the route */}
         <Outlet />
       </main>
-      <footer>
+      <footer className="container mx-auto">
         <Footer />
       </footer>
     </>
