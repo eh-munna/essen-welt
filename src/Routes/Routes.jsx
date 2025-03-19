@@ -12,6 +12,7 @@ import Home from '@/pages/Home';
 import Login from '@/pages/Login';
 import Menu from '@/pages/Menu';
 import ModifyMenu from '@/pages/ModifyMenu';
+import ModifyTable from '@/pages/ModifyTable';
 import MyOrders from '@/pages/MyOrders';
 import Orders from '@/pages/Orders';
 import Payment from '@/pages/Payment';
@@ -106,6 +107,14 @@ const Routes = createBrowserRouter(
           element={
             <AdminRoute>
               <AddTable />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/dashboard/modify-table"
+          element={
+            <AdminRoute>
+              <ModifyTable />
             </AdminRoute>
           }
         />

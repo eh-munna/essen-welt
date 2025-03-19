@@ -22,7 +22,9 @@ export default function DashboardLayout() {
               <span className="font-semibold text-gray-900">Settings</span>
             </nav>
           </header>
-          <main className="container mx-auto px-4">{<Outlet />}</main>
+          <main className="container mx-auto px-4">
+            <Outlet />
+          </main>
         </SidebarInset>
       </SidebarProvider>
     </>

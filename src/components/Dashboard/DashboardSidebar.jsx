@@ -10,18 +10,16 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 
+import { Button } from '@/components/ui/button';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible';
 import useAdmin from '@/hooks/useAdmin';
 import useAuth from '@/hooks/useAuth';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Button } from '../ui/button';
 
 const userRoutes = [
   { name: 'Home', path: '/' },
@@ -42,7 +40,14 @@ const adminRoutes = [
       { name: 'Modify Menu', path: '/dashboard/modify-menu' },
     ],
   },
-  { name: 'Add Table', path: '/dashboard/add-table' },
+  {
+    name: 'Manage Table',
+    children: [
+      { name: 'Add Table', path: '/dashboard/add-table' },
+      { name: 'Modify Table', path: '/dashboard/modify-table' },
+    ],
+  },
+
   { name: 'Customers', path: '/dashboard/customers' },
   { name: 'Orders', path: '/dashboard/all-orders' },
   { name: 'Bookings', path: '/dashboard/all-bookings' },
@@ -69,26 +74,34 @@ export default function DashboardSidebar() {
               <SidebarMenu>
                 {isAdmin ? (
                   <>
-                    {(adminRoutes ?? []).map(({ name, path, children }) => (
+                    {(adminRoutes || []).map(({ name, path, children }) => (
                       <SidebarMenuItem key={name}>
                         {children ? (
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <SidebarMenuButton className={'cursor-pointer'}>
-                                {name}
-                                <ChevronDown className="ml-auto" />
+                          <Collapsible className="group/collapsible">
+                            <CollapsibleTrigger
+                              className="cursor-pointer"
+                              asChild
+                            >
+                              <SidebarMenuButton>
+                                <span>{name}</span>
+                                <ChevronDown className="ml-auto group-data-[state=open]/collapsible:hidden" />
+                                <ChevronUp className="ml-auto group-data-[state=closed]/collapsible:hidden" />
                               </SidebarMenuButton>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-[--radix-popper-anchor-width]">
-                              {(children ?? []).map(({ name, path }) => (
-                                <DropdownMenuItem key={name}>
+                            </CollapsibleTrigger>
+                            <CollapsibleContent>
+                              {children.map(({ name, path }) => (
+                                <SidebarMenuButton
+                                  key={name}
+                                  className={'pl-4'}
+                                  asChild
+                                >
                                   <Link to={path}>
                                     <span>{name}</span>
                                   </Link>
-                                </DropdownMenuItem>
+                                </SidebarMenuButton>
                               ))}
-                            </DropdownMenuContent>
-                          </DropdownMenu>
+                            </CollapsibleContent>
+                          </Collapsible>
                         ) : (
                           <SidebarMenuButton asChild>
                             <Link to={path}>
@@ -118,6 +131,48 @@ export default function DashboardSidebar() {
           <Button onClick={handleSignOut}>Logout</Button>
         </SidebarFooter>
       </Sidebar>
+
+      {/* <Sidebar>
+        <SidebarHeader></SidebarHeader>
+        <SidebarContent className="gap-0">
+ 
+          {data.navMain.map((item) => (
+            <Collapsible
+              key={item.title}
+              title={item.title}
+              defaultOpen
+              className="group/collapsible"
+            >
+              <SidebarMenuItem>
+                <CollapsibleTrigger asChild>
+                  <SidebarMenuButton>
+                    {item.title}{' '}
+                    <Plus className="ml-auto group-data-[state=open]/collapsible:hidden" />
+                    <Minus className="ml-auto group-data-[state=closed]/collapsible:hidden" />
+                  </SidebarMenuButton>
+                </CollapsibleTrigger>
+                {item.items?.length ? (
+                  <CollapsibleContent>
+                    <SidebarMenuSub>
+                      {item.items.map((item) => (
+                        <SidebarMenuSubItem key={item.title}>
+                          <SidebarMenuSubButton
+                            asChild
+                            isActive={item.isActive}
+                          >
+                            <a href={item.url}>{item.title}</a>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      ))}
+                    </SidebarMenuSub>
+                  </CollapsibleContent>
+                ) : null}
+              </SidebarMenuItem>
+            </Collapsible>
+          ))}
+        </SidebarContent>
+        <SidebarRail />
+      </Sidebar> */}
     </>
   );
 }
