@@ -216,3 +216,13 @@ export default function MenuModal({ menu, open, setOpen }) {
     </Dialog>
   );
 }
+
+// props validation
+
+import PropTypes from 'prop-types';
+
+MenuModal.propTypes = {
+  menu: PropTypes.object,
+  open: PropTypes.bool.isRequired,
+  setOpen: PropTypes.func.isRequired,
+};

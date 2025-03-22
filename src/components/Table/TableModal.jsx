@@ -118,3 +118,13 @@ export default function TableModal({ table, open, setOpen }) {
     </Dialog>
   );
 }
+
+// Props Validations
+
+import PropTypes from 'prop-types';
+
+TableModal.propTypes = {
+  table: PropTypes.object,
+  open: PropTypes.bool,
+  setOpen: PropTypes.func,
+};

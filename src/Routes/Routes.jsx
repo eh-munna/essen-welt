@@ -6,6 +6,7 @@ import AddMenu from '@/pages/AddMenu';
 import AddTable from '@/pages/AddTable';
 import Bookings from '@/pages/Bookings';
 import Cart from '@/pages/Cart';
+import CustomerOrders from '@/pages/CustomerOrders';
 import Customers from '@/pages/Customers';
 import Dashboard from '@/pages/Dashboard';
 import Home from '@/pages/Home';
@@ -126,6 +127,16 @@ const Routes = createBrowserRouter(
             </AdminRoute>
           }
         />
+
+        <Route
+          path={`/dashboard/customer-orders/:customerEmail`}
+          element={
+            <AdminRoute>
+              <CustomerOrders />
+            </AdminRoute>
+          }
+        />
+
         <Route path="*" element={<ErrorPage />} />
       </Route>
     </>
