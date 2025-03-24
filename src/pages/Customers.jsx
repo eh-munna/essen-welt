@@ -92,11 +92,11 @@ export default function Customers() {
               variant="ghost"
               className="text-blue-500 hover:text-blue-700 flex items-center"
               onClick={() =>
-                console.log(`Navigate to reservations for ${customer._id}`)
+                navigate(`/dashboard/customer-bookings/${customer.email}`)
               }
             >
               <LucideCalendar size={18} className="mr-1" />
-              Reservations
+              Bookings
             </Button>
           </div>
 

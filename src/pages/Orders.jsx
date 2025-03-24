@@ -4,7 +4,7 @@ import useTitle from '@/hooks/useTitle';
 import { Loader2, LucideEdit, LucideTrash, XCircle } from 'lucide-react';
 
 export default function Orders() {
-  const { allOrders, refetch } = useAllOrders();
+  const { allOrders } = useAllOrders();
   // const axiosSecure = useAxiosSecure();
 
   useTitle('Orders');
