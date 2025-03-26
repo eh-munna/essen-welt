@@ -21,41 +21,34 @@ import PropTypes from 'prop-types';
 import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 
-export default function OrderModal({ order, open, setOpen, refetch }) {
+export default function CustomerEditModal({
+  customer,
+  open,
+  setOpen,
+  refetch,
+}) {
   const axiosSecure = useAxiosSecure();
+
   const form = useForm({
     defaultValues: {
-      ...order,
-      status: order?.status || 'pending',
+      ...customer,
+      isActive: customer?.isActive || 'active',
     },
   });
 
   const handleSubmit = useCallback(
     async (data) => {
-      data = {
-        ...data,
-        items: data.items.map((item) => {
-          return {
-            itemId: item.itemId,
-            priceAtOrder: item.priceAtOrder,
-            quantity: item.quantity,
-          };
-        }),
-      };
-
       const response = await axiosSecure.put(
-        `/orders/admin/${order?._id}`,
+        `/users/admin/${customer?._id}`,
         data
       );
-
       if (response.status === 200) {
         setOpen(false);
         refetch();
       }
-
-      refetch();
+      console.log(response);
     },
-    [axiosSecure, order?._id, refetch, setOpen]
+    [axiosSecure, customer?._id, setOpen, refetch]
   );
 
   return (
@@ -63,7 +56,7 @@ export default function OrderModal({ order, open, setOpen, refetch }) {
       <DialogContent className="sm:max-w-md bg-[#ffffff] text-[#333333] p-8 rounded-xl shadow-lg">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold text-[#075E54]">
-            Change Order Status
+            Change Customer Status
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-6">
@@ -73,7 +66,7 @@ export default function OrderModal({ order, open, setOpen, refetch }) {
               className="space-y-6"
             >
               <FormField
-                name="status"
+                name="isActive"
                 control={form.control}
                 render={({ field }) => (
                   <FormItem>
@@ -87,9 +80,8 @@ export default function OrderModal({ order, open, setOpen, refetch }) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="pending">Pending</SelectItem>
-                        <SelectItem value="canceled">Cancel</SelectItem>
-                        <SelectItem value="confirmed">Confirm</SelectItem>
+                        <SelectItem value="active">Active</SelectItem>
+                        <SelectItem value="blocked">Block</SelectItem>
                       </SelectContent>
                     </Select>
                   </FormItem>
@@ -122,8 +114,8 @@ export default function OrderModal({ order, open, setOpen, refetch }) {
   );
 }
 
-OrderModal.propTypes = {
-  order: PropTypes.object.isRequired,
+CustomerEditModal.propTypes = {
+  customer: PropTypes.object.isRequired,
   open: PropTypes.bool.isRequired,
   setOpen: PropTypes.func.isRequired,
   refetch: PropTypes.func.isRequired,

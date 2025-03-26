@@ -55,6 +55,7 @@ export default function AuthProvider({ children }) {
             userInfo,
             { withCredentials: true }
           );
+          // localStorage.removeItem('paymentIntentId');
           setLoading(false);
         } catch (error) {
           console.error('Error during auth-login:', error.message);
@@ -62,6 +63,7 @@ export default function AuthProvider({ children }) {
       } else {
         try {
           const { data } = await axiosPublic.post(`/users/auth-logout`, {});
+          // localStorage.removeItem('paymentIntentId');
           setLoading(false);
         } catch (error) {
           console.error('Error during auth-logout:', error.message);
@@ -71,7 +73,7 @@ export default function AuthProvider({ children }) {
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [axiosPublic]);
 
   const authInfo = {
     user,

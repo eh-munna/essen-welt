@@ -1,32 +1,34 @@
+import ConfirmDialog from '@/components/ConfirmDialog';
+import OrderModal from '@/components/Customers/OrderModal';
 import { Button } from '@/components/ui/button';
-import useAllOrders from '@/hooks/useAllOrders';
+import useAxiosSecure from '@/hooks/useAxiosSecure';
+import useCustomerOrders from '@/hooks/useCustomerOrders';
 import useTitle from '@/hooks/useTitle';
 import { Loader2, LucideEdit, LucideTrash, XCircle } from 'lucide-react';
+import { useCallback, useState } from 'react';
 
 export default function Orders() {
-  const { allOrders } = useAllOrders();
-  // const axiosSecure = useAxiosSecure();
-
+  const { customerOrders: allOrders, refetch } = useCustomerOrders();
   useTitle('Orders');
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [open, setOpen] = useState(false);
 
-  // const handleEditClick = (order) => {
+  const axiosSecure = useAxiosSecure();
 
-  // };
-
-  // const handleDelete = useCallback(
-  //   async (orderId) => {
-  //     try {
-  //       const { data } = await axiosSecure.delete(`/orders/admin/${orderId}`);
-  //       if (data?.success) {
-  //         console.log('Order deleted:', orderId);
-  //       }
-  //       refetch();
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   },
-  //   [axiosSecure, refetch]
-  // );
+  const handleDelete = useCallback(
+    async (orderId) => {
+      try {
+        const response = await axiosSecure.delete(`/orders/admin/${orderId}`);
+        if (response.status === 200) {
+          setSelectedOrder(null);
+          refetch();
+        }
+      } catch (error) {
+        console.error('Error deleting order:', error);
+      }
+    },
+    [axiosSecure, refetch]
+  );
 
   if (!allOrders) {
     return (
@@ -47,7 +49,7 @@ export default function Orders() {
   }
 
   return (
-    <div className="bg-[#075E54] min-h-screen text-white p-6">
+    <section className="bg-[#075E54] min-h-screen text-white p-6">
       <h2 className="text-2xl font-semibold mb-4">Manage Orders</h2>
 
       <div className="overflow-x-auto">
@@ -90,8 +92,9 @@ export default function Orders() {
               {/* Actions */}
               <div className="flex gap-2">
                 <Button
+                  disabled={order.status === 'confirmed'}
                   variant="ghost"
-                  // onClick={() => handleEditClick(order)}
+                  onClick={() => setSelectedOrder(order)}
                   className="flex items-center gap-1 text-yellow-500 hover:text-yellow-700"
                 >
                   <LucideEdit size={20} />
@@ -100,14 +103,31 @@ export default function Orders() {
                 <Button
                   variant="destructive"
                   className="text-white  bg-red-500 hover:bg-white hover:text-red-500"
+                  onClick={() => setOpen(true)}
                 >
                   <LucideTrash size={20} />
                 </Button>
               </div>
+              <ConfirmDialog
+                open={open}
+                setOpen={setOpen}
+                onConfirm={() => handleDelete(order?._id)}
+                title="Delete Order"
+                description={`Order for #${order?._id} will be deleted!`}
+              />
             </div>
           ))}
         </div>
       </div>
-    </div>
+
+      {selectedOrder && (
+        <OrderModal
+          order={selectedOrder}
+          open={selectedOrder}
+          setOpen={() => setSelectedOrder(null)}
+          refetch={refetch}
+        />
+      )}
+    </section>
   );
 }

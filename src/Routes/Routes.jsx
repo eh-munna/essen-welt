@@ -40,16 +40,23 @@ const Routes = createBrowserRouter(
           element={<ItemDetails />}
           loader={loadMenuItem}
         />
+        <Route path="/cart" element={<Cart />} />
         <Route
-          path="/cart"
+          path="/payment"
           element={
             <PrivateRoute>
-              <Cart />
+              <Payment />
             </PrivateRoute>
           }
         />
-        <Route path="/payment" element={<Payment />} />
-        <Route path="/payment-success" element={<PaymentSuccess />} />
+        <Route
+          path="/payment-success"
+          element={
+            <PrivateRoute>
+              <PaymentSuccess />
+            </PrivateRoute>
+          }
+        />
         <Route
           path="/my-orders"
           element={

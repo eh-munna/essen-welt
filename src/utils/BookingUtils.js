@@ -3,9 +3,6 @@ export default function convertToDayDate(utcString) {
 
   const date = dateObj.toISOString().split('T')[0];
 
-  const time = new Date(utcString).toLocaleTimeString([], {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  const time = dateObj.toISOString().split('T')[1].substring(0, 5);
   return { date, time };
 }

@@ -1,28 +1,37 @@
+import ConfirmDialog from '@/components/ConfirmDialog';
 import OrderModal from '@/components/Customers/OrderModal';
 import { Button } from '@/components/ui/button';
+import useAxiosSecure from '@/hooks/useAxiosSecure';
 import useCustomerOrders from '@/hooks/useCustomerOrders';
 import { LucideTrash } from 'lucide-react';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 export default function CustomerOrders() {
   const { customerEmail } = useParams();
-  const { customerOrders } = useCustomerOrders(customerEmail);
-
+  const { customerOrders, refetch } = useCustomerOrders(customerEmail);
+  const [open, setOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const axiosSecure = useAxiosSecure();
+
+  const handleDelete = useCallback(
+    async (orderId) => {
+      try {
+        const response = await axiosSecure.delete(`/orders/admin/${orderId}`);
+        if (response.status === 200) {
+          setSelectedOrder(null);
+          refetch();
+        }
+      } catch (error) {
+        console.error('Error deleting order:', error);
+      }
+    },
+    [axiosSecure, refetch]
+  );
 
   if (!customerOrders) return <p>Loading orders...</p>;
   if (customerOrders.length === 0)
     return <p>No orders found for this customer.</p>;
-
-  const handleEditStatus = (order) => {
-    setSelectedOrder(order);
-  };
-
-  const handleDelete = (orderId) => {
-    console.log(`Deleting order with ID: ${orderId}`);
-    // Logic to delete the order
-  };
 
   return (
     <section className="p-6 bg-gray-50">
@@ -70,21 +79,28 @@ export default function CustomerOrders() {
           {/* Actions Column */}
           <div className="order-actions flex space-x-2 justify-center items-center">
             <Button
-              disabled={order.status === 'approved'}
+              disabled={order.status === 'confirmed'}
               variant="ghost"
               className="text-yellow-500 hover:text-yellow-700"
-              onClick={() => handleEditStatus(order)}
+              onClick={() => setSelectedOrder(order)}
             >
               Edit Status
             </Button>
             <Button
               variant="ghost"
               className="text-red-500 hover:text-red-700"
-              onClick={() => handleDelete(order._id)}
+              onClick={() => setOpen(true)}
             >
               <LucideTrash size={20} />
             </Button>
           </div>
+          <ConfirmDialog
+            open={open}
+            setOpen={setOpen}
+            onConfirm={() => handleDelete(order?._id)}
+            title="Delete Order"
+            description={`Order for #${order?._id} will be deleted!`}
+          />
         </div>
       ))}
 
@@ -94,6 +110,7 @@ export default function CustomerOrders() {
           order={selectedOrder}
           open={selectedOrder}
           setOpen={() => setSelectedOrder(null)}
+          refetch={refetch}
         />
       )}
     </section>

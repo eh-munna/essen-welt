@@ -23,8 +23,7 @@ export default function Login() {
   const axiosPublic = useAxiosPublic();
   const location = useLocation();
   const form = useForm();
-  const { userSignIn, setUser, user, createGoogleLogin, userSignOut } =
-    useAuth();
+  const { userSignIn, setUser, user, createGoogleLogin } = useAuth();
   const navigate = useNavigate();
   const from = location?.state?.from?.pathname || '/';
 

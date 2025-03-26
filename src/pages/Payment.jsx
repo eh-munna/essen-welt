@@ -14,6 +14,8 @@ export default function Payment() {
 
   const { cart } = useCart();
 
+  console.log(cart);
+
   useEffect(() => {
     const paymentIntentId = localStorage.getItem('paymentIntentId');
 
@@ -35,7 +37,7 @@ export default function Payment() {
       }
     };
     handlePaymentIntent();
-  }, [cart]);
+  }, [cart, axiosSecure]);
 
   return (
     <>

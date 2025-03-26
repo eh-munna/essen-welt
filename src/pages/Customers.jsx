@@ -1,6 +1,7 @@
 import useUsers from '@/hooks/useUsers';
 
 import ConfirmDialog from '@/components/ConfirmDialog';
+import CustomerEditModal from '@/components/Customers/CustomerEditModal';
 import CustomerModal from '@/components/Customers/CustomerModal';
 import { Button } from '@/components/ui/button';
 import useAxiosSecure from '@/hooks/useAxiosSecure';
@@ -12,12 +13,14 @@ import {
   LucideShoppingCart,
   LucideTrash,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function Customers() {
   const [selectUser, setSelectUser] = useState(null);
   const [open, setOpen] = useState(false);
+  const [edit, setEdit] = useState(false);
+  const [view, setView] = useState(false);
 
   const navigate = useNavigate();
   const { users, refetch } = useUsers();
@@ -25,28 +28,29 @@ export default function Customers() {
   const axiosSecure = useAxiosSecure();
   useTitle('Customers');
 
+  const handleEdit = (customer) => {
+    setSelectUser(customer);
+    setEdit(true);
+  };
+
+  const handleView = (customer) => {
+    setSelectUser(customer);
+    setView(true);
+  };
+
+  const handleDelete = useCallback(
+    async (id) => {
+      const response = await axiosSecure.delete(`/users/admin/${id}`);
+      if (response.status === 200) {
+        setSelectUser(null);
+        refetch();
+      }
+    },
+    [axiosSecure, refetch]
+  );
+
   if (!users) return <p>Loading customers...</p>;
   if (users.length === 0) return <p>No customers found.</p>;
-
-  const handleEdit = (id) => {
-    console.log('Editing customer with UID:', id);
-    // Logic for editing customer
-  };
-
-  const handleDelete = async (id) => {
-    const response = await axiosSecure.delete(`/users/admin/${id}`);
-    if (response.status === 200) {
-      console.log('Customer deleted:', id);
-      refetch();
-    }
-    refetch();
-  };
-
-  const handleViewDetails = async (email) => {
-    const { data } = await axiosSecure.get(`/users/?email=${email}`);
-    setSelectUser(data?.data);
-    // Logic for viewing customer details
-  };
 
   return (
     <section className="p-6 bg-gray-50">
@@ -105,14 +109,15 @@ export default function Customers() {
             <Button
               variant="ghost"
               className="text-blue-500 hover:text-blue-700"
-              onClick={() => handleViewDetails(customer?.email)}
+              // onClick={() => handleViewDetails(customer?.email)}
+              onClick={() => handleView(customer)}
             >
               <LucideEye size={20} />
             </Button>
             <Button
               variant="ghost"
               className="text-yellow-500 hover:text-yellow-700"
-              onClick={() => handleEdit(customer._id)}
+              onClick={() => handleEdit(customer)}
             >
               <LucideEdit size={20} />
             </Button>
@@ -123,20 +128,24 @@ export default function Customers() {
             >
               <LucideTrash size={20} />
             </Button>
-            <ConfirmDialog
-              open={open}
-              setOpen={setOpen}
-              onConfirm={() => handleDelete(customer._id)}
-            />
           </div>
+          <ConfirmDialog
+            open={open}
+            setOpen={setOpen}
+            onConfirm={() => handleDelete(customer._id)}
+          />
         </div>
       ))}
 
-      {selectUser && (
-        <CustomerModal
-          selectUser={selectUser}
-          open={selectUser}
-          setOpen={setSelectUser}
+      {view && selectUser && (
+        <CustomerModal selectUser={selectUser} open={view} setOpen={setView} />
+      )}
+      {edit && selectUser && (
+        <CustomerEditModal
+          customer={selectUser}
+          open={edit}
+          setOpen={setEdit}
+          refetch={refetch}
         />
       )}
     </section>

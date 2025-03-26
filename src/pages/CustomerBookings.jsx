@@ -1,28 +1,41 @@
 import BookingModal from '@/components/Customers/BookingModal';
 import { Button } from '@/components/ui/button';
+import useAxiosSecure from '@/hooks/useAxiosSecure';
 import useCustomerBookings from '@/hooks/useCustomerBookings';
+import convertToDayDate from '@/utils/BookingUtils';
 import { LucideTrash } from 'lucide-react';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 export default function CustomerBookings() {
   const { customerEmail } = useParams();
-  const { customerBookings } = useCustomerBookings(customerEmail);
+  const { customerBookings, refetch } = useCustomerBookings(customerEmail);
+
+  const axiosSecure = useAxiosSecure();
 
   const [selectedBooking, setSelectedBooking] = useState(null);
+
+  const handleDelete = useCallback(
+    async (bookingId) => {
+      try {
+        const response = await axiosSecure.delete(`/bookings/${bookingId}`);
+
+        console.log(response);
+        if (response.status === 200) {
+          console.log('Booking deleted:', bookingId);
+          setSelectedBooking(null);
+          refetch();
+        }
+      } catch (error) {
+        console.error('Error deleting booking:', error);
+      }
+    },
+    [axiosSecure, refetch]
+  );
 
   if (!customerBookings) return <p>Loading bookings...</p>;
   if (customerBookings.length === 0)
     return <p>No bookings found for this customer.</p>;
-
-  const handleEditBooking = (booking) => {
-    setSelectedBooking(booking);
-  };
-
-  const handleDelete = (bookingId) => {
-    console.log(`Deleting booking with ID: ${bookingId}`);
-    // Logic to delete the booking
-  };
 
   return (
     <section className="p-6 bg-gray-50">
@@ -46,16 +59,16 @@ export default function CustomerBookings() {
           key={booking._id}
         >
           <div>{booking._id}</div>
-          <div>{new Date(booking.date).toLocaleDateString()}</div>
-          <div>{new Date(booking.startTime).toLocaleTimeString()}</div>
-          <div>{new Date(booking.endTime).toLocaleTimeString()}</div>
+          <div>{convertToDayDate(booking?.date).date}</div>
+          <div>{convertToDayDate(booking?.startTime).time}</div>
+          <div>{convertToDayDate(booking.endTime).time}</div>
 
           {/* Actions Column */}
           <div className="flex space-x-2 justify-center items-center">
             <Button
               variant="ghost"
               className="text-yellow-500 hover:text-yellow-700"
-              onClick={() => handleEditBooking(booking)}
+              onClick={() => setSelectedBooking(booking)}
             >
               Edit Booking
             </Button>
@@ -75,6 +88,7 @@ export default function CustomerBookings() {
           open={selectedBooking}
           setOpen={() => setSelectedBooking(null)}
           selectedBooking={selectedBooking}
+          refetch={refetch}
         />
       )}
     </section>

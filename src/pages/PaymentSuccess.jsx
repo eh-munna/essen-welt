@@ -85,7 +85,10 @@ export function PaymentSuccessContent() {
           }
           setOrderCreated(true);
           toast.success(`Order created successfully!`);
-          refetch();
+          if (response.status === 201) {
+            // await axiosSecure.delete(`/carts?id=${customer?._id}`);
+          }
+          // refetch();
         } catch (error) {
           console.error(error);
           toast.error(`Failed to create order. Please try again.`);
@@ -96,7 +99,15 @@ export function PaymentSuccessContent() {
 
       localStorage.removeItem('paymentIntentId');
     }
-  }, [paymentIntent, cart, customer]);
+  }, [
+    paymentIntent,
+    cart,
+    customer,
+    axiosSecure,
+    orderCreated,
+    refetch,
+    totalAmount,
+  ]);
 
   const { amount } = paymentIntent;
 

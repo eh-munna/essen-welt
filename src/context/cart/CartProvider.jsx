@@ -28,6 +28,7 @@ export default function CartProvider({ children }) {
           try {
             const response = await axiosSecure.post(`/carts`, mergedCart);
             if (response?.status === 201) {
+              localStorage.removeItem('paymentIntentId');
               localStorage.removeItem('cart');
               toast.success(response?.data?.message, {
                 position: 'top-right',
@@ -45,10 +46,11 @@ export default function CartProvider({ children }) {
         }
       })();
     }
-  }, [user, customer]);
+  }, [user, customer, axiosSecure, refetch]);
 
   const addToCart = async (item) => {
     if (!user) {
+      localStorage.removeItem('paymentIntentId');
       addToStorage(item);
       refetch();
     } else {
@@ -59,6 +61,7 @@ export default function CartProvider({ children }) {
         customer: customer?._id,
       };
       try {
+        localStorage.removeItem('paymentIntentId');
         const response = await axiosSecure.post(`/carts`, cartItem);
         if (response?.status === 201) {
           toast.success(response?.data?.message, {
@@ -76,9 +79,11 @@ export default function CartProvider({ children }) {
   const removeFromCart = async (itemId) => {
     if (!user) {
       removeFromStorage(itemId);
+      localStorage.removeItem('paymentIntentId');
       refetch();
     } else {
       try {
+        localStorage.removeItem('paymentIntentId');
         const { data } = await axiosSecure.delete(`/carts/${itemId}`);
 
         if (data?.success) {

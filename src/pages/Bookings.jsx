@@ -1,9 +1,32 @@
+import ConfirmDialog from '@/components/ConfirmDialog';
+import BookingModal from '@/components/Customers/BookingModal';
 import { Button } from '@/components/ui/button';
+import useAxiosSecure from '@/hooks/useAxiosSecure';
 import useBookings from '@/hooks/useBookings';
+import convertToDayDate from '@/utils/BookingUtils';
 import { Loader2, LucideEdit, LucideTrash, XCircle } from 'lucide-react';
+import { useCallback, useState } from 'react';
 
 export default function Bookings() {
-  const { bookings } = useBookings();
+  const { bookings, refetch } = useBookings();
+  const [open, setOpen] = useState(false);
+  const axiosSecure = useAxiosSecure();
+
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const handleDelete = useCallback(
+    async (bookingId) => {
+      try {
+        const response = await axiosSecure.delete(`/bookings/${bookingId}`);
+        if (response.status === 200) {
+          setSelectedBooking(null);
+          refetch();
+        }
+      } catch (error) {
+        console.error('Error deleting booking:', error);
+      }
+    },
+    [axiosSecure, refetch]
+  );
 
   if (!bookings) {
     return (
@@ -24,7 +47,7 @@ export default function Bookings() {
   }
 
   return (
-    <div className="bg-[#075E54] min-h-screen text-white p-6">
+    <section className="bg-[#075E54] min-h-screen text-white p-6">
       <h2 className="text-2xl font-semibold mb-4">Manage Bookings</h2>
 
       <div className="overflow-x-auto">
@@ -48,29 +71,49 @@ export default function Bookings() {
               <div className="text-[#25D366] font-medium">{booking._id}</div>
               <div>{booking.name}</div>
               <div className="font-semibold">{booking.numberOfPeople}</div>
-              <div>{new Date(booking.date).toLocaleDateString()}</div>
+              <div>{convertToDayDate(booking?.date).date}</div>
+
               <div>
-                {new Date(booking.startTime).toLocaleTimeString()} -{' '}
-                {new Date(booking.endTime).toLocaleTimeString()}
+                {convertToDayDate(booking?.startTime).time} -{' '}
+                {convertToDayDate(booking.endTime).time}
               </div>
               <div className="flex gap-2">
                 <Button
                   variant="ghost"
                   className="text-yellow-500 hover:text-yellow-700"
+                  onClick={() => setSelectedBooking(booking)}
                 >
                   <LucideEdit size={20} />
                 </Button>
                 <Button
+                  onClick={() => setOpen(true)}
                   variant="destructive"
                   className="text-white bg-red-500 hover:bg-white hover:text-red-500"
                 >
                   <LucideTrash size={20} />
                 </Button>
               </div>
+
+              <ConfirmDialog
+                open={open}
+                setOpen={setOpen}
+                onConfirm={() => handleDelete(booking?._id)}
+                title="Delete Booking"
+                description={`Booking for #${booking.name} will be deleted!`}
+              />
             </div>
           ))}
         </div>
       </div>
-    </div>
+
+      {selectedBooking && (
+        <BookingModal
+          open={selectedBooking}
+          setOpen={() => setSelectedBooking(null)}
+          selectedBooking={selectedBooking}
+          refetch={refetch}
+        />
+      )}
+    </section>
   );
 }

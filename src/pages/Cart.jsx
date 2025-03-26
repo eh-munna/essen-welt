@@ -3,6 +3,7 @@ import { CartContext } from '@/context/cart/CartProvider';
 import useAxiosSecure from '@/hooks/useAxiosSecure';
 import useCustomer from '@/hooks/useCustomer';
 import { useContext, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { PlaceOrder } from './PlaceOrder';
 
 export default function Cart() {
@@ -15,7 +16,6 @@ export default function Cart() {
       cart?.reduce((total, item) => total + item?.price * item?.quantity, 0),
     [cart]
   );
-
   const handleDeleteItem = (id) => {
     removeFromCart(id);
   };
@@ -135,7 +135,13 @@ export default function Cart() {
                     €{totalAmount?.toFixed(2)}
                   </span>
                 </div>
-                <PlaceOrder />
+
+                <Link
+                  className="mt-6 w-full bg-[#2D6A4F] text-white py-3 rounded-md hover:bg-[#1B4D38] transition duration-200"
+                  to="/payment"
+                >
+                  Place Order
+                </Link>
               </div>
             </div>
           </div>

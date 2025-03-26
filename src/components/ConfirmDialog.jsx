@@ -8,6 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { cn } from '@/lib/utils';
 
 import PropTypes from 'prop-types';
 
@@ -25,10 +26,15 @@ export default function ConfirmDialog({
       <DialogContent className="sm:max-w-md bg-[#075E54] text-white rounded-xl shadow-lg">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          <p className="text-gray-300">{description}</p>
-          <DialogDescription className="sr-only">
-            Confirming the user deletion
-          </DialogDescription>
+          <p
+            className={cn('', {
+              'text-orange-400': description,
+              'sr-only': !description,
+            })}
+          >
+            {description}
+          </p>
+          <DialogDescription className={'sr-only'}></DialogDescription>
         </DialogHeader>
         <DialogFooter className="flex justify-end gap-2">
           <DialogClose asChild>
