@@ -16,21 +16,17 @@ import {
   FormLabel,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import useAxiosSecure from '@/hooks/useAxiosSecure';
 import convertToDayDate from '@/utils/BookingUtils';
 import PropTypes from 'prop-types';
-import { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 export default function BookingModal({
+  error,
   selectedBooking,
   open,
   setOpen,
-  refetch,
+  onUpdate,
 }) {
-  const axiosSecure = useAxiosSecure();
-  const [error, setError] = useState('');
-
   const form = useForm({
     defaultValues: {
       ...selectedBooking,
@@ -40,27 +36,6 @@ export default function BookingModal({
       numberOfPeople: selectedBooking?.numberOfPeople || 1,
     },
   });
-
-  const handleSubmit = useCallback(
-    async (data) => {
-      try {
-        const response = await axiosSecure.put(
-          `/bookings/admin/${selectedBooking?._id}`,
-          data
-        );
-        console.log(response);
-        if (response.status === 200) {
-          setError('');
-          setOpen(false);
-          refetch();
-        }
-      } catch ({ response }) {
-        setError(response?.data?.message);
-        // console.error('Error updating booking:', response?.data?.message);
-      }
-    },
-    [axiosSecure, selectedBooking?._id, setOpen, refetch]
-  );
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -74,10 +49,7 @@ export default function BookingModal({
 
         <div className="space-y-6">
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(handleSubmit)}
-              className="space-y-6"
-            >
+            <form onSubmit={form.handleSubmit(onUpdate)} className="space-y-6">
               {/* Date Field */}
               <FormField
                 name="date"
@@ -178,7 +150,8 @@ export default function BookingModal({
 // Prop validations
 BookingModal.propTypes = {
   selectedBooking: PropTypes.object.isRequired,
+  error: PropTypes.string,
   open: PropTypes.bool.isRequired,
   setOpen: PropTypes.func.isRequired,
-  refetch: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func.isRequired,
 };

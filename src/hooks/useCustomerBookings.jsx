@@ -8,10 +8,11 @@ export default function useCustomerBookings(email) {
     refetch,
     isLoading,
   } = useQuery({
-    queryKey: ['customerBookings', email],
-    enabled: !!email,
+    queryKey: ['customerBookings', email || 'all'],
     queryFn: async () => {
-      const { data } = await axiosSecure.get(`/bookings/admin/${email}`);
+      const { data } = await axiosSecure.get(`/bookings/admin`, {
+        params: email ? { email } : undefined,
+      });
       return data.data || [];
     },
   });

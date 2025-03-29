@@ -1,15 +1,38 @@
 import Heading from '@/components/Heading';
+import { Button } from '@/components/ui/button';
 import { CartContext } from '@/context/cart/CartProvider';
-import useAxiosSecure from '@/hooks/useAxiosSecure';
 import useCustomer from '@/hooks/useCustomer';
-import { useContext, useMemo } from 'react';
-import { Link } from 'react-router-dom';
-import { PlaceOrder } from './PlaceOrder';
+import { useContext, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import UpdateInfoModal from './UpdateInfoModal';
 
 export default function Cart() {
-  const axiosSecure = useAxiosSecure();
   const { cart, removeFromCart } = useContext(CartContext);
   const { customer } = useCustomer();
+
+  const navigate = useNavigate();
+
+  const [open, setOpen] = useState(false);
+
+  const {
+    phoneNumber,
+    deliveryAddress: { city, country, postalCode, street } = {},
+  } = customer || {};
+
+  const handlePlaceOrder = () => {
+    if (
+      phoneNumber === 'defaultValue' ||
+      city === 'defaultValue' ||
+      country === 'defaultValue' ||
+      postalCode === 'defaultValue' ||
+      street === 'defaultValue'
+    ) {
+      setOpen(true);
+    } else {
+      setOpen(false);
+      navigate('/payment');
+    }
+  };
 
   const totalAmount = useMemo(
     () =>
@@ -86,12 +109,12 @@ export default function Cart() {
 
                   {/* Delete Button */}
                   <div>
-                    <button
+                    <Button
                       onClick={() => handleDeleteItem(item?.itemId)}
                       className="text-[#E63946] font-semibold hover:text-red-500 transition"
                     >
                       Delete
-                    </button>
+                    </Button>
                   </div>
 
                   {/* Total Price for this item */}
@@ -136,12 +159,12 @@ export default function Cart() {
                   </span>
                 </div>
 
-                <Link
+                <Button
+                  onClick={handlePlaceOrder}
                   className="mt-6 w-full bg-[#2D6A4F] text-white py-3 rounded-md hover:bg-[#1B4D38] transition duration-200"
-                  to="/payment"
                 >
                   Place Order
-                </Link>
+                </Button>
               </div>
             </div>
           </div>
@@ -221,11 +244,12 @@ export default function Cart() {
                   €{totalAmount?.toFixed(2)}
                 </span>
               </div>
-              <PlaceOrder />
             </div>
           </div>
         </div>
       </div>
+
+      <UpdateInfoModal open={open} setOpen={setOpen} />
     </section>
   );
 }

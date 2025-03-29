@@ -86,9 +86,8 @@ export function PaymentSuccessContent() {
           setOrderCreated(true);
           toast.success(`Order created successfully!`);
           if (response.status === 201) {
-            // await axiosSecure.delete(`/carts?id=${customer?._id}`);
+            refetch();
           }
-          // refetch();
         } catch (error) {
           console.error(error);
           toast.error(`Failed to create order. Please try again.`);
@@ -130,7 +129,7 @@ export function PaymentSuccessContent() {
 
         <Link
           className="bg-green-400 text-gray-900 px-2 py-1 rounded-md mt-4"
-          to={`/orders`}
+          to={`/dashboard/my-orders`}
         >
           See Your Orders
         </Link>

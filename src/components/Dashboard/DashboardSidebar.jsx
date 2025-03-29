@@ -18,17 +18,20 @@ import {
 } from '@/components/ui/collapsible';
 import useAdmin from '@/hooks/useAdmin';
 import useAuth from '@/hooks/useAuth';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+
+import { cn } from '@/lib/utils';
+import { ChevronDown, ChevronUp, UserCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 const userRoutes = [
   { name: 'Home', path: '/' },
   { name: 'Menu', path: '/menu' },
   { name: 'Dashboard', path: '/dashboard' },
-  { name: 'My Bookings', path: '/orders' },
-  { name: 'My Orders', path: '/my-orders' },
+  { name: 'My Bookings', path: '/dashboard/my-bookings' },
+  { name: 'My Orders', path: '/dashboard/my-orders' },
   { name: 'Cart', path: '/cart' },
 ];
+
 const adminRoutes = [
   { name: 'Home', path: '/' },
   { name: 'Menu', path: '/menu' },
@@ -47,7 +50,6 @@ const adminRoutes = [
       { name: 'Modify Table', path: '/dashboard/modify-table' },
     ],
   },
-
   { name: 'Customers', path: '/dashboard/customers' },
   { name: 'Orders', path: '/dashboard/all-orders' },
   { name: 'Bookings', path: '/dashboard/all-bookings' },
@@ -55,8 +57,7 @@ const adminRoutes = [
 
 export default function DashboardSidebar() {
   const { isAdmin } = useAdmin();
-
-  const { userSignOut } = useAuth();
+  const { user, userSignOut } = useAuth();
   const navigate = useNavigate();
 
   const handleSignOut = () => {
@@ -65,114 +66,84 @@ export default function DashboardSidebar() {
   };
 
   return (
-    <>
-      <Sidebar>
-        <SidebarContent className="bg-amber-800 ">
-          <SidebarGroup>
-            <SidebarGroupLabel>Essen Welt</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {isAdmin ? (
-                  <>
-                    {(adminRoutes || []).map(({ name, path, children }) => (
-                      <SidebarMenuItem key={name}>
-                        {children ? (
-                          <Collapsible className="group/collapsible">
-                            <CollapsibleTrigger
-                              className="cursor-pointer"
-                              asChild
-                            >
-                              <SidebarMenuButton>
-                                <span>{name}</span>
-                                <ChevronDown className="ml-auto group-data-[state=open]/collapsible:hidden" />
-                                <ChevronUp className="ml-auto group-data-[state=closed]/collapsible:hidden" />
-                              </SidebarMenuButton>
-                            </CollapsibleTrigger>
-                            <CollapsibleContent>
-                              {children.map(({ name, path }) => (
-                                <SidebarMenuButton
-                                  key={name}
-                                  className={'pl-4'}
-                                  asChild
-                                >
-                                  <Link to={path}>
-                                    <span>{name}</span>
-                                  </Link>
-                                </SidebarMenuButton>
-                              ))}
-                            </CollapsibleContent>
-                          </Collapsible>
-                        ) : (
-                          <SidebarMenuButton asChild>
-                            <Link to={path}>
-                              <span>{name}</span>
-                            </Link>
-                          </SidebarMenuButton>
-                        )}
-                      </SidebarMenuItem>
-                    ))}
-                  </>
-                ) : (
-                  (userRoutes ?? []).map(({ name, path }) => (
-                    <SidebarMenuItem key={name}>
-                      <SidebarMenuButton asChild>
-                        <Link to={path}>
-                          <span>{name}</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))
-                )}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </SidebarContent>
-        <SidebarFooter className="bg-amber-800 text-white">
-          <Button onClick={handleSignOut}>Logout</Button>
-        </SidebarFooter>
-      </Sidebar>
+    <Sidebar
+      style={{ '--sidebar': '#2D6A4F' }}
+      className={cn('text-white h-screen shadow-lg', 'bg-[#2D6A4F]')}
+    >
+      {/* Profile Section */}
+      <div className="p-8 flex flex-col items-center border-b border-white/20 space-y-4">
+        <UserCircle size={60} className="text-white" />
+        <h3 className="text-xl font-semibold">{user?.displayName || 'User'}</h3>
+        <p className="text-sm text-gray-200">
+          {user?.email || 'email@example.com'}
+        </p>
+        <Link
+          className="mt-4 text-[#075E54] bg-white border-[#075E54] border 
+             px-4 py-2 rounded-md shadow-sm 
+             hover:bg-[#128C7E] hover:text-white transition"
+          to={`/dashboard/profile`}
+        >
+          Profile
+        </Link>
+      </div>
 
-      {/* <Sidebar>
-        <SidebarHeader></SidebarHeader>
-        <SidebarContent className="gap-0">
- 
-          {data.navMain.map((item) => (
-            <Collapsible
-              key={item.title}
-              title={item.title}
-              defaultOpen
-              className="group/collapsible"
-            >
-              <SidebarMenuItem>
-                <CollapsibleTrigger asChild>
-                  <SidebarMenuButton>
-                    {item.title}{' '}
-                    <Plus className="ml-auto group-data-[state=open]/collapsible:hidden" />
-                    <Minus className="ml-auto group-data-[state=closed]/collapsible:hidden" />
-                  </SidebarMenuButton>
-                </CollapsibleTrigger>
-                {item.items?.length ? (
-                  <CollapsibleContent>
-                    <SidebarMenuSub>
-                      {item.items.map((item) => (
-                        <SidebarMenuSubItem key={item.title}>
-                          <SidebarMenuSubButton
-                            asChild
-                            isActive={item.isActive}
-                          >
-                            <a href={item.url}>{item.title}</a>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                      ))}
-                    </SidebarMenuSub>
-                  </CollapsibleContent>
-                ) : null}
-              </SidebarMenuItem>
-            </Collapsible>
-          ))}
-        </SidebarContent>
-        <SidebarRail />
-      </Sidebar> */}
-    </>
+      {/* Navigation Links */}
+      <SidebarContent className="py-6">
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-lg font-semibold text-white/90 mb-4">
+            Navigation
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {(isAdmin ? adminRoutes : userRoutes).map(
+                ({ name, path, children }) => (
+                  <SidebarMenuItem key={name}>
+                    {children ? (
+                      <Collapsible className="group/collapsible">
+                        <CollapsibleTrigger className="cursor-pointer" asChild>
+                          <SidebarMenuButton className="text-white hover:bg-[#F4C242] transition p-3 rounded-md">
+                            <span>{name}</span>
+                            <ChevronDown className="ml-auto group-data-[state=open]/collapsible:hidden" />
+                            <ChevronUp className="ml-auto group-data-[state=closed]/collapsible:hidden" />
+                          </SidebarMenuButton>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="pl-6 space-y-3">
+                          {children.map(({ name, path }) => (
+                            <SidebarMenuButton
+                              key={name}
+                              asChild
+                              className="text-white hover:text-[#DCF8C6] transition py-2"
+                            >
+                              <Link to={path}>{name}</Link>
+                            </SidebarMenuButton>
+                          ))}
+                        </CollapsibleContent>
+                      </Collapsible>
+                    ) : (
+                      <SidebarMenuButton
+                        asChild
+                        className="text-white hover:bg-[#F4C242] transition p-3 rounded-md"
+                      >
+                        <Link to={path}>{name}</Link>
+                      </SidebarMenuButton>
+                    )}
+                  </SidebarMenuItem>
+                )
+              )}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+
+      {/* Logout Button */}
+      <SidebarFooter className="p-6 border-t border-white/20">
+        <Button
+          onClick={handleSignOut}
+          className="w-full bg-[#D23E3E] hover:bg-[#F4C242] text-white py-3"
+        >
+          Logout
+        </Button>
+      </SidebarFooter>
+    </Sidebar>
   );
 }

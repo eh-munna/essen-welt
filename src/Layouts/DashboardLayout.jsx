@@ -5,11 +5,21 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { useTitleContext } from '@/context/Title/TitleProvider';
+import useTitle from '@/hooks/useTitle';
 import { useState } from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 
 export default function DashboardLayout() {
   const { title } = useTitleContext();
+
+  const location = useLocation();
+  const pageTitle =
+    location.pathname.slice(1).toLowerCase() === 'dashboard'
+      ? location.pathname.slice(1).charAt(0).toUpperCase() +
+        location.pathname.slice(2)
+      : '';
+
+  useTitle(pageTitle);
 
   const [toggle, setToggle] = useState(false);
 
@@ -17,23 +27,28 @@ export default function DashboardLayout() {
     <>
       <SidebarProvider>
         <DashboardSidebar />
-        <SidebarInset className={'bg-[#075E54] '}>
-          <header className="flex h-14 items-center px-4">
-            {/* <SidebarTrigger /> */}
+        <SidebarInset className={'bg-[#128C7E]'}>
+          {' '}
+          <header className="flex h-14 items-center px-6 gap-3">
+            {/* Sidebar trigger button */}
             <SidebarTrigger
+              className={'text-[#F4C242]'}
               toggle={toggle}
               onClick={() => setToggle(!toggle)}
             />
 
-            <nav className="text-sm text-gray-500">
-              <Link to="/dashboard" className="hover:text-gray-700">
+            {/* Breadcrumb navigation */}
+            <nav className="text-sm text-white">
+              {' '}
+              <Link to="/dashboard" className="hover:text-[#F4C242]">
                 Dashboard
               </Link>
               <span className="mx-2">/</span>
-              <span className="font-semibold text-gray-900">{title}</span>
+              <span className="font-semibold text-[#DCF8C6]">{title}</span>{' '}
             </nav>
           </header>
-          <main className="container mx-auto px-4">
+          <main className="container mx-auto px-6">
+            {' '}
             <Outlet />
           </main>
         </SidebarInset>

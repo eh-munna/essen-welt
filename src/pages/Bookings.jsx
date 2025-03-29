@@ -1,22 +1,29 @@
 import ConfirmDialog from '@/components/ConfirmDialog';
 import BookingModal from '@/components/Customers/BookingModal';
 import { Button } from '@/components/ui/button';
+import useAuth from '@/hooks/useAuth';
 import useAxiosSecure from '@/hooks/useAxiosSecure';
-import useBookings from '@/hooks/useBookings';
+import useCustomerBookings from '@/hooks/useCustomerBookings';
 import convertToDayDate from '@/utils/BookingUtils';
 import { Loader2, LucideEdit, LucideTrash, XCircle } from 'lucide-react';
 import { useCallback, useState } from 'react';
 
 export default function Bookings() {
-  const { bookings, refetch } = useBookings();
+  const { customerBookings: bookings, refetch } = useCustomerBookings();
+  console.log(bookings);
   const [open, setOpen] = useState(false);
+  const [error, setError] = useState('');
+  const [selectedBooking, setSelectedBooking] = useState(null);
   const axiosSecure = useAxiosSecure();
 
-  const [selectedBooking, setSelectedBooking] = useState(null);
+  const { user } = useAuth();
+
   const handleDelete = useCallback(
     async (bookingId) => {
       try {
-        const response = await axiosSecure.delete(`/bookings/${bookingId}`);
+        const response = await axiosSecure.delete(
+          `/bookings/${bookingId}?email=${user?.email}`
+        );
         if (response.status === 200) {
           setSelectedBooking(null);
           refetch();
@@ -25,7 +32,27 @@ export default function Bookings() {
         console.error('Error deleting booking:', error);
       }
     },
-    [axiosSecure, refetch]
+    [axiosSecure, refetch, user?.email]
+  );
+
+  const handleEdit = useCallback(
+    async (data) => {
+      try {
+        const response = await axiosSecure.put(
+          `/bookings/admin/${selectedBooking?._id}`,
+          data
+        );
+        if (response.status === 200) {
+          setError('');
+          setSelectedBooking(null);
+          refetch();
+        }
+      } catch (error) {
+        setError(error.response?.data?.message);
+        // console.error('Error updating booking:', response?.data?.message);
+      }
+    },
+    [axiosSecure, refetch, selectedBooking?._id]
   );
 
   if (!bookings) {
@@ -108,10 +135,11 @@ export default function Bookings() {
 
       {selectedBooking && (
         <BookingModal
-          open={selectedBooking}
+          open={!!selectedBooking}
           setOpen={() => setSelectedBooking(null)}
+          onUpdate={handleEdit}
           selectedBooking={selectedBooking}
-          refetch={refetch}
+          error={error}
         />
       )}
     </section>

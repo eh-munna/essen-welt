@@ -3,12 +3,13 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
+
+import { motion } from 'framer-motion';
 
 import PropTypes from 'prop-types';
 
@@ -23,9 +24,16 @@ export default function ConfirmDialog({
 }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-md bg-[#075E54] text-white rounded-xl shadow-lg">
+      <DialogContent
+        as={motion.div} // Make the DialogContent a motion div
+        initial={{ opacity: 0, y: -50 }} // Start position (above the screen)
+        animate={{ opacity: open ? 1 : 0, y: open ? 0 : -50 }} // Slide down when open
+        exit={{ opacity: 0, y: -50 }} // Slide back up when closed
+        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+        className={`sm:max-w-md bg-[#075E54] text-white rounded-xl shadow-lg transition-all duration-300`}
+      >
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle className="text-2xl font-semibold">{title}</DialogTitle>
           <p
             className={cn('', {
               'text-orange-400': description,
@@ -34,11 +42,15 @@ export default function ConfirmDialog({
           >
             {description}
           </p>
-          <DialogDescription className={'sr-only'}></DialogDescription>
         </DialogHeader>
         <DialogFooter className="flex justify-end gap-2">
           <DialogClose asChild>
-            <Button variant="secondary">{cancelText}</Button>
+            <Button
+              variant="secondary"
+              className="bg-gray-600 hover:bg-gray-700 text-white transition-colors"
+            >
+              {cancelText}
+            </Button>
           </DialogClose>
           <Button
             variant="destructive"
@@ -46,6 +58,7 @@ export default function ConfirmDialog({
               onConfirm();
               setOpen(false);
             }}
+            className="bg-red-500 hover:bg-white hover:text-red-500 border border-red-500 text-white transition-colors"
           >
             {confirmText}
           </Button>
@@ -56,7 +69,6 @@ export default function ConfirmDialog({
 }
 
 // Props Validation
-
 ConfirmDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   setOpen: PropTypes.func.isRequired,

@@ -10,33 +10,57 @@ import {
 import { Input } from '@/components/ui/input';
 import toastOptions from '@/constants/toastOptions';
 import useAuth from '@/hooks/useAuth';
-import useAxiosPublic from '@/hooks/useAxiosPublic';
-import { deleteUser, updateProfile } from 'firebase/auth';
+import useAxiosSecure from '@/hooks/useAxiosSecure';
+import useCustomer from '@/hooks/useCustomer';
+import useTitle from '@/hooks/useTitle';
+import { updateProfile } from 'firebase/auth';
+import { Loader2 } from 'lucide-react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { Link, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 
-export default function SignUp() {
-  const axiosPublic = useAxiosPublic();
+export default function EditProfile() {
+  const { user, setUser } = useAuth();
+  const axiosSecure = useAxiosSecure();
+  const { customer, isLoading } = useCustomer();
+  const navigate = useNavigate();
 
-  const { user, setUser, createUser, createGoogleLogin } = useAuth();
+  useTitle('Edit Profile');
+
   const form = useForm({
     defaultValues: {
       firstName: '',
       lastName: '',
       email: '',
       phoneNumber: '',
-      password: '',
-      'deliveryAddress.street': '',
-      'deliveryAddress.city': '',
-      'deliveryAddress.country': '',
-      'deliveryAddress.postalCode': '',
+      deliveryAddress: {
+        street: '',
+        city: '',
+        country: '',
+        postalCode: '',
+      },
     },
   });
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    if (customer) {
+      form.reset({
+        firstName: customer.firstName || '',
+        lastName: customer.lastName || '',
+        email: customer.email || '',
+        phoneNumber: customer.phoneNumber || '',
+        deliveryAddress: {
+          street: customer.deliveryAddress?.street || '',
+          city: customer.deliveryAddress?.city || '',
+          country: customer.deliveryAddress?.country || '',
+          postalCode: customer.deliveryAddress?.postalCode || '',
+        },
+      });
+    }
+  }, [customer, form]);
 
-  const handleSignUp = async (data) => {
+  const handleUpdateProfile = async (data) => {
     const {
       firstName,
       lastName,
@@ -61,26 +85,25 @@ export default function SignUp() {
       role: 'customer',
     };
 
-    let createdUser = null;
     try {
       await toast.promise(
         async () => {
-          // Create User in Firebase
-          createdUser = await createUser(email, password);
-          if (!createdUser?.user) {
-            throw new Error('Firebase user creation failed');
-          }
-
-          await updateProfile(createdUser?.user, {
+          // Update user in Firebase
+          await updateProfile(user, {
             displayName: `${userInfo.firstName} ${userInfo.lastName}`,
           });
-          // Save user in the database
-          await axiosPublic.post('/users', {
-            ...userInfo,
-            uid: createdUser?.user?.uid,
+
+          // Update user in the database
+          await axiosSecure.put(
+            `/users/${customer?._id}?email=${customer?.email}`,
+            userInfo
+          );
+
+          setUser({
+            ...user,
+            displayName: `${userInfo.firstName} ${userInfo.lastName}`,
           });
-          setUser(createdUser?.user);
-          navigate('/');
+          navigate('/dashboard/profile');
         },
         {
           loading: toastOptions.loading,
@@ -93,89 +116,33 @@ export default function SignUp() {
       );
     } catch (error) {
       console.log(error);
-      if (createdUser?.user) {
-        try {
-          await deleteUser(createdUser.user);
-        } catch (deleteError) {
-          console.error('Failed to delete Firebase user:', deleteError);
-        }
-      }
     }
   };
 
-  const handleGoogleLogin = async () => {
-    let createdUser = null;
-    try {
-      await toast.promise(
-        async () => {
-          createdUser = await createGoogleLogin();
-
-          if (!createdUser?.user) {
-            throw new Error('Firebase user creation failed');
-          }
-          const userInfo = {
-            name: createdUser?.user?.displayName,
-            email: createdUser?.user?.email,
-            phoneNumber: createdUser?.user?.phoneNumber || 'defaultValue',
-            deliveryAddress: {
-              street: 'defaultValue',
-              city: 'defaultValue',
-              country: 'defaultValue',
-              postalCode: 'defaultValue',
-            },
-            role: 'customer',
-            uid: createdUser?.user?.uid,
-          };
-
-          const { data } = await axiosPublic.post(`/users`, userInfo);
-
-          if (!data?.isNew) {
-            toast.success(`${data?.message}`, {
-              position: 'top-right',
-              duration: 3000,
-            });
-          } else {
-            toast.success(`${data?.message}`, {
-              position: 'top-right',
-              duration: 3000,
-            });
-          }
-
-          setUser(createdUser?.user);
-          navigate('/');
-        },
-        {
-          loading: toastOptions.loading,
-          error: toastOptions.error,
-        },
-        {
-          ...toastOptions.styles,
-        }
-      );
-    } catch (error) {
-      console.log(error);
-      if (createdUser?.user) {
-        await deleteUser(createdUser.user);
-      }
-    }
-  };
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="w-10 h-10 animate-spin text-[#2D6A4F]" />
+      </div>
+    );
+  }
 
   return (
-    <section className="flex items-center justify-center min-h-screen bg-gray-900">
-      <div className="bg-gray-800 text-gray-200 p-8 rounded-lg shadow-xl w-full max-w-lg">
-        <h2 className="text-3xl font-bold text-sky-500 mb-4 text-center">
-          Welcome!
+    <section className="flex items-center justify-center min-h-screen">
+      <div className="bg-white text-gray-800 p-8 rounded-lg shadow-xl w-full max-w-lg">
+        <h2 className="text-3xl font-bold text-[#2D6A4F] mb-4 text-center">
+          Edit Your Profile
         </h2>
-        <p className="text-sm text-gray-400 text-center mb-6">
-          Sign up to enjoy
+        <p className="text-sm text-gray-600 text-center mb-6">
+          Update your information below
         </p>
 
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(handleSignUp)}
+            onSubmit={form.handleSubmit(handleUpdateProfile)}
             className="space-y-6"
           >
-            {/* First Name & Last Name (Side by Side) */}
+            {/* First Name & Last Name */}
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -205,7 +172,7 @@ export default function SignUp() {
               />
             </div>
 
-            {/* Email & Phone Number (Side by Side) */}
+            {/* Email & Phone Number */}
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -218,6 +185,7 @@ export default function SignUp() {
                         type="email"
                         placeholder="you@example.com"
                         {...field}
+                        disabled
                       />
                     </FormControl>
                     <FormMessage />
@@ -249,7 +217,7 @@ export default function SignUp() {
                   <FormControl>
                     <Input
                       type="password"
-                      placeholder="Enter your password"
+                      placeholder="Enter your new password"
                       {...field}
                     />
                   </FormControl>
@@ -258,7 +226,7 @@ export default function SignUp() {
               )}
             />
 
-            {/* Address Fields (2x2 Grid) */}
+            {/* Address Fields */}
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -322,42 +290,14 @@ export default function SignUp() {
             </div>
 
             {/* Submit Button */}
-            <Button type="submit" className="w-full">
-              Submit
+            <Button
+              type="submit"
+              className="w-full bg-[#2D6A4F] hover:bg-[#21583C] text-white"
+            >
+              Update Profile
             </Button>
           </form>
         </Form>
-
-        {/* Divider */}
-        <div className="mt-6 flex items-center gap-4">
-          <span className="flex-grow h-px bg-gray-600"></span>
-          <span className="text-sm text-gray-400">Or login with</span>
-          <span className="flex-grow h-px bg-gray-600"></span>
-        </div>
-
-        {/* Google & GitHub Login */}
-        <div className="mt-4 flex gap-3 justify-center">
-          <button
-            onClick={handleGoogleLogin}
-            className="flex items-center justify-center gap-2 bg-gray-700 border border-sky-500 hover:border-sky-700 text-gray-300 hover:bg-gray-600 py-2 px-4 rounded-lg transition duration-200"
-          >
-            <span>Google</span>
-          </button>
-          <button className="flex items-center justify-center gap-2 bg-gray-700 border border-sky-500 hover:border-sky-700 text-gray-300 hover:bg-gray-600 py-2 px-4 rounded-lg transition duration-200">
-            <span>GitHub</span>
-          </button>
-        </div>
-
-        {/* Login Link */}
-        <p className="mt-6 text-center text-sm text-gray-400">
-          Have an account?{' '}
-          <Link
-            to="/login"
-            className="text-sky-500 hover:underline hover:text-sky-400 transition duration-200"
-          >
-            Login
-          </Link>
-        </p>
       </div>
     </section>
   );

@@ -1,3 +1,4 @@
+import ConfirmDialog from '@/components/ConfirmDialog';
 import BookingModal from '@/components/Customers/BookingModal';
 import { Button } from '@/components/ui/button';
 import useAxiosSecure from '@/hooks/useAxiosSecure';
@@ -10,15 +11,18 @@ import { useParams } from 'react-router-dom';
 export default function CustomerBookings() {
   const { customerEmail } = useParams();
   const { customerBookings, refetch } = useCustomerBookings(customerEmail);
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [error, setError] = useState('');
 
   const axiosSecure = useAxiosSecure();
-
-  const [selectedBooking, setSelectedBooking] = useState(null);
 
   const handleDelete = useCallback(
     async (bookingId) => {
       try {
-        const response = await axiosSecure.delete(`/bookings/${bookingId}`);
+        const response = await axiosSecure.delete(
+          `/bookings/admin/${bookingId}`
+        );
 
         console.log(response);
         if (response.status === 200) {
@@ -31,6 +35,26 @@ export default function CustomerBookings() {
       }
     },
     [axiosSecure, refetch]
+  );
+
+  const handleEdit = useCallback(
+    async (data) => {
+      try {
+        const response = await axiosSecure.put(
+          `/bookings/admin/${selectedBooking?._id}`,
+          data
+        );
+        if (response.status === 200) {
+          setError('');
+          setSelectedBooking(null);
+          refetch();
+        }
+      } catch (error) {
+        setError(error.response?.data?.message);
+        // console.error('Error updating booking:', response?.data?.message);
+      }
+    },
+    [axiosSecure, refetch, selectedBooking?._id]
   );
 
   if (!customerBookings) return <p>Loading bookings...</p>;
@@ -75,20 +99,29 @@ export default function CustomerBookings() {
             <Button
               variant="ghost"
               className="text-red-500 hover:text-red-700"
-              onClick={() => handleDelete(booking._id)}
+              onClick={() => setOpen(true)}
             >
               <LucideTrash size={20} />
             </Button>
           </div>
+
+          <ConfirmDialog
+            open={open}
+            setOpen={setOpen}
+            onConfirm={() => handleDelete(booking?._id)}
+            title="Delete Booking"
+            description={`Booking for #${booking.name} will be deleted!`}
+          />
         </div>
       ))}
 
       {selectedBooking && (
         <BookingModal
-          open={selectedBooking}
+          open={!!selectedBooking}
           setOpen={() => setSelectedBooking(null)}
+          onUpdate={handleEdit}
           selectedBooking={selectedBooking}
-          refetch={refetch}
+          error={error}
         />
       )}
     </section>

@@ -10,15 +10,18 @@ import CustomerBookings from '@/pages/CustomerBookings';
 import CustomerOrders from '@/pages/CustomerOrders';
 import Customers from '@/pages/Customers';
 import Dashboard from '@/pages/Dashboard';
+import EditProfile from '@/pages/EditProfile';
 import Home from '@/pages/Home';
 import Login from '@/pages/Login';
 import Menu from '@/pages/Menu';
 import ModifyMenu from '@/pages/ModifyMenu';
 import ModifyTable from '@/pages/ModifyTable';
+import MyBookings from '@/pages/MyBookings';
 import MyOrders from '@/pages/MyOrders';
 import Orders from '@/pages/Orders';
 import Payment from '@/pages/Payment';
 import PaymentSuccess from '@/pages/PaymentSuccess';
+import Profile from '@/pages/Profile';
 import SignUp from '@/pages/SignUp';
 import { loadMenuItem, loadPopularItems } from '@/utils/menuUtils';
 import {
@@ -57,14 +60,14 @@ const Routes = createBrowserRouter(
             </PrivateRoute>
           }
         />
-        <Route
+        {/* <Route
           path="/my-orders"
           element={
             <PrivateRoute>
               <MyOrders />
             </PrivateRoute>
           }
-        />
+        /> */}
         <Route path="/login" element={<Login />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="*" element={<ErrorPage />} />
@@ -79,14 +82,6 @@ const Routes = createBrowserRouter(
           }
         />
 
-        <Route
-          path="/dashboard/all-bookings"
-          element={
-            <AdminRoute>
-              <Bookings />
-            </AdminRoute>
-          }
-        />
         <Route
           path="/dashboard/customers"
           element={
@@ -135,6 +130,14 @@ const Routes = createBrowserRouter(
             </AdminRoute>
           }
         />
+        <Route
+          path="/dashboard/all-bookings"
+          element={
+            <AdminRoute>
+              <Bookings />
+            </AdminRoute>
+          }
+        />
 
         <Route
           path={`/dashboard/customer-orders/:customerEmail`}
@@ -151,6 +154,39 @@ const Routes = createBrowserRouter(
             <AdminRoute>
               <CustomerBookings />
             </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/dashboard/my-orders"
+          element={
+            <PrivateRoute>
+              <MyOrders />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dashboard/my-bookings"
+          element={
+            <PrivateRoute>
+              <MyBookings />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dashboard/edit-profile"
+          element={
+            <PrivateRoute>
+              <EditProfile />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dashboard/profile"
+          element={
+            <PrivateRoute>
+              <Profile />
+            </PrivateRoute>
           }
         />
 

@@ -4,12 +4,11 @@ import { useContext, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 
-// TODO: Remove the user interface
+// TODO: Remove the user logo interface
 
 const navbarLinks = [
   { name: 'Home', path: '/', scrollId: '' },
   { name: 'Menu', path: '/menu', scrollId: '' },
-  { name: 'My Orders', path: '/my-orders', scrollId: '' },
   { name: 'Cart', path: '/cart', scrollId: '' },
 ];
 
@@ -61,17 +60,26 @@ function Navbar() {
         <ul className="hidden md:flex gap-6 text-white">
           {navbarLinks.map(({ name, path }) => (
             <li key={name} className="hover:text-[#F4A261] transition">
-              <Link to={path}>{name}</Link>
+              <Link to={path} className="relative group pb-2">
+                {name}
+                <span className="absolute left-0 bottom-0 w-0 h-[3px] bg-red-500 group-hover:w-full transition-all"></span>
+              </Link>
             </li>
           ))}
 
           {!user ? (
             <>
               <li className="hover:text-[#F4A261] transition">
-                <Link to="/sign-up">Sign Up</Link>
+                <Link className="relative group pb-2" to="/sign-up">
+                  Sign Up
+                  <span className="absolute left-0 bottom-0 w-0 h-[3px] bg-red-500 group-hover:w-full transition-all"></span>
+                </Link>
               </li>
               <li className="hover:text-[#F4A261] transition">
-                <Link to="/login">Login</Link>
+                <Link className="relative group pb-2" to="/login">
+                  Login
+                  <span className="absolute left-0 bottom-0 w-0 h-[3px] bg-red-500 group-hover:w-full transition-all"></span>
+                </Link>
               </li>
             </>
           ) : (

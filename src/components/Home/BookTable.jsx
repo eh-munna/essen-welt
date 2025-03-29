@@ -31,11 +31,15 @@ export default function BookTable() {
 
       <Form {...form}>
         <form
+          data-aos="zoom-in-up"
+          data-aos-easing="ease-out-cubic"
+          data-aos-duration="2000"
           onSubmit={form.handleSubmit(handleOnSubmit)}
           className="space-y-8"
         >
           {/* Name and Email */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {' '}
             <FormField
               control={form.control}
               name="name"

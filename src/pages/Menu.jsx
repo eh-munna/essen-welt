@@ -37,16 +37,21 @@ export default function Menu() {
       <Tabs
         value={activeMenu}
         onValueChange={setActiveMenu}
-        className="w-2/3 mx-auto"
+        className="w-full mx-auto bg-[#006A4E]"
       >
-        <TabsList className="mt-5 flex justify-around">
+        <TabsList className="py-6 flex justify-evenly items-center gap-6 rounded-none bg-[#006A4E]">
           {sortedCategories?.map((category) => (
-            <TabsTrigger key={category} value={category}>
-              {category}
+            <TabsTrigger
+              key={category}
+              value={category}
+              className={`text-green-500 border border-green-500 p-2 hover:bg-red-500 hover:text-orange-400 transition delay-150 duration-300 ease-in-out`}
+            >
+              {category.slice(0, 1).toUpperCase() +
+                category.slice(1).toLowerCase()}
             </TabsTrigger>
           ))}
         </TabsList>
-        <TabsContent value={activeMenu}>
+        <TabsContent value={activeMenu} className={`min-h-screen`}>
           <div className="grid md:grid-cols-3 gap-3 space-y-3">
             {menus?.map((item) => (
               <MenuItem key={item._id} item={item} />

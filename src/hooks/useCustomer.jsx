@@ -5,9 +5,15 @@ import useAxiosSecure from './useAxiosSecure';
 const useCustomer = () => {
   const axiosSecure = useAxiosSecure();
   const { user, loading } = useAuth();
-  const { data: customer = {}, refetch } = useQuery({
+  const {
+    data: customer = {},
+    refetch,
+    isLoading,
+  } = useQuery({
     queryKey: ['user', user?.email],
     enabled: !loading && !!user?.email,
+    retry: 2,
+    staleTime: 5 * 60 * 1000,
     queryFn: async () => {
       const { data } = await axiosSecure.get(`/users/?email=${user?.email}`);
       return data?.data;
@@ -16,6 +22,7 @@ const useCustomer = () => {
   return {
     customer,
     refetch,
+    isLoading,
   };
 };
 
