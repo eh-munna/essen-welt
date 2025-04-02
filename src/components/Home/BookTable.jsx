@@ -7,8 +7,16 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import useAxiosPublic from '@/hooks/useAxiosPublic';
+import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
+import { CalendarIcon, CircleX, TriangleAlert } from 'lucide-react';
 import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+import Heading from '../Heading';
+import { TimePicker } from '../TimePicker';
 import { Button } from '../ui/button';
+import { Calendar } from '../ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Textarea } from '../ui/textarea';
 
 export default function BookTable() {
@@ -16,24 +24,77 @@ export default function BookTable() {
   const form = useForm();
 
   const handleOnSubmit = async (data) => {
-    const response = await axiosPublic.post(`/bookings`, data);
-    console.log(response);
+    const bookingData = {
+      ...data,
+      date: format(new Date(data.date), 'yyyy-MM-dd'),
+    };
+
+    try {
+      const response = await axiosPublic.post(`/bookings`, bookingData);
+      if (response.status === 201) {
+        const successMsg = response?.data?.message;
+        toast(
+          (t) => (
+            <span className="p-3 text-green-600">
+              {successMsg}
+              <Button
+                variant={'ghost'}
+                className="absolute top-0 right-0 text-green-600 bg-transparent hover:bg-transparent hover:text-green-700 cursor-pointer"
+                onClick={() => toast.dismiss(t.id)}
+              >
+                <CircleX />
+              </Button>
+            </span>
+          ),
+
+          {
+            position: 'top-right',
+            duration: 4000,
+            type: 'success',
+          }
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      const errMsg = error?.response?.data?.message;
+      toast(
+        (t) => (
+          <span className="p-3 text-red-600">
+            {errMsg}
+            <Button
+              variant={'ghost'}
+              className="absolute top-0 right-0 text-red-600 bg-transparent hover:bg-transparent hover:text-red-700 cursor-pointer"
+              onClick={() => toast.dismiss(t.id)}
+            >
+              <CircleX />
+            </Button>
+          </span>
+        ),
+
+        {
+          icon: <TriangleAlert color="#fb0000" />,
+          position: 'top-right',
+          duration: 4000,
+          type: 'error',
+        }
+      );
+    }
   };
 
   return (
     <section
       id="book-table"
-      className="mx-auto p-8 mb-2 bg-white shadow-lg rounded-lg"
+      className="container mx-auto pt-[72px] mb-2 bg-white rounded-lg"
     >
-      <h1 className="text-3xl font-semibold text-[#2D6A4F] mb-6">
-        Book Your Table
-      </h1>
+      <Heading headingText={'Book Your Table'} />
 
       <Form {...form}>
         <form
           data-aos="zoom-in-up"
           data-aos-easing="ease-out-cubic"
           data-aos-duration="2000"
+          data-aos-delay="100"
+          data-aos-once="true"
           onSubmit={form.handleSubmit(handleOnSubmit)}
           className="space-y-8"
         >
@@ -52,7 +113,7 @@ export default function BookTable() {
                       placeholder="Your name"
                       {...field}
                       value={field.value || ''}
-                      className="border-gray-300 shadow-sm focus:ring-[#2D6A4F] focus:border-[#2D6A4F]"
+                      className="border-gray-300 shadow-sm focus:ring-[#2D6A4F] focus:border-[#2D6A4F] mt-2"
                     />
                   </FormControl>
                 </FormItem>
@@ -70,7 +131,7 @@ export default function BookTable() {
                       placeholder="Email"
                       {...field}
                       value={field.value || ''}
-                      className="border-gray-300 shadow-sm focus:ring-[#2D6A4F] focus:border-[#2D6A4F]"
+                      className="border-gray-300 shadow-sm focus:ring-[#2D6A4F] focus:border-[#2D6A4F] mt-2"
                     />
                   </FormControl>
                 </FormItem>
@@ -92,7 +153,7 @@ export default function BookTable() {
                       placeholder="+49(0)123456789"
                       {...field}
                       value={field.value || ''}
-                      className="border-gray-300 shadow-sm focus:ring-[#2D6A4F] focus:border-[#2D6A4F]"
+                      className="border-gray-300 shadow-sm focus:ring-[#2D6A4F] focus:border-[#2D6A4F] mt-2"
                     />
                   </FormControl>
                 </FormItem>
@@ -111,7 +172,7 @@ export default function BookTable() {
                       {...field}
                       min="0"
                       value={field.value || ''}
-                      className="border-gray-300 shadow-sm focus:ring-[#2D6A4F] focus:border-[#2D6A4F]"
+                      className="border-gray-300 shadow-sm focus:ring-[#2D6A4F] focus:border-[#2D6A4F] mt-2"
                     />
                   </FormControl>
                 </FormItem>
@@ -127,52 +188,76 @@ export default function BookTable() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Date</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="date"
-                      {...field}
-                      value={field.value || ''}
-                      className="border-gray-300 shadow-sm focus:ring-[#2D6A4F] focus:border-[#2D6A4F]"
-                    />
-                  </FormControl>
+                  <div>
+                    <FormControl>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant={'outline'}
+                            className={cn(
+                              'w-full border-gray-300 shadow-sm focus:ring-[#2D6A4F] focus:border-[#2D6A4F] mt-2',
+                              !field.value && 'text-muted-foreground'
+                            )}
+                          >
+                            {field.value ? (
+                              format(field.value, 'dd.MM.yyyy')
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </FormControl>
+                  </div>
                 </FormItem>
               )}
             />
-            <div className="flex gap-3">
-              <FormField
-                control={form.control}
-                name="startTime"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>From</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="time"
-                        {...field}
-                        value={field.value || ''}
-                        className="border-gray-300 shadow-sm focus:ring-[#2D6A4F] focus:border-[#2D6A4F]"
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="endTime"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>To</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="time"
-                        {...field}
-                        value={field.value || ''}
-                        className="border-gray-300 shadow-sm focus:ring-[#2D6A4F] focus:border-[#2D6A4F]"
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+            <div className="flex flex-col md:flex-row gap-3">
+              <div className="w-full">
+                <FormLabel>From</FormLabel>
+                <FormField
+                  control={form.control}
+                  name="startTime"
+                  render={({ field }) => (
+                    <FormItem className={'w-full'}>
+                      <FormControl>
+                        <TimePicker
+                          value={field.value}
+                          onChange={field.onChange}
+                          timeInstruction={'Pick your start time'}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="w-full">
+                <FormLabel>To</FormLabel>
+                <FormField
+                  control={form.control}
+                  name="endTime"
+                  render={({ field }) => (
+                    <FormItem className={'w-full'}>
+                      <FormControl>
+                        <TimePicker
+                          value={field.value}
+                          onChange={field.onChange}
+                          timeInstruction={'Pick your end time'}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
           </div>
 
@@ -189,7 +274,7 @@ export default function BookTable() {
                       placeholder="Do you have any note for us?"
                       {...field}
                       value={field.value || ''}
-                      className="border-gray-300 shadow-sm focus:ring-[#2D6A4F] focus:border-[#2D6A4F]"
+                      className="border-gray-300 shadow-sm focus:ring-[#2D6A4F] focus:border-[#2D6A4F] mt-2"
                     />
                   </FormControl>
                 </FormItem>
@@ -200,7 +285,7 @@ export default function BookTable() {
           {/* Submit Button */}
           <Button
             type="submit"
-            className="w-full py-3 bg-[#2D6A4F] text-white hover:bg-[#1F4F39] transition duration-200"
+            className="w-full py-2 px-6 bg-orange-500 text-white hover:bg-orange-600 transition duration-200 cursor-pointer rounded-full"
           >
             Submit
           </Button>

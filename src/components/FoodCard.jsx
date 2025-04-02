@@ -8,7 +8,7 @@ const FoodCard = ({ item }) => {
 
   return (
     <>
-      <div className="relative overflow-hidden group animate-rotate-border max-w-sm transition-all bg-conic/[from_var(--border-angle)] from-black via-green-500 to-black from-80% via-90% to-100% rounded-lg">
+      <div className="relative overflow-hidden group animate-rotate-border transition-all bg-conic/[from_var(--border-angle)] from-black via-green-500 to-black from-80% via-90% to-100% rounded-lg">
         {/* Card Content */}
         <div className="relative transition-all duration-300 p-[4px] group-hover:p-0 ease-in-out">
           <div className="relative w-full">
@@ -19,7 +19,7 @@ const FoodCard = ({ item }) => {
               className="w-full h-full object-cover rounded-lg transform-gpu will-change-transform transition-transform duration-500 group-hover:scale-[1.03]"
             />
             {/* Image Overlay */}
-            <div className="absolute inset-0 bg-transparent hover:bg-black opacity-60 group-hover:opacity-80 transition-opacity duration-300 rounded-lg"></div>
+            {/* <div className="absolute inset-0 bg-transparent hover:bg-black opacity-60 group-hover:opacity-80 transition-opacity duration-300 rounded-lg"></div> */}
           </div>
 
           {/* Content with Background */}

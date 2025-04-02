@@ -121,7 +121,7 @@ export default function Login() {
   }
 
   return (
-    <section className="flex items-center justify-center min-h-screen bg-gray-900">
+    <section className="flex items-center justify-center min-h-[70vh] p-8">
       <div className="bg-gray-800 text-gray-200 p-8 rounded-lg shadow-xl w-full max-w-sm">
         <h2 className="text-3xl font-bold text-sky-500 mb-6 text-center">
           Welcome Back
@@ -202,12 +202,12 @@ export default function Login() {
           >
             <span>Google</span>
           </Button>
-          <button
+          <Button
             className="flex items-center justify-center gap-2 bg-gray-700 border border-sky-500 hover:border-sky-700 text-gray-300 hover:bg-gray-600 py-2 px-4 rounded-lg transition duration-200"
             type="button"
           >
             <span>Github</span>
-          </button>
+          </Button>
         </div>
 
         {/* Signup Link */}

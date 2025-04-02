@@ -1,24 +1,23 @@
-import DevelopmentBanner from '@/components/DevelopmentBanner';
 import Footer from '@/components/Footer/Footer';
 import Navbar from '@/components/Navbar/Navbar';
 import { Outlet } from 'react-router-dom';
 
-function Layout() {
+export default function Layout() {
   return (
     <>
-      <header className="container mx-auto">
-        <DevelopmentBanner />
-        <Navbar />
+      <header className="relative">
+        <div className="fixed top-0 left-0 z-20 w-full transition-all duration-300">
+          <Navbar />
+        </div>
       </header>
-      <main className="container mx-auto">
-        {/* Content will be rendered here based on the route */}
+
+      <main className="">
         <Outlet />
       </main>
+
       <footer className="container mx-auto">
         <Footer />
       </footer>
     </>
   );
 }
-
-export default Layout;
