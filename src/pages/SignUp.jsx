@@ -14,12 +14,15 @@ import useAxiosPublic from '@/hooks/useAxiosPublic';
 import { deleteUser, updateProfile } from 'firebase/auth';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { Link, useNavigate } from 'react-router';
+import { FaGithub } from 'react-icons/fa';
+import { FcGoogle } from 'react-icons/fc';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function SignUp() {
   const axiosPublic = useAxiosPublic();
+  const { setUser, createUser, createGoogleLogin } = useAuth();
+  const navigate = useNavigate();
 
-  const { user, setUser, createUser, createGoogleLogin } = useAuth();
   const form = useForm({
     defaultValues: {
       firstName: '',
@@ -33,8 +36,6 @@ export default function SignUp() {
       'deliveryAddress.postalCode': '',
     },
   });
-
-  const navigate = useNavigate();
 
   const handleSignUp = async (data) => {
     const {
@@ -65,7 +66,6 @@ export default function SignUp() {
     try {
       await toast.promise(
         async () => {
-          // Create User in Firebase
           createdUser = await createUser(email, password);
           if (!createdUser?.user) {
             throw new Error('Firebase user creation failed');
@@ -74,11 +74,12 @@ export default function SignUp() {
           await updateProfile(createdUser?.user, {
             displayName: `${userInfo.firstName} ${userInfo.lastName}`,
           });
-          // Save user in the database
+
           await axiosPublic.post('/users', {
             ...userInfo,
             uid: createdUser?.user?.uid,
           });
+
           setUser(createdUser?.user);
           navigate('/');
         },
@@ -87,12 +88,10 @@ export default function SignUp() {
           success: toastOptions.success,
           error: toastOptions.error,
         },
-        {
-          ...toastOptions.styles,
-        }
+        toastOptions.styles
       );
     } catch (error) {
-      console.log(error);
+      console.error(error);
       if (createdUser?.user) {
         try {
           await deleteUser(createdUser.user);
@@ -113,6 +112,7 @@ export default function SignUp() {
           if (!createdUser?.user) {
             throw new Error('Firebase user creation failed');
           }
+
           const userInfo = {
             name: createdUser?.user?.displayName,
             email: createdUser?.user?.email,
@@ -127,19 +127,12 @@ export default function SignUp() {
             uid: createdUser?.user?.uid,
           };
 
-          const { data } = await axiosPublic.post(`/users`, userInfo);
+          const { data } = await axiosPublic.post('/users', userInfo);
 
-          if (!data?.isNew) {
-            toast.success(`${data?.message}`, {
-              position: 'top-right',
-              duration: 3000,
-            });
-          } else {
-            toast.success(`${data?.message}`, {
-              position: 'top-right',
-              duration: 3000,
-            });
-          }
+          toast.success(data?.message, {
+            position: 'top-right',
+            duration: 3000,
+          });
 
           setUser(createdUser?.user);
           navigate('/');
@@ -148,12 +141,10 @@ export default function SignUp() {
           loading: toastOptions.loading,
           error: toastOptions.error,
         },
-        {
-          ...toastOptions.styles,
-        }
+        toastOptions.styles
       );
     } catch (error) {
-      console.log(error);
+      console.error(error);
       if (createdUser?.user) {
         await deleteUser(createdUser.user);
       }
@@ -161,62 +152,117 @@ export default function SignUp() {
   };
 
   return (
-    <section className="flex items-center justify-center min-h-screen bg-gray-900">
-      <div className="bg-gray-800 text-gray-200 p-8 rounded-lg shadow-xl w-full max-w-lg">
-        <h2 className="text-3xl font-bold text-sky-500 mb-4 text-center">
-          Welcome!
-        </h2>
-        <p className="text-sm text-gray-400 text-center mb-6">
-          Sign up to enjoy
-        </p>
+    <section className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 pt-[72px]">
+      <div className="bg-white rounded-xl shadow-lg overflow-hidden w-full max-w-2xl">
+        {/* Header Section */}
+        <div className="bg-orange-500 p-6 text-center">
+          <h2 className="text-3xl font-bold text-white">Create Your Account</h2>
+          <p className="text-orange-100 mt-2">Join us today</p>
+        </div>
 
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSignUp)}
-            className="space-y-6"
-          >
-            {/* First Name & Last Name (Side by Side) */}
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="firstName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>First Name</FormLabel>
-                    <FormControl>
-                      <Input type="text" placeholder="First name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="lastName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Last Name</FormLabel>
-                    <FormControl>
-                      <Input type="text" placeholder="Last name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+        {/* Form Section */}
+        <div className="p-8">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSignUp)}
+              className="space-y-6"
+            >
+              {/* Personal Information */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="firstName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-gray-700">
+                        First Name*
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="John"
+                          className="h-12 text-base focus-visible:ring-orange-500"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-gray-700">
+                        Last Name*
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Doe"
+                          className="h-12 text-base focus-visible:ring-orange-500"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-            {/* Email & Phone Number (Side by Side) */}
-            <div className="grid grid-cols-2 gap-4">
+              {/* Contact Information */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-gray-700">Email*</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="email"
+                          placeholder="john@example.com"
+                          className="h-12 text-base focus-visible:ring-orange-500"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="phoneNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-gray-700">
+                        Phone Number
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          type="tel"
+                          placeholder="+49 123 456 789"
+                          className="h-12 text-base focus-visible:ring-orange-500"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* Password */}
               <FormField
                 control={form.control}
-                name="email"
+                name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel className="text-gray-700">Password*</FormLabel>
                     <FormControl>
                       <Input
-                        type="email"
-                        placeholder="you@example.com"
+                        type="password"
+                        placeholder="At least 8 characters"
+                        className="h-12 text-base focus-visible:ring-orange-500"
                         {...field}
                       />
                     </FormControl>
@@ -224,140 +270,139 @@ export default function SignUp() {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="phoneNumber"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Phone</FormLabel>
-                    <FormControl>
-                      <Input type="tel" placeholder="+1234567890" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+
+              {/* Address Section */}
+              <div className="space-y-2">
+                <h3 className="text-lg font-medium text-gray-700">
+                  Delivery Address
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="deliveryAddress.street"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-gray-700">Street*</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="123 Main St"
+                            className="h-12 text-base focus-visible:ring-orange-500"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="deliveryAddress.city"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-gray-700">City*</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Berlin"
+                            className="h-12 text-base focus-visible:ring-orange-500"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="deliveryAddress.postalCode"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-gray-700">
+                          Postal Code*
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="10115"
+                            className="h-12 text-base focus-visible:ring-orange-500"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="deliveryAddress.country"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-gray-700">
+                          Country*
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Germany"
+                            className="h-12 text-base focus-visible:ring-orange-500"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full h-12 bg-orange-500 hover:bg-orange-600 text-white text-lg rounded-full"
+              >
+                Create Account
+              </Button>
+            </form>
+          </Form>
+
+          {/* Divider */}
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
             </div>
-
-            {/* Password */}
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Enter your password"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Address Fields (2x2 Grid) */}
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="deliveryAddress.street"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Street</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="text"
-                        placeholder="Street address"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="deliveryAddress.city"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>City</FormLabel>
-                    <FormControl>
-                      <Input type="text" placeholder="City" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <div className="relative flex justify-center">
+              <span className="px-2 bg-white text-gray-500 text-sm">
+                Or sign up with
+              </span>
             </div>
+          </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="deliveryAddress.postalCode"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Postal Code</FormLabel>
-                    <FormControl>
-                      <Input type="text" placeholder="Postal Code" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="deliveryAddress.country"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Country</FormLabel>
-                    <FormControl>
-                      <Input type="text" placeholder="Country" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            {/* Submit Button */}
-            <Button type="submit" className="w-full">
-              Submit
+          {/* Social Login Buttons */}
+          <div className="grid grid-cols-2 gap-4">
+            <Button
+              onClick={handleGoogleLogin}
+              variant="outline"
+              className="h-12 gap-2 border-gray-300 hover:bg-gray-50"
+            >
+              <FcGoogle className="text-xl" />
+              <span>Google</span>
             </Button>
-          </form>
-        </Form>
+            <Button
+              variant="outline"
+              className="h-12 gap-2 border-gray-300 hover:bg-gray-50"
+            >
+              <FaGithub className="text-xl" />
+              <span>GitHub</span>
+            </Button>
+          </div>
 
-        {/* Divider */}
-        <div className="mt-6 flex items-center gap-4">
-          <span className="flex-grow h-px bg-gray-600"></span>
-          <span className="text-sm text-gray-400">Or login with</span>
-          <span className="flex-grow h-px bg-gray-600"></span>
+          {/* Login Link */}
+          <p className="mt-8 text-center text-gray-600">
+            Already have an account?{' '}
+            <Link
+              to="/login"
+              className="font-medium text-orange-600 hover:underline"
+            >
+              Login
+            </Link>
+          </p>
         </div>
-
-        {/* Google & GitHub Login */}
-        <div className="mt-4 flex gap-3 justify-center">
-          <button
-            onClick={handleGoogleLogin}
-            className="flex items-center justify-center gap-2 bg-gray-700 border border-sky-500 hover:border-sky-700 text-gray-300 hover:bg-gray-600 py-2 px-4 rounded-lg transition duration-200"
-          >
-            <span>Google</span>
-          </button>
-          <button className="flex items-center justify-center gap-2 bg-gray-700 border border-sky-500 hover:border-sky-700 text-gray-300 hover:bg-gray-600 py-2 px-4 rounded-lg transition duration-200">
-            <span>GitHub</span>
-          </button>
-        </div>
-
-        {/* Login Link */}
-        <p className="mt-6 text-center text-sm text-gray-400">
-          Have an account?{' '}
-          <Link
-            to="/login"
-            className="text-sky-500 hover:underline hover:text-sky-400 transition duration-200"
-          >
-            Login
-          </Link>
-        </p>
       </div>
     </section>
   );

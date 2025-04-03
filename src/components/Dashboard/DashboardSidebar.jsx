@@ -67,20 +67,22 @@ export default function DashboardSidebar() {
 
   return (
     <Sidebar
-      style={{ '--sidebar': '#2D6A4F' }}
-      className={cn('text-white h-screen shadow-lg', 'bg-[#2D6A4F]')}
+      style={{ '--sidebar': '#ffffff' }}
+      className={cn('text-gray-800 min-h-screen shadow-lg', 'bg-white')}
     >
       {/* Profile Section */}
-      <div className="p-8 flex flex-col items-center border-b border-white/20 space-y-4">
-        <UserCircle size={60} className="text-white" />
-        <h3 className="text-xl font-semibold">{user?.displayName || 'User'}</h3>
-        <p className="text-sm text-gray-200">
+      <div className="p-8 flex flex-col items-center border-b border-gray-200 space-y-4 bg-gray-100">
+        <UserCircle size={60} className="text-orange-500" />
+        <h3 className="text-xl font-semibold text-[#131313]">
+          {user?.displayName || 'User'}
+        </h3>
+        <p className="text-sm text-[#2D6A4F]">
           {user?.email || 'email@example.com'}
         </p>
         <Link
-          className="mt-4 text-[#075E54] bg-white border-[#075E54] border 
-             px-4 py-2 rounded-md shadow-sm 
-             hover:bg-[#128C7E] hover:text-white transition"
+          className="mt-4 rounded-full text-white bg-orange-500 border-orange-500 border 
+             py-2 px-6 shadow-sm 
+             hover:bg-orange-600 transition"
           to={`/dashboard/profile`}
         >
           Profile
@@ -88,9 +90,9 @@ export default function DashboardSidebar() {
       </div>
 
       {/* Navigation Links */}
-      <SidebarContent className="py-6">
+      <SidebarContent className="py-6 bg-white">
         <SidebarGroup>
-          <SidebarGroupLabel className="text-lg font-semibold text-white/90 mb-4">
+          <SidebarGroupLabel className="text-lg font-semibold text-gray-900 mb-4">
             Navigation
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -101,7 +103,7 @@ export default function DashboardSidebar() {
                     {children ? (
                       <Collapsible className="group/collapsible">
                         <CollapsibleTrigger className="cursor-pointer" asChild>
-                          <SidebarMenuButton className="text-white hover:bg-[#F4C242] transition p-3 rounded-md">
+                          <SidebarMenuButton className="text-gray-900 hover:bg-orange-500 hover:text-white transition p-3 rounded-md">
                             <span>{name}</span>
                             <ChevronDown className="ml-auto group-data-[state=open]/collapsible:hidden" />
                             <ChevronUp className="ml-auto group-data-[state=closed]/collapsible:hidden" />
@@ -112,7 +114,7 @@ export default function DashboardSidebar() {
                             <SidebarMenuButton
                               key={name}
                               asChild
-                              className="text-white hover:text-[#DCF8C6] transition py-2"
+                              className="text-gray-800 hover:text-orange-500 transition py-2"
                             >
                               <Link to={path}>{name}</Link>
                             </SidebarMenuButton>
@@ -122,7 +124,7 @@ export default function DashboardSidebar() {
                     ) : (
                       <SidebarMenuButton
                         asChild
-                        className="text-white hover:bg-[#F4C242] transition p-3 rounded-md"
+                        className="text-gray-900 hover:bg-orange-500 hover:text-white transition duration-300 p-3 rounded-md"
                       >
                         <Link to={path}>{name}</Link>
                       </SidebarMenuButton>
@@ -136,10 +138,10 @@ export default function DashboardSidebar() {
       </SidebarContent>
 
       {/* Logout Button */}
-      <SidebarFooter className="p-6 border-t border-white/20">
+      <SidebarFooter className="p-6 border-t border-gray-200 bg-gray-100">
         <Button
           onClick={handleSignOut}
-          className="w-full bg-[#D23E3E] hover:bg-[#F4C242] text-white py-3"
+          className="bg-transparent border border-orange-500 hover:border-orange-600 hover:bg-orange-600 hover:text-white transition-all rounded-full group py-2 px-6 text-orange-500"
         >
           Logout
         </Button>

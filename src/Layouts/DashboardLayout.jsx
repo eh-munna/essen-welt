@@ -27,28 +27,28 @@ export default function DashboardLayout() {
     <>
       <SidebarProvider>
         <DashboardSidebar />
-        <SidebarInset className={'bg-[#128C7E]'}>
-          {' '}
-          <header className="flex h-14 items-center px-6 gap-3">
+        <SidebarInset className={'bg-white'}>
+          <header className="flex h-14 items-center px-6 gap-3 border-b border-gray-200 bg-gray-100">
             {/* Sidebar trigger button */}
             <SidebarTrigger
-              className={'text-[#F4C242]'}
+              className={'text-orange-500'}
               toggle={toggle}
               onClick={() => setToggle(!toggle)}
             />
 
             {/* Breadcrumb navigation */}
-            <nav className="text-sm text-white">
-              {' '}
-              <Link to="/dashboard" className="hover:text-[#F4C242]">
+            <nav className="text-sm text[#131313]">
+              <Link
+                to="/dashboard"
+                className="hover:text-orange-600 transition-all ease-in-out duration-300"
+              >
                 Dashboard
               </Link>
               <span className="mx-2">/</span>
-              <span className="font-semibold text-[#DCF8C6]">{title}</span>{' '}
+              <span className="font-semibold text-orange-600">{title}</span>
             </nav>
           </header>
-          <main className="container mx-auto px-6">
-            {' '}
+          <main className="container mx-auto px-6 py-4">
             <Outlet />
           </main>
         </SidebarInset>

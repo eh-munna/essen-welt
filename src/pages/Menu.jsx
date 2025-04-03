@@ -1,13 +1,11 @@
-import Heading from '@/components/Heading';
 import { MenuItem } from '@/components/Menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import useMenu from '@/hooks/useMenu';
+import { motion } from 'framer-motion';
 import { useState } from 'react';
 
 export default function Menu() {
   const [activeMenu, setActiveMenu] = useState('starters');
-  // const axiosPublic = useAxiosPublic();
-
   const [activeId, setActiveId] = useState(null);
 
   const { allMenus } = useMenu(activeMenu);
@@ -28,41 +26,80 @@ export default function Menu() {
     return a.localeCompare(b);
   });
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 },
+  };
+
   return (
-    <>
-      <section className="p-8">
-        <Heading headingText={'Discover Our Menu'} />
-        <Tabs
-          value={activeMenu}
-          onValueChange={setActiveMenu}
-          className="w-full mx-auto"
-        >
-          <TabsList className="py-6 flex justify-evenly items-center gap-6 bg-transparent">
-            {sortedCategories?.map((category) => (
-              <TabsTrigger
-                key={category}
-                value={category}
-                className={`text-green-500 border-transparent rounded-none bg-transparent p-2  hover:text-orange-400 transition-all duration-300 ease-in-out data-[state=active]:bg-transparent data-[state=active]:border-b-4 data-[state=active]:border-b-amber-400 data-[state=active]:shadow-none hover:bg-transparent cursor-pointer`}
+    <section className="container mx-auto px-4 sm:px-6 pt-28 pb-16">
+      {/* Enhanced Heading */}
+      <div className="mb-10 md:mb-14 lg:mb-16 text-center">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">
+          Discover <span className="text-orange-500"> Our Menu</span>
+        </h2>
+        <p className="mt-4 text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
+          Explore our carefully crafted selection of culinary delights
+        </p>
+      </div>
+
+      {/* Enhanced Tabs */}
+      <Tabs value={activeMenu} onValueChange={setActiveMenu} className="w-full">
+        <TabsList className="flex pb-2 gap-4 sm:gap-6 justify-start sm:justify-center bg-transparent">
+          {sortedCategories?.map((category) => (
+            <TabsTrigger
+              key={category}
+              value={category}
+              className={`
+                px-4 py-2 text-sm sm:text-base font-medium whitespace-nowrap
+                text-gray-700 hover:text-orange-500 transition-colors
+                border-b-2 border-transparent
+                data-[state=active]:text-orange-600
+                data-[state=active]:border-orange-600
+                focus-visible:ring-2 focus-visible:ring-orange-300
+              `}
+            >
+              {category.charAt(0).toUpperCase() +
+                category.slice(1).toLowerCase()}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+
+        {/* Menu Content with Animation */}
+        <TabsContent value={activeMenu} className="mt-8">
+          <motion.div
+            initial="hidden"
+            animate="show"
+            variants={containerVariants}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            {menus?.map((item) => (
+              <motion.div
+                key={item._id}
+                variants={itemVariants}
+                transition={{ duration: 0.3 }}
               >
-                {category.slice(0, 1).toUpperCase() +
-                  category.slice(1).toLowerCase()}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          <TabsContent value={activeMenu} className={`min-h-screen mt-8`}>
-            <div className="grid md:grid-cols-3 gap-3 space-y-3">
-              {menus?.map((item) => (
                 <MenuItem
-                  key={item._id}
                   item={item}
                   activeId={activeId}
                   handleToggle={handleToggle}
                 />
-              ))}
-            </div>
-          </TabsContent>
-        </Tabs>
-      </section>
-    </>
+              </motion.div>
+            ))}
+          </motion.div>
+        </TabsContent>
+      </Tabs>
+    </section>
   );
 }

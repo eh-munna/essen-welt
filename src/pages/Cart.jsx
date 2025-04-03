@@ -1,7 +1,7 @@
-import Heading from '@/components/Heading';
 import { Button } from '@/components/ui/button';
 import { CartContext } from '@/context/cart/CartProvider';
 import useCustomer from '@/hooks/useCustomer';
+import { Trash2 } from 'lucide-react';
 import { useContext, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UpdateInfoModal from './UpdateInfoModal';
@@ -9,9 +9,7 @@ import UpdateInfoModal from './UpdateInfoModal';
 export default function Cart() {
   const { cart, removeFromCart } = useContext(CartContext);
   const { customer } = useCustomer();
-
   const navigate = useNavigate();
-
   const [open, setOpen] = useState(false);
 
   const {
@@ -39,212 +37,180 @@ export default function Cart() {
       cart?.reduce((total, item) => total + item?.price * item?.quantity, 0),
     [cart]
   );
+
   const handleDeleteItem = (id) => {
     removeFromCart(id);
   };
 
   if (!cart || cart?.length === 0) {
     return (
-      <section className="px-6 py-10">
-        <h2 className="text-3xl font-semibold text-[#2D6A4F] mb-6">
-          Your cart is empty
-        </h2>
-        <p className="text-lg text-[#3D5A6E]">
-          Start adding items to your cart.
-        </p>
+      <section className="container mx-auto px-4 sm:px-6 pt-32 pb-16 min-h-screen flex flex-col justify-center items-center text-center">
+        <div className="mb-10 md:mb-14 lg:mb-16 text-center">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">
+            Your <span className="text-orange-500">Cart Is Empty</span>
+          </h2>
+          <p className="mt-4 text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
+            Start adding delicious items to your cart
+          </p>
+
+          <Button
+            onClick={() => navigate('/menu')}
+            className="mt-6 bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-full"
+          >
+            Browse Menu
+          </Button>
+        </div>
       </section>
     );
   }
 
   return (
-    <section className="px-6 py-10 bg-[#FBFBFB]">
-      <Heading headingText={'Shopping Cart'} />
+    <section className="container mx-auto px-4 sm:px-6 pt-28 pb-16 min-h-screen">
+      {/* Enhanced Heading */}
+      <div className="mb-10 md:mb-14 lg:mb-16 text-center">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">
+          Your <span className="text-orange-500">Shopping Cart</span>
+        </h2>
+        <p className="mt-4 text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
+          Review and proceed with your order
+        </p>
+      </div>
 
-      {/* Cart List */}
-      <div className="space-y-6">
-        <div className="p-6 rounded-lg shadow-lg hover:shadow-2xl transition duration-300 ease-in-out">
-          {/* For Desktop View (Two-column layout) */}
-          <div className="hidden md:grid grid-cols-2 gap-6">
-            {/* Left Section: Cart Items */}
-            <div className="space-y-4">
-              <div className="grid grid-cols-5">
-                <div>Product</div>
-                <div></div>
-                <div>Price</div>
-                <div>Quantity</div>
-                <div></div>
-              </div>
-              {cart?.map((item) => (
-                <div
-                  key={item?.itemId}
-                  className="flex items-center justify-between bg-white shadow-lg rounded-lg p-4"
-                >
-                  {/* Product Section: Image and Name */}
-                  <div className="flex items-center space-x-4">
-                    <img
-                      src={item?.image}
-                      alt={item?.name}
-                      className="w-16 h-16 object-cover rounded"
-                    />
-                    <div>
-                      <div className="font-semibold text-[#2D6A4F]">
-                        {item?.name}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Price Section */}
-                  <div className="flex flex-col items-start justify-between ml-4">
-                    <div className="text-[#E63946] font-semibold">
-                      €{item?.price?.toFixed(2)}
-                    </div>
-                  </div>
-
-                  {/* Quantity Section */}
-                  <div className="flex flex-col items-start justify-between ml-4">
-                    <span className="bg-[#E0E0E0] rounded-full py-2 px-4 text-[#2D6A4F] font-semibold">
-                      {item?.quantity}x
-                    </span>
-                  </div>
-
-                  {/* Delete Button */}
-                  <div>
-                    <Button
-                      onClick={() => handleDeleteItem(item?.itemId)}
-                      className="text-[#E63946] font-semibold hover:text-red-500 transition"
-                    >
-                      Delete
-                    </Button>
-                  </div>
-
-                  {/* Total Price for this item */}
-                  <div className="font-semibold text-[#2D6A4F]">
-                    €{(item?.price * item?.quantity).toFixed(2)}
-                  </div>
-                </div>
-              ))}
+      {/* Cart Content */}
+      <div className="flex flex-col lg:flex-row gap-8">
+        {/* Cart Items - Left Column */}
+        <div className="lg:w-2/3">
+          {/* Desktop Table */}
+          <div className="hidden md:block bg-white rounded-lg shadow-sm p-6">
+            <div className="grid grid-cols-12 gap-4 items-center py-4 border-b border-gray-100 font-medium text-gray-700">
+              <div className="col-span-5">Item</div>
+              <div className="col-span-2 text-center">Price</div>
+              <div className="col-span-2 text-center">Quantity</div>
+              <div className="col-span-2 text-center">Total</div>
+              <div className="col-span-1"></div>
             </div>
 
-            {/* Right Section: Cart Summary */}
-            <div className="bg-white shadow-lg rounded-lg p-6">
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-lg font-semibold text-[#3D5A6E]">
-                    Total Items:
-                  </span>
-                  <span className="text-lg font-semibold text-[#2D6A4F]">
-                    {cart?.length}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-lg font-semibold text-[#3D5A6E]">
-                    Subtotal:
-                  </span>
-                  <span className="text-lg font-semibold text-[#2D6A4F]">
-                    €
-                    {cart
-                      ?.reduce(
-                        (total, item) => total + item?.price * item?.quantity,
-                        0
-                      )
-                      .toFixed(2)}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-lg font-semibold text-[#3D5A6E]">
-                    Total:
-                  </span>
-                  <span className="text-lg font-semibold text-[#E63946]">
-                    €{totalAmount?.toFixed(2)}
-                  </span>
-                </div>
-
-                <Button
-                  onClick={handlePlaceOrder}
-                  className="mt-6 w-full bg-[#2D6A4F] text-white py-3 rounded-md hover:bg-[#1B4D38] transition duration-200"
-                >
-                  Place Order
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          {/* For Mobile View (Card-style) */}
-          <div className="sm:hidden">
             {cart?.map((item) => (
               <div
                 key={item?.itemId}
-                className="flex flex-col bg-white shadow-lg rounded-lg p-4 mb-6"
+                className="grid grid-cols-12 gap-4 items-center py-6 border-b border-gray-100 last:border-0"
               >
-                {/* Product Section: Name and Price */}
-                <div className="flex justify-between items-start w-full">
-                  <h3 className="text-lg font-semibold text-[#2D6A4F]">
-                    {item?.name}
-                  </h3>
-                  <span className="text-[#E63946] font-bold text-lg">
-                    €{item?.price?.toFixed(2)}
-                  </span>
+                <div className="col-span-5 flex items-center gap-4">
+                  <img
+                    src={item?.image}
+                    alt={item?.name}
+                    className="w-16 h-16 object-cover rounded-lg"
+                  />
+                  <p className="font-medium text-gray-800">{item?.name}</p>
                 </div>
 
-                {/* Quantity Section */}
-                <div className="mt-2">
-                  <span className="bg-[#E0E0E0] rounded-full py-1 px-3 text-[#2D6A4F] font-semibold">
+                <div className="col-span-2 text-center text-orange-600 font-medium">
+                  €{item?.price?.toFixed(2)}
+                </div>
+
+                <div className="col-span-2 text-center">
+                  <span className="inline-flex items-center justify-center w-10 h-10 bg-orange-100 text-orange-600 rounded-full">
                     {item?.quantity}x
                   </span>
                 </div>
 
-                {/* Total Price */}
-                <div className="mt-2">
-                  <span className="text-sm text-[#3D5A6E]">
-                    Total: €{(item?.price * item?.quantity).toFixed(2)}
-                  </span>
+                <div className="col-span-2 text-center font-medium">
+                  €{(item?.price * item?.quantity).toFixed(2)}
                 </div>
 
-                {/* Delete Button */}
-                <div className="mt-2">
-                  <button
+                <div className="col-span-1 flex justify-center">
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => handleDeleteItem(item?.itemId)}
-                    className="text-[#E63946] font-semibold hover:text-red-500 transition"
+                    className="text-red-500 hover:bg-red-50 hover:text-red-600"
                   >
-                    Delete
-                  </button>
+                    <Trash2 className="h-5 w-5" />
+                  </Button>
                 </div>
               </div>
             ))}
+          </div>
 
-            {/* Cart Summary */}
-            <div className="bg-white p-6 rounded-lg shadow-lg mt-4">
-              <div className="flex justify-between items-center">
-                <span className="text-lg font-semibold text-[#3D5A6E]">
-                  Total Items:
-                </span>
-                <span className="text-lg font-semibold text-[#2D6A4F]">
-                  {cart?.length}
-                </span>
+          {/* Mobile List */}
+          <div className="md:hidden space-y-4">
+            {cart?.map((item) => (
+              <div
+                key={item?.itemId}
+                className="bg-white rounded-lg shadow-sm p-4"
+              >
+                <div className="flex justify-between">
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={item?.image}
+                      alt={item?.name}
+                      className="w-12 h-12 object-cover rounded-lg"
+                    />
+                    <div>
+                      <p className="font-medium text-gray-800">{item?.name}</p>
+                      <p className="text-orange-600 font-medium">
+                        €{item?.price?.toFixed(2)}
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleDeleteItem(item?.itemId)}
+                    className="text-red-500 hover:bg-red-50 hover:text-red-600"
+                  >
+                    <Trash2 className="h-5 w-5" />
+                  </Button>
+                </div>
+                <div className="mt-3 flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-500">Quantity:</span>
+                    <span className="font-medium">{item?.quantity}</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-sm text-gray-500">Total:</span>
+                    <p className="font-medium">
+                      €{(item?.price * item?.quantity).toFixed(2)}
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-lg font-semibold text-[#3D5A6E]">
-                  Subtotal:
-                </span>
-                <span className="text-lg font-semibold text-[#2D6A4F]">
-                  €
-                  {cart
-                    ?.reduce(
-                      (total, item) => total + item?.price * item?.quantity,
-                      0
-                    )
-                    .toFixed(2)}
-                </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Order Summary - Right Column */}
+        <div className="lg:w-1/3">
+          <div className="bg-white rounded-lg shadow-sm p-6 sticky top-28">
+            <h3 className="text-xl font-bold text-gray-900 mb-6">
+              Order Summary
+            </h3>
+
+            <div className="space-y-4">
+              <div className="flex justify-between">
+                <span className="text-gray-600">Items ({cart?.length})</span>
+                <span className="font-medium">€{totalAmount?.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-lg font-semibold text-[#3D5A6E]">
-                  Total:
-                </span>
-                <span className="text-lg font-semibold text-[#E63946]">
-                  €{totalAmount?.toFixed(2)}
-                </span>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Delivery</span>
+                <span className="font-medium">€0.00</span>
+              </div>
+              <div className="border-t border-gray-200 pt-4 mt-4">
+                <div className="flex justify-between font-bold text-lg">
+                  <span>Total</span>
+                  <span className="text-orange-600">
+                    €{totalAmount?.toFixed(2)}
+                  </span>
+                </div>
               </div>
             </div>
+
+            <Button
+              onClick={handlePlaceOrder}
+              className="w-full mt-8 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-full font-medium"
+            >
+              Proceed to Checkout
+            </Button>
           </div>
         </div>
       </div>

@@ -122,102 +122,123 @@ export default function EditProfile() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-10 h-10 animate-spin text-[#2D6A4F]" />
+        <Loader2 className="w-12 h-12 animate-spin text-[#2D6A4F]" />
       </div>
     );
   }
 
   return (
-    <section className="flex items-center justify-center min-h-screen">
-      <div className="bg-white text-gray-800 p-8 rounded-lg shadow-xl w-full max-w-lg">
-        <h2 className="text-3xl font-bold text-[#2D6A4F] mb-4 text-center">
-          Edit Your Profile
-        </h2>
-        <p className="text-sm text-gray-600 text-center mb-6">
-          Update your information below
-        </p>
+    <section className="max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-6 space-y-6 border border-gray-200">
+      {/* Header */}
+      <h2 className="text-2xl font-semibold text-orange-500 text-center">
+        Edit Your Profile
+      </h2>
+      <p className="text-sm text-gray-600 text-center">
+        Update your information below
+      </p>
 
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleUpdateProfile)}
-            className="space-y-6"
-          >
-            {/* First Name & Last Name */}
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="firstName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>First Name</FormLabel>
-                    <FormControl>
-                      <Input type="text" placeholder="First name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="lastName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Last Name</FormLabel>
-                    <FormControl>
-                      <Input type="text" placeholder="Last name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            {/* Email & Phone Number */}
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="you@example.com"
-                        {...field}
-                        disabled
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="phoneNumber"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Phone</FormLabel>
-                    <FormControl>
-                      <Input type="tel" placeholder="+1234567890" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            {/* Password */}
+      {/* Form */}
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(handleUpdateProfile)}
+          className="space-y-6"
+        >
+          {/* First Name & Last Name */}
+          <div className="grid grid-cols-2 gap-4">
             <FormField
               control={form.control}
-              name="password"
+              name="firstName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>First Name</FormLabel>
+                  <FormControl>
+                    <Input type="text" placeholder="First name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="lastName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Last Name</FormLabel>
+                  <FormControl>
+                    <Input type="text" placeholder="Last name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          {/* Email & Phone */}
+          <div className="grid grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
-                      type="password"
-                      placeholder="Enter your new password"
+                      type="email"
+                      placeholder="you@example.com"
+                      {...field}
+                      disabled
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="phoneNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone</FormLabel>
+                  <FormControl>
+                    <Input type="tel" placeholder="+1234567890" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          {/* Password */}
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder="Enter new password"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Delivery Address */}
+          <div className="grid grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="deliveryAddress.street"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Street</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Street address"
                       {...field}
                     />
                   </FormControl>
@@ -225,80 +246,61 @@ export default function EditProfile() {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="deliveryAddress.city"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>City</FormLabel>
+                  <FormControl>
+                    <Input type="text" placeholder="City" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
-            {/* Address Fields */}
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="deliveryAddress.street"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Street</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="text"
-                        placeholder="Street address"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="deliveryAddress.city"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>City</FormLabel>
-                    <FormControl>
-                      <Input type="text" placeholder="City" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+          <div className="grid grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="deliveryAddress.postalCode"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Postal Code</FormLabel>
+                  <FormControl>
+                    <Input type="text" placeholder="Postal Code" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="deliveryAddress.country"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Country</FormLabel>
+                  <FormControl>
+                    <Input type="text" placeholder="Country" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="deliveryAddress.postalCode"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Postal Code</FormLabel>
-                    <FormControl>
-                      <Input type="text" placeholder="Postal Code" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="deliveryAddress.country"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Country</FormLabel>
-                    <FormControl>
-                      <Input type="text" placeholder="Country" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            {/* Submit Button */}
+          {/* Submit Button */}
+          <div className="flex justify-end">
             <Button
               type="submit"
-              className="w-full bg-[#2D6A4F] hover:bg-[#21583C] text-white"
+              className="py-2 px-6 flex items-center space-x-2 rounded-full bg-orange-500 hover:bg-orange-600 text-white transition duration-300 shadow-sm"
             >
-              Update Profile
+              <span>Update Profile</span>
             </Button>
-          </form>
-        </Form>
-      </div>
+          </div>
+        </form>
+      </Form>
     </section>
   );
 }

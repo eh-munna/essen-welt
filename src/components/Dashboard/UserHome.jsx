@@ -7,16 +7,16 @@ export default function UserDashboardHome() {
 
   return (
     <>
-      <div className="space-y-6">
-        <div className="bg-white p-6 rounded-lg shadow-lg">
+      <section className="space-y-6">
+        <div className="bg-gray-100 p-6 rounded-lg shadow-lg">
           <div className="mt-2 space-y-2">
-            <div className="text-lg">
+            <div className="text-lg text-gray-800">
               <p>
                 You have {orders?.length}{' '}
                 {orders?.length > 1 ? 'orders' : 'order'}
               </p>
             </div>
-            <div className="text-lg">
+            <div className="text-lg text-gray-800">
               <p>
                 You have {bookings?.length}{' '}
                 {bookings?.length > 1 ? 'bookings' : 'booking'}
@@ -24,7 +24,7 @@ export default function UserDashboardHome() {
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </>
   );
 }

@@ -1,10 +1,12 @@
 import { AuthContext } from '@/context/authentication/AuthProvider';
 import useCart from '@/hooks/useCart';
 import { cn } from '@/lib/utils';
-import { Menu, ShoppingBag, User2, X } from 'lucide-react'; // Icon package
+import { Menu, ShoppingBag, X } from 'lucide-react'; // Icon package
 import { useContext, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
+
+import { AnimatePresence, motion } from 'framer-motion';
 
 // TODO: Remove the user logo interface
 
@@ -21,8 +23,6 @@ export default function Navbar() {
   const { cart } = useCart();
   const [isOpen, setIsOpen] = useState(false);
   const { user, userSignOut } = useContext(AuthContext);
-
-  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -67,7 +67,8 @@ export default function Navbar() {
       className={cn(
         `w-full items-center px-4 py-3 text-orange-500 transition-all duration-300 ease-in-out text-sm`,
         {
-          'bg-white/80 backdrop-blur-[20px] shadow-md': isScrolled,
+          'bg-white md:bg-white/80 backdrop-blur-none md:backdrop-blur-[20px] shadow-md':
+            isScrolled,
           'bg-white shadow': !isScrolled,
         }
       )}
@@ -126,7 +127,7 @@ export default function Navbar() {
           </ul>
 
           {/* Auth Links */}
-          <ul className="flex items-center justify-center gap-5">
+          <ul className="hidden md:flex items-center justify-center gap-5">
             {!user ? (
               <>
                 <li className="flex flex-col items-center justify-center">
@@ -148,53 +149,51 @@ export default function Navbar() {
               </>
             ) : (
               <>
-                <li
-                  className="relative flex flex-col items-center"
-                  onMouseEnter={() => setIsHovered(true)}
-                  onMouseLeave={() => setIsHovered(false)}
-                >
+                {/* -------------------------------- */}
+
+                <li className="group relative flex flex-col items-center">
                   <Link>
                     <img
                       className="h-10 w-10 rounded-full"
-                      src={user?.photoURL || <User2 />}
-                      alt="User profile picture"
+                      src={user?.photoURL}
+                      alt="Profile"
                     />
                   </Link>
 
-                  {/* Floating Menu */}
-                  <div className="absolute left-1/2 top-full mt-3 -translate-x-1/2 w-40 overflow-hidden z-50 rounded-b-lg">
-                    <ul
+                  {/* Menu */}
+                  <div className=" rounded-lg absolute top-full left-1/2 -translate-x-1/2 overflow-hidden transition-all duration-300 ease-out max-h-0 group-hover:max-h-40">
+                    <div
                       className={cn(
-                        `relative flex flex-col gap-2 w-full bg-white shadow-lg rounded-b-lg p-3 opacity-0 translate-y-[-10px] transition-all duration-300 ease-in-out pointer-events-none`,
+                        `w-40 bg-white shadow-lg rounded-b-lg mt-3 p-3 transition-all duration-300 ease-out opacity-0 translate-y-[-10px] group-hover:opacity-100 group-hover:translate-y-0`,
                         {
-                          'opacity-100 translate-y-0 pointer-events-auto':
-                            isHovered,
-                          'bg-white/80': isScrolled,
+                          'bg-white/80 shadow-md': isScrolled,
                         }
                       )}
                     >
-                      <li className="relative text-orange-500 hover:text-orange-600 transition-all">
-                        <Link
-                          className="relative inline-block pb-2 group"
-                          to={`/dashboard/profile`}
-                        >
-                          Profile
-                          <span className="absolute left-0 bottom-0 w-0 h-[3px] bg-orange-600 group-hover:w-full transition-all"></span>
-                        </Link>
-                      </li>
-
-                      <li className="relative text-orange-500 hover:text-orange-600 transition-all">
-                        <Link
-                          className="relative inline-block pb-2 group"
-                          to={`/dashboard`}
-                        >
-                          Dashboard
-                          <span className="absolute left-0 bottom-0 w-0 h-[3px] bg-orange-600 group-hover:w-full transition-all"></span>
-                        </Link>
-                      </li>
-                    </ul>
+                      <div className="flex flex-col gap-2 mt-1">
+                        <li className="relative">
+                          <Link
+                            to="/dashboard/profile"
+                            className="text-orange-500 hover:text-orange-600 relative inline-block pb-2 after:absolute after:left-0 after:bottom-0 after:h-[3px] after:bg-orange-600 after:w-0 hover:after:w-full after:transition-all"
+                          >
+                            Profile
+                          </Link>
+                        </li>
+                        <li className="relative">
+                          <Link
+                            to="/dashboard"
+                            className="text-orange-500 hover:text-orange-600 relative inline-block pb-2 after:absolute after:left-0 after:bottom-0 after:h-[3px] after:bg-orange-600 after:w-0 hover:after:w-full after:transition-all"
+                          >
+                            Dashboard
+                          </Link>
+                        </li>
+                      </div>
+                    </div>
                   </div>
                 </li>
+
+                {/* -------------------------------- */}
+
                 <li>
                   <Link
                     className="bg-transparent border border-orange-500 hover:border-orange-600 hover:bg-orange-600 hover:text-white transition-all rounded-full group py-2 px-6 text-orange-500"
@@ -211,15 +210,125 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <ul className="md:hidden bg-[#2D6A4F] text-white text-center py-2">
-            {navbarLinks.map(({ name, path }) => (
-              <li key={name} className="py-2 border-b border-gray-600">
-                <Link to={path} onClick={() => setIsOpen(false)}>
-                  {name}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <AnimatePresence>
+            {/* Backdrop with fade animation */}
+            <motion.div
+              className="md:hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              onClick={() => setIsOpen(false)}
+            >
+              {/* Menu panel with smooth slide-in */}
+              <motion.div
+                className="absolute top-0 right-0 h-full w-4/5 max-w-xs bg-white shadow-lg"
+                initial={{ x: '100%' }}
+                animate={{ x: 0 }}
+                exit={{ x: '100%' }}
+                transition={{
+                  type: 'spring',
+                  damping: 25,
+                  stiffness: 200,
+                }}
+              >
+                {/* Close Button */}
+                <motion.button
+                  className="absolute top-4 right-4 text-orange-500"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setIsOpen(false)}
+                >
+                  <X size={24} />
+                </motion.button>
+
+                {/* Menu Content */}
+                <div className="h-full flex flex-col pt-16 px-6">
+                  {/* User Info */}
+                  {user && (
+                    <div className="flex items-center gap-3 pb-6 mb-6 border-b border-gray-200">
+                      <img
+                        className="h-12 w-12 rounded-full"
+                        src={user?.photoURL}
+                        alt="Profile"
+                      />
+                      <div>
+                        <p className="font-medium text-gray-900">
+                          {user.displayName}
+                        </p>
+                        <p className="text-sm text-gray-500">{user.email}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Navigation Links */}
+                  <ul className="space-y-4">
+                    {navbarLinks.map(({ name, path }) => (
+                      <li key={name}>
+                        <Link
+                          to={path}
+                          className="block py-3 text-orange-500 hover:text-orange-600 transition-colors"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          {name === 'Cart' && cart?.length > 0 ? (
+                            <div className="flex items-center justify-between">
+                              <span>Cart</span>
+                              <span className="bg-orange-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                                {cart.length}
+                              </span>
+                            </div>
+                          ) : (
+                            name
+                          )}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* Auth Section */}
+                  <div className="mt-auto pb-8 pt-6 border-t border-gray-200">
+                    {!user ? (
+                      <div className="space-y-3">
+                        <Link
+                          to="/sign-up"
+                          className="block w-full bg-orange-500 hover:bg-orange-600 text-white text-center py-2 px-4 rounded-full transition-colors"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          Sign Up
+                        </Link>
+                        <Link
+                          to="/login"
+                          className="block w-full border border-orange-500 text-orange-500 hover:bg-orange-50 text-center py-2 px-4 rounded-full transition-colors"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          Log in
+                        </Link>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        <Link
+                          to="/dashboard"
+                          className="block text-orange-500 hover:text-orange-600 py-2"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          Dashboard
+                        </Link>
+                        <button
+                          onClick={() => {
+                            setIsOpen(false);
+                            handleUserSignOut();
+                          }}
+                          className="w-full border border-orange-500 text-orange-500 hover:bg-orange-50 text-center py-2 px-4 rounded-full transition-colors"
+                        >
+                          Logout
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          </AnimatePresence>
         )}
       </div>
     </nav>

@@ -9,10 +9,9 @@ import { Input } from '@/components/ui/input';
 import useAxiosPublic from '@/hooks/useAxiosPublic';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
-import { CalendarIcon, CircleX, TriangleAlert } from 'lucide-react';
+import { CalendarIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import Heading from '../Heading';
 import { TimePicker } from '../TimePicker';
 import { Button } from '../ui/button';
 import { Calendar } from '../ui/calendar';
@@ -30,90 +29,61 @@ export default function BookTable() {
     };
 
     try {
-      const response = await axiosPublic.post(`/bookings`, bookingData);
+      const response = await axiosPublic.post('/bookings', bookingData);
       if (response.status === 201) {
-        const successMsg = response?.data?.message;
-        toast(
-          (t) => (
-            <span className="p-3 text-green-600">
-              {successMsg}
-              <Button
-                variant={'ghost'}
-                className="absolute top-0 right-0 text-green-600 bg-transparent hover:bg-transparent hover:text-green-700 cursor-pointer"
-                onClick={() => toast.dismiss(t.id)}
-              >
-                <CircleX />
-              </Button>
-            </span>
-          ),
-
-          {
-            position: 'top-right',
-            duration: 4000,
-            type: 'success',
-          }
-        );
+        toast.success(response.data.message, {
+          position: 'top-center',
+          duration: 4000,
+        });
       }
     } catch (error) {
-      console.log(error);
-      const errMsg = error?.response?.data?.message;
-      toast(
-        (t) => (
-          <span className="p-3 text-red-600">
-            {errMsg}
-            <Button
-              variant={'ghost'}
-              className="absolute top-0 right-0 text-red-600 bg-transparent hover:bg-transparent hover:text-red-700 cursor-pointer"
-              onClick={() => toast.dismiss(t.id)}
-            >
-              <CircleX />
-            </Button>
-          </span>
-        ),
-
-        {
-          icon: <TriangleAlert color="#fb0000" />,
-          position: 'top-right',
-          duration: 4000,
-          type: 'error',
-        }
-      );
+      toast.error(error.response?.data?.message || 'Booking failed', {
+        position: 'top-center',
+        duration: 4000,
+      });
     }
   };
 
   return (
     <section
       id="book-table"
-      className="container mx-auto pt-[72px] mb-2 bg-white rounded-lg"
+      className="container mx-auto px-4 sm:px-6 py-12 md:py-16 lg:py-20 bg-white"
     >
-      <Heading headingText={'Book Your Table'} />
+      {/* Enhanced Heading */}
+      <div className="text-center mb-10 md:mb-14 lg:mb-16">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          Reserve Your <span className="text-orange-500">Table</span>
+        </h2>
+        <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
+          Secure your dining experience with us
+        </p>
+      </div>
 
       <Form {...form}>
         <form
+          onSubmit={form.handleSubmit(handleOnSubmit)}
+          className="space-y-6 md:space-y-8 max-w-4xl mx-auto"
           data-aos="zoom-in-up"
           data-aos-easing="ease-out-cubic"
-          data-aos-duration="2000"
-          data-aos-delay="100"
+          data-aos-duration="3000"
           data-aos-once="true"
-          onSubmit={form.handleSubmit(handleOnSubmit)}
-          className="space-y-8"
         >
           {/* Name and Email */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {' '}
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel className="text-base md:text-lg">
+                    Full Name
+                  </FormLabel>
                   <FormControl>
                     <Input
                       type="text"
                       placeholder="Your name"
                       {...field}
-                      value={field.value || ''}
-                      className="border-gray-300 shadow-sm focus:ring-[#2D6A4F] focus:border-[#2D6A4F] mt-2"
+                      className="h-12 md:h-14 text-base border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                     />
                   </FormControl>
                 </FormItem>
@@ -124,14 +94,15 @@ export default function BookTable() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email Address</FormLabel>
+                  <FormLabel className="text-base md:text-lg">
+                    Email Address
+                  </FormLabel>
                   <FormControl>
                     <Input
                       type="email"
-                      placeholder="Email"
+                      placeholder="your@email.com"
                       {...field}
-                      value={field.value || ''}
-                      className="border-gray-300 shadow-sm focus:ring-[#2D6A4F] focus:border-[#2D6A4F] mt-2"
+                      className="h-12 md:h-14 text-base border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                     />
                   </FormControl>
                 </FormItem>
@@ -146,14 +117,15 @@ export default function BookTable() {
               name="phoneNumber"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Phone</FormLabel>
+                  <FormLabel className="text-base md:text-lg">
+                    Phone Number
+                  </FormLabel>
                   <FormControl>
                     <Input
                       type="tel"
-                      placeholder="+49(0)123456789"
+                      placeholder="+49 (0) 123 456 789"
                       {...field}
-                      value={field.value || ''}
-                      className="border-gray-300 shadow-sm focus:ring-[#2D6A4F] focus:border-[#2D6A4F] mt-2"
+                      className="h-12 md:h-14 text-base border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                     />
                   </FormControl>
                 </FormItem>
@@ -164,15 +136,17 @@ export default function BookTable() {
               name="numberOfPeople"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Number of Persons</FormLabel>
+                  <FormLabel className="text-base md:text-lg">
+                    Number of Guests
+                  </FormLabel>
                   <FormControl>
                     <Input
                       type="number"
                       placeholder="How many people?"
+                      min="1"
+                      max="20"
                       {...field}
-                      min="0"
-                      value={field.value || ''}
-                      className="border-gray-300 shadow-sm focus:ring-[#2D6A4F] focus:border-[#2D6A4F] mt-2"
+                      className="h-12 md:h-14 text-base border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                     />
                   </FormControl>
                 </FormItem>
@@ -187,71 +161,69 @@ export default function BookTable() {
               name="date"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Date</FormLabel>
-                  <div>
-                    <FormControl>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant={'outline'}
-                            className={cn(
-                              'w-full border-gray-300 shadow-sm focus:ring-[#2D6A4F] focus:border-[#2D6A4F] mt-2',
-                              !field.value && 'text-muted-foreground'
-                            )}
-                          >
-                            {field.value ? (
-                              format(field.value, 'dd.MM.yyyy')
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    </FormControl>
-                  </div>
+                  <FormLabel className="text-base md:text-lg">Date</FormLabel>
+                  <FormControl>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            'w-full h-12 md:h-14 justify-start text-left font-normal text-base border-gray-300',
+                            !field.value && 'text-muted-foreground'
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-5 w-5" />
+                          {field.value ? (
+                            format(field.value, 'PPP')
+                          ) : (
+                            <span>Select a date</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={field.onChange}
+                          initialFocus
+                          disabled={(date) => date < new Date()}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </FormControl>
                 </FormItem>
               )}
             />
-            <div className="flex flex-col md:flex-row gap-3">
-              <div className="w-full">
-                <FormLabel>From</FormLabel>
+            <div className="space-y-2">
+              <FormLabel className="text-base md:text-lg block">Time</FormLabel>
+              <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name="startTime"
                   render={({ field }) => (
-                    <FormItem className={'w-full'}>
+                    <FormItem>
                       <FormControl>
                         <TimePicker
                           value={field.value}
                           onChange={field.onChange}
-                          timeInstruction={'Pick your start time'}
+                          timeInstruction="From"
+                          className="h-12 md:h-14 text-base"
                         />
                       </FormControl>
                     </FormItem>
                   )}
                 />
-              </div>
-              <div className="w-full">
-                <FormLabel>To</FormLabel>
                 <FormField
                   control={form.control}
                   name="endTime"
                   render={({ field }) => (
-                    <FormItem className={'w-full'}>
+                    <FormItem>
                       <FormControl>
                         <TimePicker
                           value={field.value}
                           onChange={field.onChange}
-                          timeInstruction={'Pick your end time'}
+                          timeInstruction="To"
+                          className="h-12 md:h-14 text-base"
                         />
                       </FormControl>
                     </FormItem>
@@ -262,32 +234,32 @@ export default function BookTable() {
           </div>
 
           {/* Message */}
-          <div>
-            <FormField
-              control={form.control}
-              name="message"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Message</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Do you have any note for us?"
-                      {...field}
-                      value={field.value || ''}
-                      className="border-gray-300 shadow-sm focus:ring-[#2D6A4F] focus:border-[#2D6A4F] mt-2"
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-          </div>
+          <FormField
+            control={form.control}
+            name="message"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-base md:text-lg">
+                  Special Requests
+                </FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Any dietary restrictions or special notes?"
+                    {...field}
+                    className="min-h-[120px] text-base border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
 
           {/* Submit Button */}
           <Button
             type="submit"
-            className="w-full py-2 px-6 bg-orange-500 text-white hover:bg-orange-600 transition duration-200 cursor-pointer rounded-full"
+            size="lg"
+            className="w-full py-6 text-lg bg-orange-500 hover:bg-orange-600 transition-colors duration-300 rounded-full shadow-md"
           >
-            Submit
+            Confirm Reservation
           </Button>
         </form>
       </Form>

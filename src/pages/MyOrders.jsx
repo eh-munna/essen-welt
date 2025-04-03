@@ -27,11 +27,13 @@ export default function MyOrders() {
 
   return (
     <section className="px-6 py-10">
-      <h2 className="text-3xl font-semibold text-[#2D6A4F] mb-6">My Orders</h2>
+      <h2 className="text-3xl font-semibold text-orange-500 mb-8 text-center">
+        Your Orders
+      </h2>
 
       {/* Order List */}
       <div className="space-y-6">
-        <div className="bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition duration-300 ease-in-out">
+        <div className="p-6">
           {/* Desktop View */}
           <div className="hidden md:block">
             <div className="w-full bg-white shadow-lg rounded-lg overflow-hidden">

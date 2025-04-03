@@ -1,7 +1,7 @@
+import { cn } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Maximize2, Minimize2 } from 'lucide-react';
 import { useState } from 'react';
-import Heading from '../Heading';
 import { Button } from '../ui/button';
 
 export default function ClientReview() {
@@ -37,10 +37,18 @@ export default function ClientReview() {
 
   return (
     <section
-      className="container mx-auto pt-[72px] relative overflow-hidden mb-2"
+      className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 lg:py-20 relative"
       id="client-reviews"
     >
-      <Heading headingText={'What Customers Say About Us'} />
+      <div className="text-center mb-12 md:mb-16 lg:mb-20">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          What <span className="text-orange-500">Customers Say</span>
+        </h2>
+        <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
+          Hear from people who've experienced our service
+        </p>
+      </div>
+
       <div className="flex flex-col justify-center items-center">
         <motion.div
           className="relative w-full flex flex-col items-center"
@@ -51,7 +59,7 @@ export default function ClientReview() {
             {reviews.map((review, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: -index * 30, scale: 0.95 }}
+                initial={{ opacity: 0, y: index * 40, scale: 0.95 }}
                 animate={{
                   opacity: 1,
                   y: expanded ? index * 100 : -index * 12,
@@ -59,7 +67,10 @@ export default function ClientReview() {
                 }}
                 exit={{ opacity: 0, y: -20, scale: 0.9 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 60 }}
-                className="absolute w-[90%] bg-white rounded-lg shadow-[0px_5px_25px_rgba(0,0,0,0.15)] p-6"
+                className={cn(
+                  `absolute w-[90%] bg-white rounded-lg shadow-[0px_5px_25px_rgba(0,0,0,0.15)] p-6`,
+                  {}
+                )}
                 style={{ top: expanded ? index * 120 : index * 40 }}
               >
                 <p className="text-lg italic text-[#131313] mb-4">{`"${review.review}"`}</p>
