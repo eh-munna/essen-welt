@@ -39,6 +39,8 @@ export default function MyBookings() {
     [axiosSecure, refetch, user?.email]
   );
 
+  console.log(selectedBooking);
+
   const handleEdit = useCallback(
     async (data) => {
       try {
@@ -77,20 +79,19 @@ export default function MyBookings() {
   }
 
   return (
-    <section className="px-6 py-10">
+    <section className="px-6 py-10 bg-gray-50 min-h-screen">
       {/* Section Header */}
       <h2 className="text-3xl font-semibold text-orange-500 mb-8 text-center">
         Manage Your Bookings
       </h2>
-
       {/* Booking List */}
       <div className="space-y-6">
-        <div className="p-6">
+        <div className="p-6 rounded-xl">
           {/* Desktop View */}
           <div className="hidden md:block">
-            <div className="w-full bg-white shadow-sm rounded-lg overflow-hidden">
-              {/* Table Header */}
-              <div className="bg-[#2D6A4F] text-white font-semibold">
+            <div className="w-full bg-white rounded-xl overflow-hidden border border-gray-200">
+              {/* Table Header - Using your #131313 for text with orange accent */}
+              <div className="bg-gray-100">
                 <div className="flex p-4 justify-between text-center">
                   {[
                     'Booking ID',
@@ -100,25 +101,33 @@ export default function MyBookings() {
                     'Time',
                     'Actions',
                   ].map((title, index) => (
-                    <div key={index} className="w-1/6">
+                    <div
+                      key={index}
+                      className="w-1/6 font-medium text-[#131313]"
+                    >
                       {title}
                     </div>
                   ))}
                 </div>
               </div>
-
-              {/* Table Body */}
-              <div className="divide-y divide-gray-200">
+              <div className="divide-y divide-gray-100">
                 {bookings?.map((booking) => (
                   <div
                     key={booking._id}
-                    className="flex items-center justify-between text-center py-4 px-6 hover:bg-gray-100 transition duration-200"
+                    className="flex items-center justify-between text-center py-4 px-6 hover:bg-orange-50 transition duration-200"
+                    // {/* Orange hover */}
                   >
-                    <div className="w-1/6 font-medium text-[#2D6A4F] truncate">
+                    <div className="w-1/6 font-medium text-gray-600 truncate">
+                      {' '}
+                      {/* Secondary text */}
                       {booking._id}
                     </div>
-                    <div className="w-1/6 truncate">{booking.name}</div>
-                    <div className="w-1/6 font-semibold text-[#2D6A4F]">
+                    <div className="w-1/6 truncate text-[#131313]">
+                      {booking.name}
+                    </div>
+                    <div className="w-1/6 font-semibold text-orange-500">
+                      {' '}
+                      {/* Orange accent */}
                       {booking.numberOfPeople} People
                     </div>
                     <div className="w-1/6 text-[#131313]">
@@ -131,67 +140,92 @@ export default function MyBookings() {
                     <div className="w-1/6 flex justify-center gap-3">
                       <Button
                         variant="ghost"
-                        className="text-orange-500 hover:text-orange-600 rounded-full p-2"
+                        className="text-orange-500 hover:bg-orange-100 rounded-full p-2"
+                        // {/* Consistent hover */}
                         onClick={() => setSelectedBooking(booking)}
                       >
                         <LucideEdit size={20} />
                       </Button>
                       <Button
                         onClick={() => setOpen(true)}
-                        variant="destructive"
-                        className="text-white bg-red-500 hover:bg-white hover:text-red-500 border border-red-500 rounded-full p-2 h-8 w-8"
+                        variant="ghost"
+                        className="text-red-500 hover:bg-red-100 rounded-full p-2"
+                        // {/* Consistent style */}
                       >
                         <Trash2 size={20} />
                       </Button>
                     </div>
+
+                    {/* <ConfirmDialog
+                      open={open}
+                      setOpen={setOpen}
+                      onConfirm={() => handleDelete(booking?._id)}
+                      title="Delete Booking"
+                      description={`Booking for #${booking?.name} will be deleted!`}
+                    /> */}
                   </div>
                 ))}
               </div>
             </div>
           </div>
-
           {/* Mobile View */}
-          <div className="md:hidden">
+          <div className="md:hidden space-y-4">
             {bookings?.map((booking) => (
               <div
                 key={booking._id}
-                className="bg-white shadow-sm rounded-lg p-4 border border-gray-200 mb-4 transition hover:shadow-md"
+                className="bg-white rounded-lg shadow-sm p-4 border border-gray-100 hover:border-orange-200 transition-all"
+                // {/* Orange hover border */}
               >
                 <div className="flex justify-between items-start">
-                  <h3 className="text-lg font-semibold text-[#2D6A4F]">
+                  <h3 className="text-lg font-semibold text-[#131313]">
                     {booking.name}
                   </h3>
-                  <span className="text-[#E63946] font-bold">
+                  <span className="font-bold text-orange-500">
+                    {' '}
+                    {/* Orange accent */}
                     {booking.numberOfPeople} People
                   </span>
                 </div>
-                <p className="text-[#131313] mt-2">
+                <p className="text-gray-600 mt-2">
+                  {' '}
+                  {/* Secondary text */}
                   {convertToDayDate(booking?.date).date} |{' '}
                   {convertToDayDate(booking?.startTime).time} -{' '}
                   {convertToDayDate(booking?.endTime).time}
                 </p>
                 <div className="flex gap-3 mt-3">
                   <Button
-                    variant="ghost"
-                    className="text-orange-500 hover:text-orange-600 rounded-full p-2"
+                    variant="outline"
+                    className="text-orange-500 border-orange-300 hover:bg-orange-50 rounded-full"
+                    // {/* Consistent style */}
                     onClick={() => setSelectedBooking(booking)}
                   >
-                    <LucideEdit size={20} />
+                    <LucideEdit size={18} className="mr-2" />
+                    Edit
                   </Button>
                   <Button
+                    variant="outline"
+                    className="text-red-500 border-red-300 hover:bg-red-50 rounded-full"
+                    // {/* Consistent style */}
                     onClick={() => setOpen(true)}
-                    variant="destructive"
-                    className="text-white bg-red-500 hover:bg-red-600 rounded-full p-2"
                   >
-                    <LucideTrash size={20} />
+                    <LucideTrash size={18} className="mr-2" />
+                    Delete
                   </Button>
                 </div>
+                {/* Confirm Delete Dialog */}
+                <ConfirmDialog
+                  open={open}
+                  setOpen={setOpen}
+                  onConfirm={() => handleDelete(booking?._id)}
+                  title="Delete Booking"
+                  description={`Booking for #${booking?.name} will be deleted!`}
+                />
               </div>
             ))}
           </div>
         </div>
       </div>
-
       {/* Booking Edit Modal */}
       {selectedBooking && (
         <BookingModal
@@ -202,15 +236,6 @@ export default function MyBookings() {
           error={error}
         />
       )}
-
-      {/* Confirm Delete Dialog */}
-      <ConfirmDialog
-        open={open}
-        setOpen={setOpen}
-        onConfirm={() => handleDelete(selectedBooking?._id)}
-        title="Delete Booking"
-        description={`Booking for #${selectedBooking?.name} will be deleted!`}
-      />
     </section>
   );
 }

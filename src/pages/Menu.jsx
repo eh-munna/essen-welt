@@ -55,8 +55,12 @@ export default function Menu() {
       </div>
 
       {/* Enhanced Tabs */}
-      <Tabs value={activeMenu} onValueChange={setActiveMenu} className="w-full">
-        <TabsList className="flex pb-2 gap-4 sm:gap-6 justify-start sm:justify-center bg-transparent">
+      <Tabs
+        value={activeMenu}
+        onValueChange={setActiveMenu}
+        className="max-w-sm md:max-w-full"
+      >
+        <TabsList className="flex w-max min-w-full pb-2 gap-1 sm:gap-4 md:gap-6 px-1 bg-transparent">
           {sortedCategories?.map((category) => (
             <TabsTrigger
               key={category}

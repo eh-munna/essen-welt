@@ -159,6 +159,15 @@
     }
   }
 
+  .rdp-weekdays {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .rdp-day_button {
+    width: 100%;
+  }
+
   body {
     @apply bg-background text-foreground;
   }

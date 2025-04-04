@@ -45,14 +45,27 @@ export default function ClientReview() {
           What <span className="text-orange-500">Customers Say</span>
         </h2>
         <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
-          Hear from people who've experienced our service
+          Hear from people who&apos;ve experienced our service
         </p>
       </div>
 
       <div className="flex flex-col justify-center items-center">
+        <div className="md:hidden mb-8">
+          <Button
+            onClick={toggleExpand}
+            className="relative cursor-pointer py-3 px-8 rounded-full"
+          >
+            {`${expanded ? 'Hide' : 'Show'} Reviews`}
+            {expanded ? <Minimize2 /> : <Maximize2 />}
+          </Button>
+        </div>
         <motion.div
-          className="relative w-full flex flex-col items-center"
-          animate={{ height: expanded ? reviews.length * 200 + 50 : 250 }}
+          className="relative w-full flex flex-col items-center pt-30"
+          animate={{
+            height: expanded
+              ? reviews.length * (window.innerWidth < 391 ? 260 : 200) + 50
+              : 250,
+          }}
           transition={{ type: 'spring', stiffness: 300, damping: 60 }}
         >
           <AnimatePresence>
@@ -71,7 +84,15 @@ export default function ClientReview() {
                   `absolute w-[90%] bg-white rounded-lg shadow-[0px_5px_25px_rgba(0,0,0,0.15)] p-6`,
                   {}
                 )}
-                style={{ top: expanded ? index * 120 : index * 40 }}
+                style={{
+                  top: expanded
+                    ? window.innerWidth < 391
+                      ? index === reviews.length - 1
+                        ? index * 187
+                        : index * 200
+                      : index * 120
+                    : index * 40,
+                }}
               >
                 <p className="text-lg italic text-[#131313] mb-4">{`"${review.review}"`}</p>
                 <div className="flex items-center">
@@ -89,7 +110,7 @@ export default function ClientReview() {
             ))}
           </AnimatePresence>
         </motion.div>
-        <div className="mt-8">
+        <div className="hidden md:block">
           <Button
             onClick={toggleExpand}
             className="relative cursor-pointer py-3 px-8 rounded-full"

@@ -2,10 +2,13 @@ import App from '@/App';
 import ErrorPage from '@/Errors/ErrorPage';
 import DashboardHome from '@/components/Dashboard/DashboardHome';
 import { ItemDetails } from '@/components/Menu';
+import AboutUs from '@/pages/AboutUs';
 import AddMenu from '@/pages/AddMenu';
 import AddTable from '@/pages/AddTable';
 import Bookings from '@/pages/Bookings';
+import Careers from '@/pages/Careers';
 import Cart from '@/pages/Cart';
+import ContactForm from '@/pages/ContactForm';
 import CustomerBookings from '@/pages/CustomerBookings';
 import CustomerOrders from '@/pages/CustomerOrders';
 import Customers from '@/pages/Customers';
@@ -38,6 +41,9 @@ const Routes = createBrowserRouter(
       <Route path="/" element={<App />}>
         <Route index element={<Home />} loader={loadPopularItems} />
         <Route path="/menu" element={<Menu />} />
+        <Route path="/contact" element={<ContactForm />} />
+        <Route path="/about" element={<AboutUs />} />
+        <Route path="/careers" element={<Careers />} />
         <Route
           path="/menu/:id"
           element={<ItemDetails />}

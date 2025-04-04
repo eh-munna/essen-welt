@@ -63,10 +63,6 @@ export default function BookTable() {
         <form
           onSubmit={form.handleSubmit(handleOnSubmit)}
           className="space-y-6 md:space-y-8 max-w-4xl mx-auto"
-          data-aos="zoom-in-up"
-          data-aos-easing="ease-out-cubic"
-          data-aos-duration="3000"
-          data-aos-once="true"
         >
           {/* Name and Email */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -154,83 +150,98 @@ export default function BookTable() {
             />
           </div>
 
-          {/* Date and Time */}
+          {/* Date and Time - Fixed alignment */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormField
               control={form.control}
               name="date"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-base md:text-lg">Date</FormLabel>
-                  <FormControl>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className={cn(
-                            'w-full h-12 md:h-14 justify-start text-left font-normal text-base border-gray-300',
-                            !field.value && 'text-muted-foreground'
-                          )}
-                        >
-                          <CalendarIcon className="mr-2 h-5 w-5" />
-                          {field.value ? (
-                            format(field.value, 'PPP')
-                          ) : (
-                            <span>Select a date</span>
-                          )}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          initialFocus
-                          disabled={(date) => date < new Date()}
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  </FormControl>
+                <FormItem className="flex flex-col">
+                  <FormLabel className="text-base md:text-lg mb-2">
+                    Date
+                  </FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          'h-12 md:h-14 justify-start text-left font-normal text-base border-gray-300',
+                          !field.value && 'text-muted-foreground'
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-5 w-5" />
+                        {/* <CalendarIcon className="ml-auto h-4 w-4 opacity-50" /> */}
+                        {field.value ? (
+                          format(field.value, 'PPP')
+                        ) : (
+                          <span>Select a date</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        initialFocus
+                        className="rounded-md border"
+                        disabled={(date) => {
+                          const today = new Date();
+                          today.setHours(0, 0, 0, 0);
+                          return date < today;
+                        }}
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </FormItem>
               )}
             />
-            <div className="space-y-2">
-              <FormLabel className="text-base md:text-lg block">Time</FormLabel>
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="startTime"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <TimePicker
-                          value={field.value}
-                          onChange={field.onChange}
-                          timeInstruction="From"
-                          className="h-12 md:h-14 text-base"
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="endTime"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <TimePicker
-                          value={field.value}
-                          onChange={field.onChange}
-                          timeInstruction="To"
-                          className="h-12 md:h-14 text-base"
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
+
+            <FormField
+              control={form.control}
+              name="time"
+              render={() => (
+                <FormItem className="flex flex-col">
+                  <FormLabel className="text-base md:text-lg mb-2">
+                    Time
+                  </FormLabel>
+                  <div className="grid grid-cols-2 gap-4 w-full">
+                    <FormField
+                      control={form.control}
+                      name="startTime"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <TimePicker
+                              value={field.value}
+                              onChange={field.onChange}
+                              timeInstruction="From"
+                              className="h-12 md:h-14 w-full"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="endTime"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <TimePicker
+                              value={field.value}
+                              onChange={field.onChange}
+                              timeInstruction="To"
+                              className="h-12 md:h-14 w-full"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </FormItem>
+              )}
+            />
           </div>
 
           {/* Message */}

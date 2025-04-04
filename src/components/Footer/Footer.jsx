@@ -68,7 +68,7 @@ const Footer = () => {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-900">Contact Us</h3>
             <address className="not-italic text-gray-600 space-y-3 text-base">
-              <p>123 Restaurant Row</p>
+              <p>Restaurant Straße 123</p>
               <p>Berlin, Germany 10115</p>
               <p>
                 <a
@@ -98,16 +98,50 @@ const Footer = () => {
               <p className="text-gray-600 text-base">
                 Subscribe for updates and special offers
               </p>
-              <form className="flex flex-col sm:flex-row gap-3">
-                <input
+              {/* <form className="w-full max-w-md lg:max-w-xl mx-auto">
+                <div className="relative">
+                  <input
+                    type="email"
+                    placeholder="Your email address"
+                    className="w-full px-4 py-3 border-0 rounded-full outline-none
+                focus:ring-2 focus:ring-orange-500 focus:ring-offset-2
+                lg:border-r lg:border-gray-300 lg:rounded-r-none
+                lg:focus:ring-0 lg:focus:ring-offset-0"
+                    required
+                  />
+                  <button
+                    type="submit"
+                    className="absolute -right-5 top-0 h-full px-6 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-r-full  transition-colors shadow-sm lg:px-8"
+                  >
+                    Subscribe
+                  </button>
+                </div>
+              </form> */}
+
+              <form className="flex flex-col lg:flex-row gap-3 w-full max-w-md lg:max-w-none mx-auto relative">
+                {/* <input
                   type="email"
                   placeholder="Your email"
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  className="flex-1 px-4 py-3 pr-20 lg:py-2 border border-gray-300 rounded-full focus:ring-0 focus:ring-orange-500 focus:border-orange-500 w-full outline-0"
                   required
                 />
                 <button
                   type="submit"
-                  className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-full transition-colors shadow-sm"
+                  className="absolute right-0 px-6 py-3 lg:py-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-r-full border border-orange-500 transition-colors shadow-sm w-28 lg:w-28 focus:ring-2"
+                >
+                  Subscribe
+                </button> */}
+
+                <input
+                  type="email"
+                  placeholder="Your email"
+                  className="flex-1 px-4 py-3 pr-20 lg:py-2 border border-gray-300 rounded-full focus:ring-0 focus:ring-orange-500 focus:border-orange-500 w-full outline-0"
+                  required
+                />
+
+                <button
+                  type="submit"
+                  className="ml-12 absolute right-0 px-6 py-3 lg:py-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-r-full border border-orange-500 transition-colors shadow-sm w-28 lg:w-28 focus:ring-2"
                 >
                   Subscribe
                 </button>
@@ -117,27 +151,27 @@ const Footer = () => {
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-900">Follow Us</h3>
               <div className="flex space-x-4">
-                <a
-                  href="#"
+                <Link
+                  to="/"
                   className="text-gray-600 hover:text-orange-500 transition-colors text-xl"
                   aria-label="Facebook"
                 >
                   <FaFacebook />
-                </a>
-                <a
-                  href="#"
+                </Link>
+                <Link
+                  to="/"
                   className="text-gray-600 hover:text-orange-500 transition-colors text-xl"
                   aria-label="Instagram"
                 >
                   <FaInstagram />
-                </a>
-                <a
-                  href="#"
+                </Link>
+                <Link
+                  to="/"
                   className="text-gray-600 hover:text-orange-500 transition-colors text-xl"
                   aria-label="Twitter"
                 >
                   <FaTwitter />
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -150,19 +184,19 @@ const Footer = () => {
           </div>
           <div className="flex space-x-6">
             <Link
-              to="/privacy"
+              to="/"
               className="text-gray-500 hover:text-orange-500 text-sm transition-colors"
             >
               Privacy Policy
             </Link>
             <Link
-              to="/terms"
+              to="/"
               className="text-gray-500 hover:text-orange-500 text-sm transition-colors"
             >
               Terms of Service
             </Link>
             <Link
-              to="/cookies"
+              to="/"
               className="text-gray-500 hover:text-orange-500 text-sm transition-colors"
             >
               Cookie Policy

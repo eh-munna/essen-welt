@@ -5,6 +5,8 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
+import { Clock } from 'lucide-react';
+import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { ScrollArea } from './ui/scroll-area';
 
@@ -23,7 +25,7 @@ export const TimePicker = ({ value, onChange, timeInstruction }) => {
         <Button
           variant="outline"
           className={cn(
-            `w-full flex justify-between border-gray-300 shadow-sm focus:ring-[#2D6A4F] focus:border-[#2D6A4F] mt-2`,
+            `w-full flex justify-between border-gray-300 shadow-sm focus:ring-[#2D6A4F] focus:border-[#2D6A4F] h-12 md:h-14 mt-0`,
             {
               'text-gray-900': value,
               'text-gray-400': !value,
@@ -54,9 +56,6 @@ export const TimePicker = ({ value, onChange, timeInstruction }) => {
     </Popover>
   );
 };
-
-import { Clock } from 'lucide-react';
-import PropTypes from 'prop-types';
 
 TimePicker.propTypes = {
   value: PropTypes.string,

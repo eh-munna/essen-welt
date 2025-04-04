@@ -170,7 +170,7 @@ export default function Navbar() {
                         }
                       )}
                     >
-                      <div className="flex flex-col gap-2 mt-1">
+                      <ul className="flex flex-col gap-2 mt-1">
                         <li className="relative">
                           <Link
                             to="/dashboard/profile"
@@ -187,7 +187,7 @@ export default function Navbar() {
                             Dashboard
                           </Link>
                         </li>
-                      </div>
+                      </ul>
                     </div>
                   </div>
                 </li>
