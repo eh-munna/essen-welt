@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import useAxiosPublic from '@/hooks/useAxiosPublic';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
+import { motion } from 'framer-motion';
 import { CalendarIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
@@ -265,13 +266,16 @@ export default function BookTable() {
           />
 
           {/* Submit Button */}
-          <Button
-            type="submit"
-            size="lg"
-            className="w-full py-6 text-lg bg-orange-500 hover:bg-orange-600 transition-colors duration-300 rounded-full shadow-md"
-          >
-            Confirm Reservation
-          </Button>
+
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full py-6 text-lg bg-orange-500 hover:bg-orange-600 transition-colors duration-300 rounded-full shadow-md"
+            >
+              Confirm Reservation
+            </Button>
+          </motion.div>
         </form>
       </Form>
     </section>

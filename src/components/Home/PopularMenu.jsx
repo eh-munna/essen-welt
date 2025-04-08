@@ -43,14 +43,18 @@ export default function PopularMenu() {
       </div>
 
       {/* Optional view more button */}
-      <div className="mt-12 text-center">
+      <motion.div
+        className="mt-12 text-center"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
         <Link
           to={'/menu'}
           className="px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-full transition-all duration-300 hover:shadow-lg"
         >
           View Full Menu
         </Link>
-      </div>
+      </motion.div>
     </section>
   );
 }
