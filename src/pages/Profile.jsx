@@ -4,13 +4,14 @@ import { EditIcon, Mail, MapPin, Phone, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function Profile() {
-  const { customer, isLoading } = useCustomer();
+  const { customer, isLoading, refetch } = useCustomer();
   useTitle('Profile');
 
   if (isLoading) {
     return (
       <div className="text-center py-10 text-orange-500">
         Loading profile...
+        {refetch()}
       </div>
     );
   }
@@ -37,7 +38,7 @@ export default function Profile() {
         {/* Name & Contact Info */}
         <div className="space-y-1">
           <h3 className="text-xl font-semibold text-gray-900">
-            {customer.firstName} {customer.lastName}
+            {customer?.firstName} {customer?.lastName}
           </h3>
 
           {/* Email */}

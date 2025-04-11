@@ -65,7 +65,6 @@ export default function EditProfile() {
       firstName,
       lastName,
       email,
-      password,
       phoneNumber,
       deliveryAddress: { street, city, country, postalCode },
     } = data;
@@ -74,7 +73,6 @@ export default function EditProfile() {
       firstName,
       lastName,
       email,
-      password,
       phoneNumber,
       deliveryAddress: {
         street,
@@ -103,6 +101,7 @@ export default function EditProfile() {
             ...user,
             displayName: `${userInfo.firstName} ${userInfo.lastName}`,
           });
+
           navigate('/dashboard/profile');
         },
         {
@@ -207,25 +206,6 @@ export default function EditProfile() {
               )}
             />
           </div>
-
-          {/* Password */}
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input
-                    type="password"
-                    placeholder="Enter new password"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
 
           {/* Delivery Address */}
           <div className="grid grid-cols-2 gap-4">

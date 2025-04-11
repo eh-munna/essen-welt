@@ -1,112 +1,112 @@
-````markdown
-# 📌 Project Name
+# EssenWelt - Full-Stack Restaurant Web App
 
-_A short, catchy description of your project._
+Welcome to **EssenWelt**, a modern and interactive full-stack web application designed for restaurants to streamline **menu display**, **table booking**, **online ordering**, and **payment**—all in one platform.
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)  
-[![Version](https://img.shields.io/badge/version-1.0.0-green.svg)]()  
-[![Build Status](https://img.shields.io/travis/user/repo/master)](https://travis-ci.org/user/repo)
+![React](https://img.shields.io/badge/React-19-blue) ![MongoDB](https://img.shields.io/badge/MongoDB-atlas-brightgreen) ![Express](https://img.shields.io/badge/Express.js-orange) ![Stripe](https://img.shields.io/badge/Stripe-Payments-purple) ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-v4-blue) ![Shadcn UI](https://img.shields.io/badge/ShadcnUI-black)
 
 ---
 
-## 🚀 Overview
+## ✨ Features
 
-A brief introduction explaining what the project does, its purpose, and key features.
-
-### 🔍 Key Features
-
-- Feature 1
-- Feature 2
-- Feature 3
-
----
-
-## 📦 Installation
-
-Steps to install and set up the project locally.
-
-### Prerequisites
-
-- Python 3.8+ (or any other dependencies)
-- Git
-
-### Steps
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/your-repo.git
-   ```
-````
-
-2. Navigate to the project directory:
-   ```bash
-   cd your-repo
-   ```
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+- 🔐 **Firebase Authentication** – Secure user sign-up, login, and role-based access control
+- 📋 **User Dashboards** – Separate dashboards for customers and admins based on roles
+- 🍽️ **Menu Display with Tabs** – Smooth, intuitive UI to browse meals by category
+- 🛒 **Order System** – Add items to cart and place orders
+- 📅 **Reservation Booking** – Customers can book tables with ease
+- 💳 **Secure Stripe Payment Integration** – Safe and seamless payment experience
+- 🛠️ **Admin Panel** – Admins can manage menu items, reservations, and customer orders
 
 ---
 
-## 🛠 Usage
+## 🧑‍💻 Tech Stack
 
-How to use the project with examples.
+### Frontend
 
-### Running the Project
+- **React.js**
+- **Tailwind CSS**
+- **Shadcn UI**
+- **Framer Motion**
+- **AOS (Animate on Scroll)**
+
+### Backend
+
+- **Express.js**
+- **MongoDB** + **Mongoose**
+
+### Others
+
+- **Firebase Auth**
+- **JWT**
+- **TanStack Query**
+- **Axios**
+- **React Hot Toast**
+- **React Hook Form**
+
+---
+
+## 📁 Project Setup
+
+Follow the steps below to get the project running locally:
+
+### 1. Clone the Repository
 
 ```bash
-python main.py
+git clone https://github.com/eh-munna/essen-welt
+cd essen-welt
 ```
 
-### Example Code
+### 2. Install Dependencies
 
-```python
-def hello_world():
-    print("Hello, World!")
+```bash
+npm install
+```
+
+### 3. Create Environment Files
+
+Create `.env` files in the directory and add necessary configurations like:
+
+```env
+
+# Firebase Config
+
+VITE_apiKey=your_apiKey
+VITE_authDomain=your_authDomain
+VITE_projectId=your_projectId
+VITE_storageBucket=your_storageBucket
+VITE_messagingSenderId=your_messagingSenderId
+VITE_appId=your_appId
+
+# Payment Config
+
+VITE_paymentPublic=your_paymentPublic_test_key
+```
+
+### 4. Run the App
+
+```bash
+npm run dev
 ```
 
 ---
 
-## 📂 Project Structure
+## 🚀 Live Site
 
-```plaintext
-project-root/
-├── src/            # Source files
-├── tests/          # Test files
-├── docs/           # Documentation
-├── .gitignore      # Git ignore rules
-└── README.md       # Project documentation
-```
-
----
-
-## 🤝 Contributing
-
-Guidelines for contributors.
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature-branch`).
-3. Commit changes (`git commit -m "Add new feature"`).
-4. Push to the branch (`git push origin feature-branch`).
-5. Open a Pull Request.
-
----
-
-## 📜 License
-
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+🔗 [EssenWelt Live Link](https://essen-welt.vercel.app/)
 
 ---
 
 ## 📬 Contact
 
-For questions or feedback, reach out:
+Feel free to reach out or connect with me!
 
-- Email: your-email@example.com
-- Twitter: [@yourhandle](https://twitter.com/yourhandle)
-- GitHub: [@your-username](https://github.com/your-username)
-
-```
-
-```
+<div style="display: flex; gap: 30px;">
+   <a href="https://www.linkedin.com/in/eh-munna/">
+      <img src="https://img.shields.io/badge/LinkedIn-%230A66C2?style=flat&logo=linkedin&logoColor=white" alt="LinkedIn">
+   </a>
+   <a href="https://github.com/eh-munna">
+      <img src="https://img.shields.io/badge/GitHub-%23121011?style=flat&logo=github&logoColor=white" alt="GitHub">
+   </a>
+   <a href="mailto:emran.h.munna@gmail.com">
+      <img src="https://img.shields.io/badge/emran.h.munna@gmail.com-%23D14836?style=flat&logo=gmail&logoColor=white" alt="Email">
+   </a>
+</div>

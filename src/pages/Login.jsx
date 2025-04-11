@@ -14,14 +14,18 @@ import useAxiosPublic from '@/hooks/useAxiosPublic';
 import { deleteUser } from 'firebase/auth';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { FaGithub } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 
 export default function Login() {
   const axiosPublic = useAxiosPublic();
   const location = useLocation();
-  const form = useForm();
+  const form = useForm({
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
   const { userSignIn, setUser, user, createGoogleLogin } = useAuth();
   const navigate = useNavigate();
   const from = location?.state?.from?.pathname || '/';
@@ -35,8 +39,7 @@ export default function Login() {
         userSignIn(email, password),
         {
           loading: toastOptions.loading,
-          success: () =>
-            toastOptions.success(result?.user?.displayName || 'User logged in'),
+          success: () => toastOptions.success('Welcome to Essen Welt'),
           error: toastOptions.error,
         },
         {
@@ -162,12 +165,6 @@ export default function Login() {
                   <FormItem>
                     <div className="flex justify-between items-center">
                       <FormLabel className="text-gray-700">Password</FormLabel>
-                      <Link
-                        to="/forgot-password"
-                        className="text-sm text-orange-600 hover:underline"
-                      >
-                        Forgot password?
-                      </Link>
                     </div>
                     <FormControl>
                       <Input
@@ -204,7 +201,7 @@ export default function Login() {
           </div>
 
           {/* Social Login Buttons */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 items-center justify-center">
             <Button
               onClick={handleGoogleLogin}
               variant="outline"
@@ -212,13 +209,6 @@ export default function Login() {
             >
               <FcGoogle className="text-xl" />
               <span>Google</span>
-            </Button>
-            <Button
-              variant="outline"
-              className="h-12 gap-2 border-gray-300 hover:bg-gray-50"
-            >
-              <FaGithub className="text-xl" />
-              <span>GitHub</span>
             </Button>
           </div>
 

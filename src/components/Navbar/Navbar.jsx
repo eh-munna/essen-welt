@@ -45,7 +45,7 @@ export default function Navbar() {
           loading: 'Loading...',
           success: () => (
             <div className="bg-white px-6 animate-enter">
-              User signed out successfully!
+              Logged out successfully!
             </div>
           ),
           error: (err) => <div className="bg-white px-6">{err.message}</div>,

@@ -38,7 +38,7 @@ export default function CustomerOrders() {
       <h2 className="text-2xl font-bold mb-4">Orders for {customerEmail}</h2>
 
       {/* Grid Container for the order details */}
-      <div className="grid grid-cols-5 gap-4 p-4 bg-white shadow-md rounded-lg">
+      <div className="hidden md:grid grid-cols-5 gap-4 p-4 bg-white shadow-md rounded-lg">
         {/* Header Row */}
         <div className="font-semibold">Order ID</div>
         <div className="font-semibold">Items</div>
@@ -52,7 +52,7 @@ export default function CustomerOrders() {
       {/* Data Rows */}
       {customerOrders.map((order) => (
         <div
-          className="grid grid-cols-5 gap-4 p-4 bg-white shadow-md rounded-lg items-center"
+          className="hidden md:grid grid-cols-5 gap-4 p-4 bg-white shadow-md rounded-lg items-center"
           key={order._id}
         >
           <div className="order-id">{order._id}</div>
@@ -103,6 +103,49 @@ export default function CustomerOrders() {
           />
         </div>
       ))}
+
+      <div className="md:hidden space-y-4">
+        {customerOrders?.map((order) => (
+          <div
+            key={order._id}
+            className="bg-white rounded-lg shadow-sm p-4 border border-gray-200 hover:border-orange-300 transition-all"
+          >
+            <div className="flex justify-between items-start">
+              <div>
+                <h3 className="font-semibold text-[#131313]">
+                  {order.items.map((item) => item.name).join(', ')}
+                </h3>
+                <p className="text-sm text-gray-600 mt-1">
+                  {order.items.reduce(
+                    (total, item) => total + item.quantity,
+                    0
+                  )}{' '}
+                  items
+                </p>
+              </div>
+              <span className="font-bold text-orange-500">
+                €{order.totalPrice.toFixed(2)}
+              </span>
+            </div>
+            <div className="mt-3 flex justify-between items-center">
+              <div className="text-sm text-gray-600">
+                {`${order?.customer?.firstName} ${order?.customer?.lastName}`}
+              </div>
+              <span
+                className={`px-3 py-1 rounded-full text-xs font-medium ${
+                  order.status === 'confirmed'
+                    ? 'bg-green-100 text-green-700'
+                    : order.status === 'pending'
+                    ? 'bg-yellow-100 text-yellow-700'
+                    : 'bg-red-100 text-red-700'
+                }`}
+              >
+                {order.status}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
 
       {/* Order Status Edit Modal */}
       {selectedOrder && (

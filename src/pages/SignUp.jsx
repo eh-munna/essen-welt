@@ -14,7 +14,6 @@ import useAxiosPublic from '@/hooks/useAxiosPublic';
 import { deleteUser, updateProfile } from 'firebase/auth';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { FaGithub } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -114,7 +113,8 @@ export default function SignUp() {
           }
 
           const userInfo = {
-            name: createdUser?.user?.displayName,
+            firstName: createdUser?.user?.displayName,
+            lastName: createdUser?.user?.displayName,
             email: createdUser?.user?.email,
             phoneNumber: createdUser?.user?.phoneNumber || 'defaultValue',
             deliveryAddress: {
@@ -144,7 +144,7 @@ export default function SignUp() {
         toastOptions.styles
       );
     } catch (error) {
-      console.error(error);
+      toast.error(error?.response?.data?.message);
       if (createdUser?.user) {
         await deleteUser(createdUser.user);
       }
@@ -374,7 +374,7 @@ export default function SignUp() {
           </div>
 
           {/* Social Login Buttons */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 justify-center items-center gap-4">
             <Button
               onClick={handleGoogleLogin}
               variant="outline"
@@ -382,13 +382,6 @@ export default function SignUp() {
             >
               <FcGoogle className="text-xl" />
               <span>Google</span>
-            </Button>
-            <Button
-              variant="outline"
-              className="h-12 gap-2 border-gray-300 hover:bg-gray-50"
-            >
-              <FaGithub className="text-xl" />
-              <span>GitHub</span>
             </Button>
           </div>
 
