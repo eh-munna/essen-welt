@@ -1,10 +1,12 @@
 import { MenuItem } from '@/components/Menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import useMenu from '@/hooks/useMenu';
+import useTitle from '@/hooks/useTitle';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 
 export default function Menu() {
+  useTitle('Menu');
   const [activeMenu, setActiveMenu] = useState('starters');
   const [activeId, setActiveId] = useState(null);
 

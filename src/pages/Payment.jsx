@@ -14,8 +14,6 @@ export default function Payment() {
 
   const { cart } = useCart();
 
-  console.log(cart);
-
   useEffect(() => {
     const paymentIntentId = localStorage.getItem('paymentIntentId');
 

@@ -77,7 +77,7 @@ export default function MyOrders() {
                   </div>
                   {order?.items?.map((item, itemIdx) => (
                     <Fragment key={`${order?._id}${itemIdx}`}>
-                      <div className="text-[#131313]">{item?.name}</div>
+                      <div className="text-[#131313]">{item?.itemName}</div>
                       <div className="text-gray-600">{item?.quantity}</div>
                     </Fragment>
                   ))}

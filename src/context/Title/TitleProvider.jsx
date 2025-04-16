@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 export const TitleContext = createContext(null);
 
@@ -8,6 +8,10 @@ export const useTitleContext = () => {
 
 export default function TitleProvider({ children }) {
   const [title, setTitle] = useState('Essen Welt');
+
+  useEffect(() => {
+    document.title = title;
+  }, [title]);
 
   return (
     <>

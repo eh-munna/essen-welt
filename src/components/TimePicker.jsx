@@ -25,7 +25,7 @@ export const TimePicker = ({ value, onChange, timeInstruction }) => {
         <Button
           variant="outline"
           className={cn(
-            `w-full flex justify-between border-gray-300 shadow-sm focus:ring-[#2D6A4F] focus:border-[#2D6A4F] h-12 md:h-14 mt-0`,
+            `w-full flex justify-between shadow-sm h-12 md:h-14 mt-0 border-[#2D6A4F]/40 focus:ring-orange-500 focus:border-orange-500`,
             {
               'text-gray-900': value,
               'text-gray-400': !value,

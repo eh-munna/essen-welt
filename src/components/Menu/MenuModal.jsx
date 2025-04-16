@@ -62,11 +62,9 @@ export default function MenuModal({ menu, open, setOpen }) {
         if (menu) {
           // Update Menu API Call
           await axiosSecure.put(`/menus/admin/${menu?._id}`, menuData); // Changed URL for menu
-          console.log('Menu updated:', menuData);
         } else {
           // Add Menu API Call
           await axiosSecure.post('/menus/admin', menuData); // Changed URL for menu
-          console.log('Menu added:', menuData);
         }
         setOpen(false); // Close modal after successful operation
         refetch(); // Refetch menu data

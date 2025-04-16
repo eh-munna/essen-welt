@@ -8,6 +8,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import auth from '@/config/firebaseConfig';
 import toastOptions from '@/constants/toastOptions';
 import useAuth from '@/hooks/useAuth';
 import useAxiosSecure from '@/hooks/useAxiosSecure';
@@ -87,7 +88,7 @@ export default function EditProfile() {
       await toast.promise(
         async () => {
           // Update user in Firebase
-          await updateProfile(user, {
+          await updateProfile(auth.currentUser, {
             displayName: `${userInfo.firstName} ${userInfo.lastName}`,
           });
 
@@ -102,7 +103,7 @@ export default function EditProfile() {
             displayName: `${userInfo.firstName} ${userInfo.lastName}`,
           });
 
-          navigate('/dashboard/profile');
+          navigate('/dashboard/profile', { state: { shouldRefresh: true } });
         },
         {
           loading: toastOptions.loading,
@@ -114,7 +115,7 @@ export default function EditProfile() {
         }
       );
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

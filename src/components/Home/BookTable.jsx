@@ -21,7 +21,18 @@ import { Textarea } from '../ui/textarea';
 
 export default function BookTable() {
   const axiosPublic = useAxiosPublic();
-  const form = useForm();
+  const form = useForm({
+    defaultValues: {
+      name: '',
+      email: '',
+      phoneNumber: '',
+      numberOfPeople: '',
+      date: '',
+      endTime: '',
+      startTime: '',
+      message: '',
+    },
+  });
 
   const handleOnSubmit = async (data) => {
     const bookingData = {
@@ -77,10 +88,11 @@ export default function BookTable() {
                   </FormLabel>
                   <FormControl>
                     <Input
+                      required
                       type="text"
                       placeholder="Your name"
                       {...field}
-                      className="h-12 md:h-14 text-base border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                      className="h-12 md:h-14 text-base  border border-[#2D6A4F]/40 focus:outline-none focus-visible:ring-0 focus-visible:border-orange-600"
                     />
                   </FormControl>
                 </FormItem>
@@ -96,10 +108,11 @@ export default function BookTable() {
                   </FormLabel>
                   <FormControl>
                     <Input
+                      required
                       type="email"
                       placeholder="your@email.com"
                       {...field}
-                      className="h-12 md:h-14 text-base border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                      className="h-12 md:h-14 text-base border border-[#2D6A4F]/40 focus:outline-none focus-visible:ring-0 focus-visible:border-orange-600"
                     />
                   </FormControl>
                 </FormItem>
@@ -119,10 +132,11 @@ export default function BookTable() {
                   </FormLabel>
                   <FormControl>
                     <Input
+                      required
                       type="tel"
                       placeholder="+49 (0) 123 456 789"
                       {...field}
-                      className="h-12 md:h-14 text-base border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                      className="h-12 md:h-14 text-base border border-[#2D6A4F]/40 focus:outline-none focus-visible:ring-0 focus-visible:border-orange-600"
                     />
                   </FormControl>
                 </FormItem>
@@ -138,12 +152,13 @@ export default function BookTable() {
                   </FormLabel>
                   <FormControl>
                     <Input
+                      required
                       type="number"
                       placeholder="How many people?"
                       min="1"
                       max="20"
                       {...field}
-                      className="h-12 md:h-14 text-base border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                      className="h-12 md:h-14 text-base border border-[#2D6A4F]/40 focus:outline-none focus-visible:ring-0 focus-visible:border-orange-600"
                     />
                   </FormControl>
                 </FormItem>
@@ -166,7 +181,7 @@ export default function BookTable() {
                       <Button
                         variant="outline"
                         className={cn(
-                          'h-12 md:h-14 justify-start text-left font-normal text-base border-gray-300',
+                          'h-12 md:h-14 justify-start text-left font-normal text-base  border-[#2D6A4F]/40 focus:ring-orange-500 focus:border-orange-500',
                           !field.value && 'text-muted-foreground'
                         )}
                       >
@@ -197,52 +212,43 @@ export default function BookTable() {
                 </FormItem>
               )}
             />
-
-            <FormField
-              control={form.control}
-              name="time"
-              render={() => (
-                <FormItem className="flex flex-col">
-                  <FormLabel className="text-base md:text-lg mb-2">
-                    Time
-                  </FormLabel>
-                  <div className="grid grid-cols-2 gap-4 w-full">
-                    <FormField
-                      control={form.control}
-                      name="startTime"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <TimePicker
-                              value={field.value}
-                              onChange={field.onChange}
-                              timeInstruction="From"
-                              className="h-12 md:h-14 w-full"
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="endTime"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <TimePicker
-                              value={field.value}
-                              onChange={field.onChange}
-                              timeInstruction="To"
-                              className="h-12 md:h-14 w-full"
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </FormItem>
-              )}
-            />
+            <FormItem className="flex flex-col">
+              <FormLabel className="text-base md:text-lg mb-2">Time</FormLabel>
+              <div className="grid grid-cols-2 gap-4 w-full">
+                <FormField
+                  control={form.control}
+                  name="startTime"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <TimePicker
+                          value={field.value}
+                          onChange={field.onChange}
+                          timeInstruction="From"
+                          className="h-12 md:h-14 w-full"
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="endTime"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <TimePicker
+                          value={field.value}
+                          onChange={field.onChange}
+                          timeInstruction="To"
+                          className="h-12 md:h-14 w-full"
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </FormItem>
           </div>
 
           {/* Message */}
@@ -258,7 +264,7 @@ export default function BookTable() {
                   <Textarea
                     placeholder="Any dietary restrictions or special notes?"
                     {...field}
-                    className="min-h-[120px] text-base border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                    className="min-h-[120px] text-base border border-[#2D6A4F]/40 focus:outline-none focus-visible:ring-0 focus-visible:border-orange-600"
                   />
                 </FormControl>
               </FormItem>

@@ -1,18 +1,29 @@
 import MenuModal from '@/components/Menu/MenuModal';
 import { Button } from '@/components/ui/button';
+import useTitle from '@/hooks/useTitle';
+import { motion } from 'framer-motion';
 import { useState } from 'react';
 
 export default function AddMenu() {
-  const [open, setOpen] = useState(false); // Start with the dialog closed
+  const [open, setOpen] = useState(false);
+
+  useTitle('Add Menu');
 
   return (
     <section className="flex flex-col justify-center items-center min-h-screen">
-      <Button
-        onClick={() => setOpen(true)}
-        className="mt-8 px-4 py-2 text-sm font-medium text-white bg-sky-500 rounded-md hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-700"
+      <motion.div
+        className="text-center"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
       >
-        Add Menu
-      </Button>
+        <Button
+          onClick={() => setOpen(true)}
+          className="px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-full transition-all duration-300 hover:shadow-lg"
+        >
+          Add Menu Item
+        </Button>
+      </motion.div>
+
       <MenuModal open={open} setOpen={setOpen} />
     </section>
   );

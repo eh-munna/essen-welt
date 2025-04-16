@@ -54,11 +54,13 @@ export default function CartProvider({ children }) {
       addToStorage(item);
       refetch();
     } else {
+     
       const cartItem = {
         itemId: item?._id,
         name: item?.name,
         price: item?.price,
         customer: customer?._id,
+        image: item?.image,
       };
       try {
         localStorage.removeItem('paymentIntentId');
@@ -71,7 +73,7 @@ export default function CartProvider({ children }) {
         }
         refetch();
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }
   };

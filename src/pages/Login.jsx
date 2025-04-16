@@ -54,7 +54,7 @@ export default function Login() {
       }
     } catch (error) {
       toast.error(error.message, { position: 'top-right' });
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -110,7 +110,7 @@ export default function Login() {
         }
       );
     } catch (error) {
-      console.log(error);
+      console.error(error);
       if (createdUser?.user) {
         await deleteUser(createdUser.user);
       }

@@ -17,6 +17,7 @@ export default function ConfirmDialog({
   open,
   setOpen,
   onConfirm,
+  onCancel,
   title = 'Are you absolutely sure?',
   description = 'This action cannot be undone.',
   confirmText = 'Confirm',
@@ -46,6 +47,9 @@ export default function ConfirmDialog({
         <DialogFooter className="flex justify-end gap-2">
           <DialogClose asChild>
             <Button
+              onClick={() => {
+                onCancel();
+              }}
               variant="secondary"
               className="bg-gray-600 hover:bg-gray-700 text-white transition-colors"
             >
@@ -73,6 +77,7 @@ ConfirmDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   setOpen: PropTypes.func.isRequired,
   onConfirm: PropTypes.func.isRequired,
+  onCancel: PropTypes.func,
   title: PropTypes.string,
   description: PropTypes.string,
   confirmText: PropTypes.string,

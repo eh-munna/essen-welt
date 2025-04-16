@@ -25,7 +25,13 @@ export const addToStorage = (item) => {
   } else {
     updatedCart = [
       ...cart,
-      { itemId: item?._id, name: item?.name, price: item?.price, quantity: 1 },
+      {
+        itemId: item?._id,
+        name: item?.name,
+        price: item?.price,
+        quantity: 1,
+        image: item?.image,
+      },
     ];
     toast.success(`${item.name} is added to cart`, {
       position: 'top-right',

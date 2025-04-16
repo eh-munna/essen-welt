@@ -4,10 +4,11 @@ import { useEffect } from 'react';
 export default function useTitle(title) {
   const { setTitle } = useTitleContext();
   useEffect(() => {
-    setTitle(title);
-    document.title = title;
+    if (title) {
+      setTitle(title);
+    }
     return () => {
-      document.title = 'Essen Welt';
+      setTitle('Essen Welt');
     };
   }, [title, setTitle]);
 }

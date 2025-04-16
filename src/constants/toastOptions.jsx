@@ -1,6 +1,6 @@
 const toastOptions = {
   loading: 'Loading',
-  success: () => <div className="bg-white px-6 animate-enter">{`Hi! `}</div>,
+  success: <div className="bg-white px-6 animate-enter">{`Hi! `}</div>,
   error: (err) => (
     <div className="bg-white px-6">
       {err.code === `auth/email-already-in-use` && 'Email already in use!'}

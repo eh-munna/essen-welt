@@ -1,17 +1,24 @@
 import useCustomer from '@/hooks/useCustomer';
 import useTitle from '@/hooks/useTitle';
 import { EditIcon, Mail, MapPin, Phone, User } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 export default function Profile() {
   const { customer, isLoading, refetch } = useCustomer();
   useTitle('Profile');
+  const location = useLocation();
+  useEffect(() => {
+    if (location?.state?.shouldRefresh) {
+      refetch();
+      window.history.replaceState({}, '');
+    }
+  }, [location, refetch]);
 
   if (isLoading) {
     return (
       <div className="text-center py-10 text-orange-500">
         Loading profile...
-        {refetch()}
       </div>
     );
   }

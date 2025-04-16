@@ -6,8 +6,6 @@ import { Button } from '../ui/button';
 export default function ItemDetails() {
   const { data: item } = useLoaderData();
 
-  console.log(item);
-
   const { addToCart } = useContext(CartContext);
 
   const handleAddClick = (item) => {

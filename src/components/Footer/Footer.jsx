@@ -78,14 +78,6 @@ const Footer = () => {
                   +49 123 456 789
                 </a>
               </p>
-              <p>
-                <a
-                  href="mailto:info@essenwelt.com"
-                  className="hover:text-orange-500 transition-colors"
-                >
-                  info@essenwelt.com
-                </a>
-              </p>
             </address>
           </div>
 

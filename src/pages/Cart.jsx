@@ -1,17 +1,18 @@
 import { Button } from '@/components/ui/button';
 import { CartContext } from '@/context/cart/CartProvider';
 import useCustomer from '@/hooks/useCustomer';
+import useTitle from '@/hooks/useTitle';
 import { Trash2 } from 'lucide-react';
 import { useContext, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UpdateInfoModal from './UpdateInfoModal';
 
 export default function Cart() {
+  useTitle('Cart');
   const { cart, removeFromCart } = useContext(CartContext);
   const { customer } = useCustomer();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-
   const {
     phoneNumber,
     deliveryAddress: { city, country, postalCode, street } = {},

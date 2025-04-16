@@ -1,30 +1,22 @@
-import useUsers from '@/hooks/useUsers';
-
 import ConfirmDialog from '@/components/ConfirmDialog';
 import CustomerEditModal from '@/components/Customers/CustomerEditModal';
 import CustomerModal from '@/components/Customers/CustomerModal';
 import { Button } from '@/components/ui/button';
 import useAxiosSecure from '@/hooks/useAxiosSecure';
 import useTitle from '@/hooks/useTitle';
-import {
-  LucideCalendar,
-  LucideEdit,
-  LucideEye,
-  LucideShoppingCart,
-  LucideTrash,
-} from 'lucide-react';
+import useUsers from '@/hooks/useUsers';
+import { Calendar, Edit, Eye, ShoppingCart, Trash2 } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function Customers() {
   const [selectUser, setSelectUser] = useState(null);
-  const [open, setOpen] = useState(false);
   const [edit, setEdit] = useState(false);
   const [view, setView] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
 
   const navigate = useNavigate();
   const { users, refetch } = useUsers();
-
   const axiosSecure = useAxiosSecure();
   useTitle('Customers');
 
@@ -49,94 +41,189 @@ export default function Customers() {
     [axiosSecure, refetch]
   );
 
-  if (!users) return <p>Loading customers...</p>;
-  if (users.length === 0) return <p>No customers found.</p>;
+  if (!users) return <p className="p-6 text-gray-900">Loading customers...</p>;
+  if (users.length === 0) {
+    return (
+      <section className="bg-white min-h-screen p-6">
+        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+          <p className="text-gray-900 mb-6">No customers found</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
-    <section className="p-6 bg-gray-50">
-      <h2 className="text-2xl font-bold mb-4">Customers ({users.length})</h2>
-
-      {/* Grid Container for the table-like structure */}
-      <div className="grid grid-cols-5 gap-4 p-4 bg-white shadow-md rounded-lg">
-        {/* Header Row */}
-        <div className="font-semibold">Name</div>
-        <div className="font-semibold">Email</div>
-        <div className="font-semibold">Phone</div>
-        <div className="flex justify-center items-center font-semibold">
-          Actions
+    <section className="bg-white min-h-screen text-gray-900 p-6">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+          <h2 className="text-2xl font-semibold">Customers ({users.length})</h2>
         </div>
-        <div className="flex justify-center items-center font-semibold">
-          Manage
+
+        {/* Desktop Grid View */}
+        <div className="hidden md:block">
+          <div className="grid grid-cols-12 gap-4 mb-4 px-4 py-2 bg-gray-50 rounded-t-lg text-center">
+            <div className="col-span-2 font-medium text-gray-500">Name</div>
+            <div className="col-span-2 font-medium text-gray-500">Email</div>
+            <div className="col-span-2 font-medium text-gray-500">Phone</div>
+            <div className="col-span-3 font-medium text-gray-500">Manage</div>
+            <div className="col-span-3 font-medium text-gray-500">Actions</div>
+          </div>
+          <div className="space-y-2">
+            {users.map((customer) => (
+              <div
+                key={customer._id}
+                className="grid grid-cols-12 gap-4 items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 text-center"
+              >
+                <div className="col-span-2 font-medium text-gray-900 truncate">
+                  {customer.firstName} {customer.lastName}
+                </div>
+                <div className="col-span-2 text-gray-500 truncate">
+                  {customer.email}
+                </div>
+                <div className="col-span-2 text-gray-500 truncate">
+                  {customer.phoneNumber}
+                </div>
+                <div className="col-span-3 flex justify-center space-x-1">
+                  <Button
+                    onClick={() =>
+                      navigate(`/dashboard/customer-orders/${customer.email}`)
+                    }
+                    size="sm"
+                    variant="ghost"
+                    className="text-orange-500 hover:text-orange-600 hover:bg-orange-50"
+                  >
+                    <ShoppingCart className="h-4 w-4" />
+                    Orders
+                  </Button>
+                  <Button
+                    onClick={() =>
+                      navigate(`/dashboard/customer-bookings/${customer.email}`)
+                    }
+                    size="sm"
+                    variant="ghost"
+                    className="text-orange-500 hover:text-orange-600 hover:bg-orange-50"
+                  >
+                    <Calendar className="h-4 w-4" />
+                    Bookings
+                  </Button>
+                </div>
+                <div className="col-span-3 flex justify-center space-x-1">
+                  <Button
+                    onClick={() => handleView(customer)}
+                    size="icon"
+                    variant="ghost"
+                    className="text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                  >
+                    <Eye className="h-4 w-4" />
+                    <span className="sr-only">View</span>
+                  </Button>
+                  <Button
+                    onClick={() => handleEdit(customer)}
+                    size="icon"
+                    variant="ghost"
+                    className="text-orange-500 hover:text-orange-600 hover:bg-orange-50"
+                  >
+                    <Edit className="h-4 w-4" />
+                    <span className="sr-only">Edit</span>
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setSelectUser(customer);
+                      setDeleteConfirm(true);
+                    }}
+                    size="icon"
+                    variant="ghost"
+                    className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    <span className="sr-only">Delete</span>
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden space-y-3">
+          {users.map((customer) => (
+            <div
+              key={customer._id}
+              className="bg-white p-4 rounded-lg shadow-sm border border-gray-200"
+            >
+              <div className="flex justify-between items-start">
+                <div>
+                  <h3 className="font-medium text-gray-900">
+                    {customer.firstName} {customer.lastName}
+                  </h3>
+                  <p className="text-sm text-gray-500">{customer.email}</p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    {customer.phoneNumber}
+                  </p>
+                </div>
+                <div className="flex space-x-1">
+                  <Button
+                    onClick={() => handleView(customer)}
+                    size="icon"
+                    variant="ghost"
+                    className="text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                  >
+                    <Eye className="h-4 w-4" />
+                    <span className="sr-only">View</span>
+                  </Button>
+                  <Button
+                    onClick={() => handleEdit(customer)}
+                    size="icon"
+                    variant="ghost"
+                    className="text-orange-500 hover:text-orange-600 hover:bg-orange-50"
+                  >
+                    <Edit className="h-4 w-4" />
+                    <span className="sr-only">Edit</span>
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setSelectUser(customer);
+                      setDeleteConfirm(true);
+                    }}
+                    size="icon"
+                    variant="ghost"
+                    className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    <span className="sr-only">Delete</span>
+                  </Button>
+                </div>
+              </div>
+              <div className="flex space-x-2 mt-3">
+                <Button
+                  onClick={() =>
+                    navigate(`/dashboard/customer-orders/${customer.email}`)
+                  }
+                  size="sm"
+                  variant="ghost"
+                  className="text-orange-500 hover:text-orange-600 hover:bg-orange-50"
+                >
+                  <ShoppingCart className="h-4 w-4 mr-1" />
+                  Orders
+                </Button>
+                <Button
+                  onClick={() =>
+                    navigate(`/dashboard/customer-bookings/${customer.email}`)
+                  }
+                  size="sm"
+                  variant="ghost"
+                  className="text-orange-500 hover:text-orange-600 hover:bg-orange-50"
+                >
+                  <Calendar className="h-4 w-4 mr-1" />
+                  Bookings
+                </Button>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Data Rows */}
-      {users.map((customer) => (
-        <div
-          className="grid grid-cols-5 gap-4 p-4 bg-white shadow-md rounded-lg items-center"
-          key={customer._id}
-        >
-          <div className="customer-name">{customer.name}</div>
-          <div className="customer-email">{customer.email}</div>
-          <div className="customer-phone">{customer.phoneNumber}</div>
-
-          {/* Manage Column */}
-          <div className="customer-manage flex space-x-4 justify-center items-center">
-            <Button
-              variant="ghost"
-              className="text-blue-500 hover:text-blue-700 flex items-center"
-              onClick={() =>
-                navigate(`/dashboard/customer-orders/${customer.email}`)
-              }
-            >
-              <LucideShoppingCart size={18} className="mr-1" />
-              Orders
-            </Button>
-            <Button
-              variant="ghost"
-              className="text-blue-500 hover:text-blue-700 flex items-center"
-              onClick={() =>
-                navigate(`/dashboard/customer-bookings/${customer.email}`)
-              }
-            >
-              <LucideCalendar size={18} className="mr-1" />
-              Bookings
-            </Button>
-          </div>
-
-          {/* Actions Column */}
-          <div className="customer-actions flex space-x-2 justify-center items-center">
-            <Button
-              variant="ghost"
-              className="text-blue-500 hover:text-blue-700"
-              // onClick={() => handleViewDetails(customer?.email)}
-              onClick={() => handleView(customer)}
-            >
-              <LucideEye size={20} />
-            </Button>
-            <Button
-              variant="ghost"
-              className="text-yellow-500 hover:text-yellow-700"
-              onClick={() => handleEdit(customer)}
-            >
-              <LucideEdit size={20} />
-            </Button>
-            <Button
-              variant="ghost"
-              className="text-red-500 hover:text-red-700"
-              onClick={() => setOpen(true)}
-            >
-              <LucideTrash size={20} />
-            </Button>
-          </div>
-          <ConfirmDialog
-            open={open}
-            setOpen={setOpen}
-            onConfirm={() => handleDelete(customer._id)}
-          />
-        </div>
-      ))}
-
+      {/* Modals */}
       {view && selectUser && (
         <CustomerModal selectUser={selectUser} open={view} setOpen={setView} />
       )}
@@ -148,6 +235,16 @@ export default function Customers() {
           refetch={refetch}
         />
       )}
+      <ConfirmDialog
+        open={deleteConfirm}
+        setOpen={setDeleteConfirm}
+        onConfirm={() => {
+          handleDelete(selectUser?._id);
+          setDeleteConfirm(false);
+        }}
+        title="Delete Customer"
+        description="Are you sure you want to delete this customer? This action cannot be undone."
+      />
     </section>
   );
 }

@@ -50,16 +50,16 @@ export default function TableModal({ table, open, setOpen }) {
         if (table) {
           // Update Table API Call
           await axiosSecure.put(`/tables/admin/${table?._id}`, tableData);
-          console.log('Table updated:', tableData);
+        
         } else {
           // Add Table API Call
           await axiosSecure.post('/tables/admin', tableData);
-          console.log('Table added:', tableData);
+          
         }
         setOpen(false); // Close modal after successful operation
         refetch();
-      } catch (error) {
-        console.error('Error:', error);
+      } catch ({ response }) {
+        console.error('Error:', response?.data?.message);
       }
     },
     [axiosSecure, refetch, setOpen, table]

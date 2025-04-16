@@ -52,6 +52,9 @@ Follow the steps below to get the project running locally:
 
 ```bash
 git clone https://github.com/eh-munna/essen-welt
+```
+
+```bash
 cd essen-welt
 ```
 
@@ -92,6 +95,7 @@ npm run dev
 ## 🚀 Live Site
 
 🔗 [EssenWelt Live Link](https://essen-welt.vercel.app/)
+🔗 [Backend Repo](https://github.com/eh-munna/essen-welt-server)
 
 ---
 

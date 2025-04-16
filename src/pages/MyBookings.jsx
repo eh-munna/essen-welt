@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import useAuth from '@/hooks/useAuth';
 import useAxiosSecure from '@/hooks/useAxiosSecure';
 import useBookings from '@/hooks/useBookings';
+import useTitle from '@/hooks/useTitle';
 import convertToDayDate from '@/utils/BookingUtils';
 import {
   Loader2,
@@ -15,6 +16,7 @@ import {
 import { useCallback, useState } from 'react';
 
 export default function MyBookings() {
+  useTitle('My Bookings');
   const { bookings, refetch } = useBookings();
   const [open, setOpen] = useState(false);
   const [error, setError] = useState('');
@@ -38,8 +40,6 @@ export default function MyBookings() {
     },
     [axiosSecure, refetch, user?.email]
   );
-
-  console.log(selectedBooking);
 
   const handleEdit = useCallback(
     async (data) => {
